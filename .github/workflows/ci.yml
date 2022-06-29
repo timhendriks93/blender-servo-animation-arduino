@@ -1,0 +1,33 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: arduino/arduino-lint-action@v1
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends -y libelf-dev
+        python -m pip install --upgrade pip
+        pip install platformio
+    - name: Add simavr lib path
+      run: |
+        sudo echo "root/.platformio/packages/tool-simavr/lib" > /etc/ld.so.conf.d/platformio.conf
+        sudo ldconfig
+    - name: Run tests with pytest
+      run: |
+        pio test --without-uploading
