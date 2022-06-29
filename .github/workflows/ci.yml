@@ -24,10 +24,7 @@ jobs:
         sudo apt-get install --no-install-recommends -y libelf-dev
         python -m pip install --upgrade pip
         pip install platformio
-    - name: Add simavr lib path
-      run: |
-        sudo echo "root/.platformio/packages/tool-simavr/lib" > /etc/ld.so.conf.d/platformio.conf
-        sudo ldconfig
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/.platformio/packages/tool-simavr/lib
     - name: Run tests with pytest
       run: |
         pio test --without-uploading
