@@ -25,6 +25,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install platformio
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/.platformio/packages/tool-simavr/lib
-    - name: Run tests with pytest
+    - name: Run tests with platformio
       run: |
-        pio test --without-uploading
+        pio test --without-uploading -vvv
