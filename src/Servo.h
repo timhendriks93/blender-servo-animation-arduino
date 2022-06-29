@@ -8,6 +8,7 @@ namespace BlenderServoAnimation {
     {
     private:
         byte id;
+        byte threshold;
 
         int neutralPosition;
         int currentPosition;
@@ -16,9 +17,9 @@ namespace BlenderServoAnimation {
 
         void (*funcptr)(byte, int);
     public:
-        Servo(byte id, const int *positions, void (*funcptr)(byte, int));
+        Servo(byte id, const int *positions, void (*funcptr)(byte, int), byte threshold = 20);
 
-        void move(int pulse, bool force = false);
+        void move(int position, bool force = false);
 
         void moveByStep(int step);
 

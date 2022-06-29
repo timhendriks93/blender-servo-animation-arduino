@@ -21,11 +21,6 @@ void setUp(void)
     }
 }
 
-void tearDown(void)
-{
-    // clean stuff up here
-}
-
 void move(byte servoID, int position)
 {
     int index = lastPositions[servoID].index;
@@ -65,10 +60,23 @@ void test_move_towards_neutral(void)
     TEST_ASSERT_TRUE(servo.isNeutral());
 }
 
+void test_threshold(void)
+{
+    BlenderServoAnimation::Servo servo = BlenderServoAnimation::Servo(0, positions, move, 15);
+    TEST_ASSERT_TRUE(servo.isNeutral());
+    servo.moveByStep(1);
+    TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
+    servo.moveByStep(2);
+    TEST_ASSERT_EQUAL(330, lastPositions[0].positions[1]);
+    servo.moveByStep(4);
+    TEST_ASSERT_EQUAL(0, lastPositions[0].positions[2]);
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_move_by_step);
     RUN_TEST(test_move_towards_neutral);
+    RUN_TEST(test_threshold);
     UNITY_END();
 }
