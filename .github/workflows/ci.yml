@@ -13,13 +13,13 @@ jobs:
     name: "Test"
     runs-on: ubuntu-latest
     env:
-      LD_LIBRARY_PATH: ~/.platformio/packages/tool-simavr/lib
+      LD_LIBRARY_PATH: /home/runner/.platformio/packages/tool-simavr/lib
     steps:
     - uses: actions/checkout@v3
     - name: Cache PlatformIO directory
       uses: actions/cache@v3
       with:
-        path: ~/.platformio
+        path: /home/runner/.platformio
         key: platformio-dir
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
