@@ -28,4 +28,4 @@ jobs:
         pip install platformio
     - name: Run tests with platformio
       run: |
-        pio test --without-uploading -vvv
+        pio test --without-uploading

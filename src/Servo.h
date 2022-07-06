@@ -13,11 +13,11 @@ namespace BlenderServoAnimation {
         int neutralPosition;
         int currentPosition;
 
-        const int *positions;
+        const int* positions;
 
-        void (*funcptr)(byte, int);
+        void (*moveCallback)(byte, int);
     public:
-        Servo(byte id, const int *positions, void (*funcptr)(byte, int), byte threshold = 20);
+        Servo(byte id, const int positions[], void (*moveCallback)(byte, int), byte threshold = 20);
 
         void move(int position, bool force = false);
 

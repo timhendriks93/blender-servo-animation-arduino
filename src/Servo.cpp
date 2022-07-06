@@ -1,17 +1,19 @@
 #include <Arduino.h>
 #include "Servo.h"
 
-BlenderServoAnimation::Servo::Servo(byte id, const int *positions, void (*funcptr)(byte, int), byte threshold)
+using namespace BlenderServoAnimation;
+
+Servo::Servo(byte id, const int positions[], void (*moveCallback)(byte, int), byte threshold)
 {
     this->id = id;
     this->positions = positions;
-    this->funcptr = funcptr;
+    this->moveCallback = moveCallback;
     this->threshold = threshold;
-    neutralPosition = pgm_read_word_near(positions + 0);
-    currentPosition = neutralPosition;
+    this->neutralPosition = pgm_read_word_near(positions + 0);
+    this->currentPosition = this->neutralPosition;
 }
 
-void BlenderServoAnimation::Servo::move(int position, bool force)
+void Servo::move(int position, bool force)
 {
     if (position == this->currentPosition && force == false) {
         return;
@@ -19,9 +21,9 @@ void BlenderServoAnimation::Servo::move(int position, bool force)
 
     if (abs(position - this->currentPosition) > this->threshold)
     {
-        Serial.print("Pulse diff too high for servo ");
-        Serial.print(id);
-        Serial.print(": ");
+        Serial.print("Position diff for servo ");
+        Serial.print(this->id);
+        Serial.print(" exceeded: ");
         Serial.print(this->currentPosition);
         Serial.print(" -> ");
         Serial.print(position);
@@ -29,23 +31,23 @@ void BlenderServoAnimation::Servo::move(int position, bool force)
         return;
     }
 
-    this->funcptr(this->id, position);
+    this->moveCallback(this->id, position);
     this->currentPosition = position;
 }
 
-void BlenderServoAnimation::Servo::moveByStep(int step)
+void Servo::moveByStep(int step)
 {
     int newPosition = pgm_read_word_near(this->positions + step);
 
-    move(newPosition);
+    this->move(newPosition);
 }
 
-void BlenderServoAnimation::Servo::moveTowardsNeutral(bool inSteps)
+void Servo::moveTowardsNeutral(bool inSteps)
 {
     int newPosition = this->currentPosition;
 
     if (inSteps == false) {
-        move(newPosition, true);
+        this->move(newPosition, true);
         return;
     }
 
@@ -58,15 +60,15 @@ void BlenderServoAnimation::Servo::moveTowardsNeutral(bool inSteps)
         newPosition++;
     }
 
-    move(newPosition);
+    this->move(newPosition);
 }
 
-bool BlenderServoAnimation::Servo::isNeutral()
+bool Servo::isNeutral()
 {
     return this->currentPosition == this->neutralPosition;
 }
 
-byte BlenderServoAnimation::Servo::getID()
+byte Servo::getID()
 {
     return this->id;
 }

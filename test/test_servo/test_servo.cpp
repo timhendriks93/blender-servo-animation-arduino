@@ -1,6 +1,8 @@
 #include <unity.h>
 #include "Servo.h"
 
+using namespace BlenderServoAnimation;
+
 struct positionLog {
     int index;
     int positions[20];
@@ -32,7 +34,7 @@ const int PROGMEM positions[5] = {350, 340, 330, 340, 350};
 
 void test_move_by_step(void)
 {
-    BlenderServoAnimation::Servo servo = BlenderServoAnimation::Servo(2, positions, move);
+    Servo servo(2, positions, move);
     TEST_ASSERT_EQUAL(2, servo.getID());
     TEST_ASSERT_TRUE(servo.isNeutral());
     servo.moveByStep(1);
@@ -45,7 +47,7 @@ void test_move_by_step(void)
 
 void test_move_towards_neutral(void)
 {
-    BlenderServoAnimation::Servo servo = BlenderServoAnimation::Servo(0, positions, move);
+    Servo servo(0, positions, move);
     TEST_ASSERT_TRUE(servo.isNeutral());
     servo.moveByStep(1);
     TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
@@ -62,7 +64,7 @@ void test_move_towards_neutral(void)
 
 void test_threshold(void)
 {
-    BlenderServoAnimation::Servo servo = BlenderServoAnimation::Servo(0, positions, move, 15);
+    Servo servo(0, positions, move, 15);
     TEST_ASSERT_TRUE(servo.isNeutral());
     servo.moveByStep(1);
     TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
