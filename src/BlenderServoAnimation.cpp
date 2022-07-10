@@ -8,7 +8,7 @@ Animation::Animation(byte fps, int frames)
 {
     this->frameMillis = Animation::SECOND_IN_MILLIS / fps;
     this->frames = frames;
-    this->mode = Animation::MODE_PAUSE;
+    this->mode = Animation::MODE_DEFAULT;
 }
 
 void Animation::addServo(Servo servo)
@@ -72,6 +72,8 @@ void Animation::handlePlayMode()
 
 void Animation::handleStopMode()
 {
+    bool allNeutral = true;
+
     for (int i = 0; i < MAX_SERVOS; i++)
     {
         Servo* servo = this->servos[i];
@@ -79,7 +81,15 @@ void Animation::handleStopMode()
         if (servo && !servo->isNeutral())
         {
             servo->moveTowardsNeutral();
+            allNeutral = false;
         }
+    }
+
+    if (allNeutral)
+    {
+        this->mode = Animation::MODE_DEFAULT;
+        this->frame = 0;
+        return;
     }
 
     if (this->stopStepDelay > 0)
@@ -142,4 +152,9 @@ void Animation::live(Stream &serial)
 byte Animation::getMode()
 {
     return this->mode;
+}
+
+int Animation::getFrame()
+{
+    return this->frame;
 }

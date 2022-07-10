@@ -44,7 +44,7 @@ void test_play(void) {
         Servo(2, positionsB, move),
     };
     animation.addServos(servos, 2);
-    TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+    TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
     animation.play();
     TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
@@ -66,6 +66,7 @@ void test_pause(void) {
     Servo servo(2, positionsA, move);
     animation.addServo(servo);
     animation.play();
+    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
     int exp[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
 
@@ -75,6 +76,7 @@ void test_pause(void) {
     }
 
     animation.pause();
+    TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
 
     for (int i = 4; i < 8; i++) {
         animation.run(FRAME_MILLIS * (i + 1));
@@ -82,6 +84,7 @@ void test_pause(void) {
     }
 
     animation.play();
+    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
     for (int i = 8; i < 14; i++) {
         animation.run(FRAME_MILLIS * (i + 1));
@@ -93,19 +96,24 @@ void test_stop(void) {
     Animation animation(FPS, 5);
     Servo servo = Servo(3, positionsA, move);
     animation.addServo(servo);
-    TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+    TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
     animation.play();
     TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
     animation.run(FRAME_MILLIS);
     TEST_ASSERT_EQUAL(340, lastPositions[3].positions[0]);
+    TEST_ASSERT_EQUAL(1, animation.getFrame());
     animation.stop(0);
-    TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
 
     for (int i = 0; i < 10; i++)
     {
         animation.run(FRAME_MILLIS * (i + 2));
         TEST_ASSERT_EQUAL(341 + i, lastPositions[3].positions[i + 1]);
+        TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
     }
+
+    animation.run(FRAME_MILLIS * 12);
+    TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+    TEST_ASSERT_EQUAL(0, animation.getFrame());
 }
 
 void test_live(void) {

@@ -33,10 +33,11 @@ namespace BlenderServoAnimation {
         void handleLiveMode();
 
     public:
-        static const byte MODE_PAUSE = 0;
-        static const byte MODE_PLAY = 1;
-        static const byte MODE_STOP = 2;
-        static const byte MODE_LIVE = 3;
+        static const byte MODE_DEFAULT = 0;
+        static const byte MODE_PAUSE = 1;
+        static const byte MODE_PLAY = 2;
+        static const byte MODE_STOP = 3;
+        static const byte MODE_LIVE = 4;
 
         Animation(byte fps, int frames);
 
@@ -55,6 +56,8 @@ namespace BlenderServoAnimation {
         void live(Stream &serial);
 
         byte getMode();
+
+        int getFrame();
     };
 }
 
