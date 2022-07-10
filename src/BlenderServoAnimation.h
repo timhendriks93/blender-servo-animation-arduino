@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Servo.h"
+#include "internal/Command.h"
 
 #ifndef BlenderServoAnimation_H
 #define BlenderServoAnimation_H
@@ -13,8 +14,7 @@ namespace BlenderServoAnimation {
 
         byte frameMillis;
         byte mode;
-        byte servoThreshold;
-        byte stepDelay;
+        byte stopStepDelay;
 
         int frame = 0;
         int frames;
@@ -23,10 +23,14 @@ namespace BlenderServoAnimation {
         unsigned long lastMillis;
 
         Servo* servos[MAX_SERVOS] = {};
+        Stream* serial;
+        Command command;
 
         void handlePlayMode();
 
         void handleStopMode();
+
+        void handleLiveMode();
 
     public:
         static const byte MODE_PAUSE = 0;
@@ -34,7 +38,7 @@ namespace BlenderServoAnimation {
         static const byte MODE_STOP = 2;
         static const byte MODE_LIVE = 3;
 
-        Animation(byte fps, int frames, byte servoThreshold = 20, byte stepDelay = 20);
+        Animation(byte fps, int frames);
 
         void addServo(Servo servo);
 
@@ -46,7 +50,9 @@ namespace BlenderServoAnimation {
 
         void pause();
 
-        void stop();
+        void stop(byte stepDelay = 20);
+
+        void live(Stream &serial);
 
         byte getMode();
     };

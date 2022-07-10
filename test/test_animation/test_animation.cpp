@@ -1,4 +1,5 @@
 #include <unity.h>
+#include "../SerialMock.h"
 #include "BlenderServoAnimation.h"
 
 using namespace BlenderServoAnimation;
@@ -89,7 +90,7 @@ void test_pause(void) {
 }
 
 void test_stop(void) {
-    Animation animation(FPS, 5, 20, 0);
+    Animation animation(FPS, 5);
     Servo servo = Servo(3, positionsA, move);
     animation.addServo(servo);
     TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
@@ -97,7 +98,7 @@ void test_stop(void) {
     TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
     animation.run(FRAME_MILLIS);
     TEST_ASSERT_EQUAL(340, lastPositions[3].positions[0]);
-    animation.stop();
+    animation.stop(0);
     TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
 
     for (int i = 0; i < 10; i++)
@@ -107,10 +108,38 @@ void test_stop(void) {
     }
 }
 
+void test_live(void) {
+    Animation animation(FPS, 5);
+    SerialMock mock;
+    Servo servo = Servo(3, positionsA, move, 50);
+    animation.addServo(servo);
+    animation.live(mock);
+    TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+
+    byte values[10] = {60, 3, 1, 119, 62, 60, 3, 1, 144, 62};
+
+    for (int i = 0; i < 5; i++)
+    {
+        mock.write(values[i]);
+    }
+
+    animation.run();
+    TEST_ASSERT_EQUAL(375, lastPositions[3].positions[0]);
+
+    for (int i = 5; i < 10; i++)
+    {
+        mock.write(values[i]);
+    }
+
+    animation.run();
+    TEST_ASSERT_EQUAL(400, lastPositions[3].positions[1]);
+}
+
 int main( int argc, char **argv) {
     UNITY_BEGIN();
     RUN_TEST(test_play);
     RUN_TEST(test_pause);
     RUN_TEST(test_stop);
+    RUN_TEST(test_live);
     UNITY_END();
 }

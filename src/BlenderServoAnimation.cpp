@@ -4,12 +4,10 @@
 
 using namespace BlenderServoAnimation;
 
-Animation::Animation(byte fps, int frames, byte servoThreshold, byte stepDelay)
+Animation::Animation(byte fps, int frames)
 {
     this->frameMillis = Animation::SECOND_IN_MILLIS / fps;
     this->frames = frames;
-    this->servoThreshold = servoThreshold;
-    this->stepDelay = stepDelay;
     this->mode = Animation::MODE_PAUSE;
 }
 
@@ -39,8 +37,9 @@ void Animation::run(unsigned long currentMillis)
         break;
     case MODE_STOP:
         this->handleStopMode();
-    case MODE_PAUSE:
-    default:
+        break;
+    case MODE_LIVE:
+        this->handleLiveMode();
         break;
     }
 }
@@ -77,17 +76,42 @@ void Animation::handleStopMode()
     {
         Servo* servo = this->servos[i];
 
-        if (!servo || servo->isNeutral())
+        if (servo && !servo->isNeutral())
+        {
+            servo->moveTowardsNeutral();
+        }
+    }
+
+    if (this->stopStepDelay > 0)
+    {
+        delay(this->stopStepDelay);
+    }
+}
+
+void Animation::handleLiveMode()
+{
+    while (this->serial->available() > 0)
+    {
+        this->command.read(this->serial);
+        
+        if (!this->command.isComplete() || !this->command.isValid())
         {
             continue;
         }
 
-        servo->moveTowardsNeutral();
-    }
+        byte id = this->command.getServoID();
+        int position = this->command.getServoPosition();
 
-    if (this->stepDelay > 0)
-    {
-        delay(this->stepDelay);
+        for (int i = 0; i < MAX_SERVOS; i++)
+        {
+            Servo* servo = this->servos[i];
+
+            if (servo && servo->getID() == id)
+            {
+                servo->move(position);
+                break;
+            }
+        }
     }
 }
 
@@ -103,9 +127,16 @@ void Animation::pause()
     this->mode = Animation::MODE_PAUSE;
 }
 
-void Animation::stop()
+void Animation::stop(byte stepDelay)
 {
     this->mode = Animation::MODE_STOP;
+    this->stopStepDelay = stepDelay;
+}
+
+void Animation::live(Stream &serial)
+{
+    this->mode = Animation::MODE_LIVE;
+    this->serial = &serial;
 }
 
 byte Animation::getMode()
