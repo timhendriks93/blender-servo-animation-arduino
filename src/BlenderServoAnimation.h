@@ -1,64 +1,63 @@
+#include "command/Command.h"
+#include "servo/Servo.h"
 #include <Arduino.h>
-#include "Servo.h"
-#include "internal/Command.h"
 
-#ifndef BlenderServoAnimation_H
-#define BlenderServoAnimation_H
+#ifndef BlenderServoAnimation_Animation_H
+#define BlenderServoAnimation_Animation_H
 
 namespace BlenderServoAnimation {
-    class Animation
-    {
-    private:
-        static const byte MAX_SERVOS = 255;
-        static const int SECOND_IN_MILLIS = 1000;
+class Animation {
+private:
+  static const int MAX_SERVO_COUNT = 256;
+  static const int SECOND_IN_MILLIS = 1000;
 
-        byte frameMillis;
-        byte mode;
-        byte stopStepDelay;
+  byte frameMillis;
+  byte mode;
+  byte stopStepDelay;
 
-        int frame = 0;
-        int frames;
+  int frame = 0;
+  int frames;
 
-        unsigned long currentMillis;
-        unsigned long lastMillis;
+  unsigned long currentMillis;
+  unsigned long lastMillis;
 
-        Servo* servos[MAX_SERVOS] = {};
-        Stream* serial;
-        Command command;
+  Servo *servos[MAX_SERVO_COUNT] = {};
+  Stream *serial;
+  Command command;
 
-        void handlePlayMode();
+  void handlePlayMode();
 
-        void handleStopMode();
+  void handleStopMode();
 
-        void handleLiveMode();
+  void handleLiveMode();
 
-    public:
-        static const byte MODE_DEFAULT = 0;
-        static const byte MODE_PAUSE = 1;
-        static const byte MODE_PLAY = 2;
-        static const byte MODE_STOP = 3;
-        static const byte MODE_LIVE = 4;
+public:
+  static const byte MODE_DEFAULT = 0;
+  static const byte MODE_PAUSE = 1;
+  static const byte MODE_PLAY = 2;
+  static const byte MODE_STOP = 3;
+  static const byte MODE_LIVE = 4;
 
-        Animation(byte fps, int frames);
+  Animation(byte fps, int frames);
 
-        void addServo(Servo servo);
+  void addServo(Servo servo);
 
-        void addServos(Servo servos[], byte servoAmount);
+  void addServos(Servo servos[], byte servoAmount);
 
-        void run(unsigned long currentMillis = millis());
+  void run(unsigned long currentMillis = millis());
 
-        void play();
+  void play();
 
-        void pause();
+  void pause();
 
-        void stop(byte stepDelay = 20);
+  void stop(byte stepDelay = 20);
 
-        void live(Stream &serial);
+  void live(Stream &serial);
 
-        byte getMode();
+  byte getMode();
 
-        int getFrame();
-    };
-}
+  int getFrame();
+};
+} // namespace BlenderServoAnimation
 
 #endif

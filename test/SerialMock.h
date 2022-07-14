@@ -4,23 +4,22 @@
 #ifndef BlenderServoAnimation_Serial_Mock_H
 #define BlenderServoAnimation_Serial_Mock_H
 
-class SerialMock : public Stream
-{
+class SerialMock : public Stream {
 private:
-    static const byte BUFFER_SIZE = 10;
+  static const byte BUFFER_SIZE = 10;
 
-    byte buffer[BUFFER_SIZE];
-    byte readIndex = 0;
-    byte writeIndex = 0;
+  byte buffer[BUFFER_SIZE];
+  byte readIndex = 0;
+  byte writeIndex = 0;
 
 public:
-    int available();
+  int available();
 
-    int read();
+  int read();
 
-    int peek(); 
+  int peek();
 
-    size_t write(uint8_t);
+  size_t write(uint8_t);
 };
 
 #endif
