@@ -8,6 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends -y clang-format
+    - name: Lint with clang-format
+      run: |
+        find src test -regex '.*\.\(cpp\|h\)' -exec clang-format --dry-run --Werror {} \;
+        find examples -regex '.*\.ino' -exec clang-format --dry-run --Werror {} \;
     - uses: arduino/arduino-lint-action@v1
   test:
     name: "Test"
