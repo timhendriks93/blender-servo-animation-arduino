@@ -6,30 +6,30 @@
   class of this library (BlenderServoAnimation::Servo).
 */
 
-#include "example.h"
+#include "simple.h"
 #include <BlenderServoAnimation.h>
 #include <Servo.h>
 
-// Frames per second - see original Blender animation / example.h
+// Frames per second - see original Blender animation / simple.h
 #define FPS 30
 
-// Total animation frames - see original Blender animation / example.h
+// Total animation frames - see original Blender animation / simple.h
 #define FRAMES 100
 
 // Servo object to send positions
 Servo myservo;
-
-// Animation object to represent the original Blender animation
-BlenderServoAnimation::Animation animation(FPS, FRAMES);
-
-// Servo object to manage the positions
-BlenderServoAnimation::Servo myblenderservo(0, Bone, move);
 
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int angle) {
   // Ignore the servoID (there is only one servo) and write the current angle
   myservo.write(angle);
 }
+
+// Animation object to represent the original Blender animation
+BlenderServoAnimation::Animation animation(FPS, FRAMES);
+
+// Servo object to manage the positions
+BlenderServoAnimation::Servo myblenderservo(0, Bone, move);
 
 void setup() {
   // Attach the servo to pin 9
