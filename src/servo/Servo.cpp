@@ -3,8 +3,7 @@
 
 using namespace BlenderServoAnimation;
 
-Servo::Servo(byte id, const int positions[], void (*moveCallback)(byte, int),
-             byte threshold) {
+Servo::Servo(byte id, const int positions[], cb moveCallback, byte threshold) {
   this->id = id;
   this->positions = positions;
   this->moveCallback = moveCallback;
@@ -13,18 +12,24 @@ Servo::Servo(byte id, const int positions[], void (*moveCallback)(byte, int),
   this->currentPosition = this->neutralPosition;
 }
 
+Servo::Servo(byte id, cb moveCallback, byte threshold) {
+  this->id = id;
+  this->moveCallback = moveCallback;
+  this->threshold = threshold;
+}
+
 void Servo::move(int position, bool force) {
   if (position == this->currentPosition && force == false) {
     return;
   }
 
-  if (abs(position - this->currentPosition) > this->threshold) {
-    Serial.print("Position diff for servo ");
-    Serial.print(this->id);
-    Serial.print(" exceeded: ");
-    Serial.print(this->currentPosition);
-    Serial.print(" -> ");
-    Serial.print(position);
+  bool exceedsThreshold = abs(position - this->currentPosition) > this->threshold;
+
+  if (this->currentPosition > 0 && exceedsThreshold) {
+    char buffer[100];
+    const char pattern[] = "Position diff for servo %d exceeded: %d -> %d";
+    sprintf(buffer, pattern, this->id, this->currentPosition, position);
+    Serial.print(buffer);
     Serial.println();
     return;
   }
@@ -35,7 +40,6 @@ void Servo::move(int position, bool force) {
 
 void Servo::moveByStep(int step) {
   int newPosition = pgm_read_word_near(this->positions + step);
-
   this->move(newPosition);
 }
 
@@ -58,6 +62,10 @@ void Servo::moveTowardsNeutral(bool inSteps) {
 
 bool Servo::isNeutral() {
   return this->currentPosition == this->neutralPosition;
+}
+
+bool Servo::hasPositions() {
+  return this->positions != nullptr;
 }
 
 byte Servo::getID() {

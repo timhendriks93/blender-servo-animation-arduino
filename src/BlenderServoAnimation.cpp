@@ -53,7 +53,7 @@ void Animation::handlePlayMode() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     Servo *servo = this->servos[i];
 
-    if (servo) {
+    if (servo && servo->hasPositions()) {
       servo->moveByStep(this->frame);
     }
   }
@@ -65,7 +65,7 @@ void Animation::handleStopMode() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     Servo *servo = this->servos[i];
 
-    if (servo && !servo->isNeutral()) {
+    if (servo && servo->hasPositions() && !servo->isNeutral()) {
       servo->moveTowardsNeutral();
       allNeutral = false;
     }

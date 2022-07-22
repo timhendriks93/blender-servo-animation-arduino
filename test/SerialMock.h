@@ -6,7 +6,7 @@
 
 class SerialMock : public Stream {
 private:
-  static const byte BUFFER_SIZE = 10;
+  static const byte BUFFER_SIZE = 20;
 
   byte buffer[BUFFER_SIZE];
   byte readIndex = 0;

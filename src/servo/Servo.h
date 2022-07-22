@@ -5,20 +5,23 @@
 
 namespace BlenderServoAnimation {
 class Servo {
+  typedef void (*cb)(byte, int);
+
 private:
   byte id;
   byte threshold;
 
-  int neutralPosition;
-  int currentPosition;
+  int neutralPosition = -1;
+  int currentPosition = -1;
 
-  const int *positions;
+  const int *positions = nullptr;
 
-  void (*moveCallback)(byte, int);
+  cb moveCallback;
 
 public:
-  Servo(byte id, const int positions[], void (*moveCallback)(byte, int),
-        byte threshold = 20);
+  Servo(byte id, const int positions[], cb moveCallback, byte threshold = 20);
+
+  Servo(byte id, cb moveCallback, byte threshold = 20);
 
   void move(int position, bool force = false);
 
@@ -27,6 +30,8 @@ public:
   void moveTowardsNeutral(bool inSteps = true);
 
   bool isNeutral();
+
+  bool hasPositions();
 
   byte getID();
 };

@@ -38,8 +38,9 @@ void test_play(void) {
   Servo servos[] = {
       Servo(1, positionsA, move),
       Servo(2, positionsB, move),
+      Servo(3, move),
   };
-  animation.addServos(servos, 2);
+  animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
@@ -51,9 +52,11 @@ void test_play(void) {
     animation.run(FRAME_MILLIS * (i + 1));
     TEST_ASSERT_EQUAL(expA[i], lastPositions[1].positions[i]);
     TEST_ASSERT_EQUAL(expB[i], lastPositions[2].positions[i]);
+    TEST_ASSERT_EQUAL(0, lastPositions[3].positions[i]);
     animation.run(FRAME_MILLIS * (i + 1.5));
     TEST_ASSERT_EQUAL(0, lastPositions[1].positions[i + 1]);
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i + 1]);
+    TEST_ASSERT_EQUAL(0, lastPositions[3].positions[i + 1]);
   }
 }
 
@@ -90,19 +93,27 @@ void test_pause(void) {
 
 void test_stop(void) {
   Animation animation(FPS, 5);
-  Servo servo = Servo(3, positionsA, move);
-  animation.addServo(servo);
+  Servo servos[] = {
+      Servo(0, positionsA, move),
+      Servo(1, positionsB, move),
+      Servo(2, move),
+  };
+  animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
   animation.run(FRAME_MILLIS);
-  TEST_ASSERT_EQUAL(340, lastPositions[3].positions[0]);
+  TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
+  TEST_ASSERT_EQUAL(240, lastPositions[1].positions[0]);
+  TEST_ASSERT_EQUAL(0, lastPositions[2].positions[0]);
   TEST_ASSERT_EQUAL(1, animation.getFrame());
   animation.stop(0);
 
   for (int i = 0; i < 10; i++) {
     animation.run(FRAME_MILLIS * (i + 2));
-    TEST_ASSERT_EQUAL(341 + i, lastPositions[3].positions[i + 1]);
+    TEST_ASSERT_EQUAL(341 + i, lastPositions[0].positions[i + 1]);
+    TEST_ASSERT_EQUAL(241 + i, lastPositions[1].positions[i + 1]);
+    TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i + 1]);
     TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   }
 
@@ -114,26 +125,34 @@ void test_stop(void) {
 void test_live(void) {
   Animation animation(FPS, 5);
   SerialMock mock;
-  Servo servo = Servo(3, positionsA, move, 50);
-  animation.addServo(servo);
+  Servo servos[] = {
+      Servo(0, positionsA, move),
+      Servo(1, move),
+  };
+  animation.addServos(servos, 2);
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
 
-  byte values[10] = {60, 3, 1, 119, 62, 60, 3, 1, 144, 62};
+  byte values[20] = {60, 0, 1, 94, 62, 60, 1, 1, 94, 62,
+                     60, 0, 1, 99, 62, 60, 1, 1, 99, 62};
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 10; i++) {
     mock.write(values[i]);
   }
 
   animation.run();
-  TEST_ASSERT_EQUAL(375, lastPositions[3].positions[0]);
 
-  for (int i = 5; i < 10; i++) {
+  TEST_ASSERT_EQUAL(0, lastPositions[0].positions[0]);
+  TEST_ASSERT_EQUAL(350, lastPositions[1].positions[0]);
+
+  for (int i = 10; i < 20; i++) {
     mock.write(values[i]);
   }
 
   animation.run();
-  TEST_ASSERT_EQUAL(400, lastPositions[3].positions[1]);
+
+  TEST_ASSERT_EQUAL(355, lastPositions[0].positions[0]);
+  TEST_ASSERT_EQUAL(355, lastPositions[1].positions[1]);
 }
 
 int main(int argc, char **argv) {
