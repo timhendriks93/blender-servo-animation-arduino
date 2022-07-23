@@ -123,7 +123,7 @@ void test_stop(void) {
 }
 
 void test_live(void) {
-  Animation animation(FPS, 5);
+  Animation animation;
   SerialMock mock;
   Servo servos[] = {
       Servo(0, positionsA, move),

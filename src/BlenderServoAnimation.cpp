@@ -4,10 +4,12 @@
 
 using namespace BlenderServoAnimation;
 
+Animation::Animation() {
+}
+
 Animation::Animation(byte fps, int frames) {
   this->frameMillis = Animation::SECOND_IN_MILLIS / fps;
   this->frames = frames;
-  this->mode = Animation::MODE_DEFAULT;
 }
 
 void Animation::addServo(Servo servo) {
@@ -39,7 +41,9 @@ void Animation::run(unsigned long currentMillis) {
 }
 
 void Animation::handlePlayMode() {
-  if (this->currentMillis - this->lastMillis < this->frameMillis) {
+  bool isNewFrame = this->currentMillis - this->lastMillis >= this->frameMillis;
+
+  if (!isNewFrame || this->frames == 0) {
     return;
   }
 

@@ -11,12 +11,12 @@ private:
   static const int MAX_SERVO_COUNT = 256;
   static const int SECOND_IN_MILLIS = 1000;
 
-  byte frameMillis;
-  byte mode;
-  byte stopStepDelay;
+  byte frameMillis = 0;
+  byte stopStepDelay = 20;
+  byte mode = MODE_DEFAULT;
 
   int frame = 0;
-  int frames;
+  int frames = 0;
 
   unsigned long currentMillis;
   unsigned long lastMillis;
@@ -37,6 +37,8 @@ public:
   static const byte MODE_PLAY = 2;
   static const byte MODE_STOP = 3;
   static const byte MODE_LIVE = 4;
+
+  Animation();
 
   Animation(byte fps, int frames);
 
