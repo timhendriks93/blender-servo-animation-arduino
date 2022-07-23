@@ -9,7 +9,6 @@
 #include "ik.h"
 #include <Adafruit_PWMServoDriver.h>
 #include <BlenderServoAnimation.h>
-#include <Wire.h>
 
 // Using the namespace to have short class references (Animation and Servo)
 using namespace BlenderServoAnimation;
