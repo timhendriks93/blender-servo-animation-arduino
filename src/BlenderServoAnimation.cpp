@@ -12,15 +12,14 @@ Animation::Animation(byte fps, int frames) {
   this->frames = frames;
 }
 
-void Animation::addServo(Servo servo) {
+void Animation::addServo(Servo &servo) {
   byte id = servo.getID();
   this->servos[id] = &servo;
 }
 
 void Animation::addServos(Servo servos[], byte servoAmount) {
   for (int i = 0; i < servoAmount; i++) {
-    byte id = servos[i].getID();
-    this->servos[id] = &servos[i];
+    this->addServo(servos[i]);
   }
 }
 

@@ -42,7 +42,7 @@ public:
 
   Animation(byte fps, int frames);
 
-  void addServo(Servo servo);
+  void addServo(Servo &servo);
 
   void addServos(Servo servos[], byte servoAmount);
 
