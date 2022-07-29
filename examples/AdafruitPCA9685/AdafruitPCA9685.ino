@@ -19,7 +19,7 @@ using namespace BlenderServoAnimation;
 // Total animation frames - see original Blender animation / ik.h
 #define FRAMES 100
 
-// Servo object to send positions
+// PWM driver instance to set PWM output
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 // Callback function which is called whenever a servo needs to be moved
