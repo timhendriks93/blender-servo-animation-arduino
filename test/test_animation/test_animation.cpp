@@ -15,6 +15,14 @@ struct positionLog {
 
 positionLog lastPositions[16];
 
+struct modeLog {
+  byte prevMode;
+  byte newMode;
+};
+
+byte modeIndex = 0;
+modeLog lastModes[10];
+
 void setUp(void) {
   for (int id = 0; id < 16; id++) {
     lastPositions[id].index = 0;
@@ -23,12 +31,25 @@ void setUp(void) {
       lastPositions[id].positions[i] = 0;
     }
   }
+
+  for (int i = 0; i < 10; i++) {
+    lastModes[i].prevMode = 0;
+    lastModes[i].newMode = 0;
+  }
+
+  modeIndex = 0;
 }
 
 void move(byte servoID, int position) {
   int index = lastPositions[servoID].index;
   lastPositions[servoID].positions[index] = position;
   lastPositions[servoID].index++;
+}
+
+void onModeChange(byte prevMode, byte newMode) {
+  lastModes[modeIndex].prevMode = prevMode;
+  lastModes[modeIndex].newMode = newMode;
+  modeIndex++;
 }
 
 const int positionsA[5] PROGMEM = {350, 340, 330, 340, 330};
@@ -155,11 +176,35 @@ void test_live(void) {
   TEST_ASSERT_EQUAL(355, lastPositions[1].positions[1]);
 }
 
+void test_mode_change(void) {
+  SerialMock mock;
+  Animation animation(FPS, FRAMES);
+
+  animation.onModeChange(onModeChange);
+
+  animation.play();
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[0].newMode);
+  animation.pause();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[1].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, lastModes[1].newMode);
+  animation.stop();
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, lastModes[2].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_STOP, lastModes[2].newMode);
+  animation.run();
+  TEST_ASSERT_EQUAL(Animation::MODE_STOP, lastModes[3].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[3].newMode);
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[4].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, lastModes[4].newMode);
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_play);
   RUN_TEST(test_pause);
   RUN_TEST(test_stop);
   RUN_TEST(test_live);
+  RUN_TEST(test_mode_change);
   UNITY_END();
 }

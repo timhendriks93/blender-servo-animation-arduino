@@ -25,6 +25,19 @@ void Animation::addServos(Servo servos[], byte servoAmount) {
   }
 }
 
+void Animation::onModeChange(mcb modeCallback) {
+  this->modeCallback = modeCallback;
+}
+
+void Animation::changeMode(byte mode) {
+  byte prevMode = this->mode;
+  this->mode = mode;
+
+  if (this->modeCallback) {
+    this->modeCallback(prevMode, mode);
+  }
+}
+
 void Animation::run(unsigned long currentMicros) {
   switch (mode) {
   case MODE_PLAY:
@@ -79,7 +92,7 @@ void Animation::handleStopMode() {
   }
 
   if (allNeutral) {
-    this->mode = Animation::MODE_DEFAULT;
+    this->changeMode(Animation::MODE_DEFAULT);
     return;
   }
 
@@ -111,23 +124,23 @@ void Animation::handleLiveMode() {
 }
 
 void Animation::play() {
-  this->mode = Animation::MODE_PLAY;
   this->lastMicros = micros();
+  this->changeMode(Animation::MODE_PLAY);
 }
 
 void Animation::pause() {
-  this->mode = Animation::MODE_PAUSE;
+  this->changeMode(Animation::MODE_PAUSE);
 }
 
 void Animation::stop(byte stepDelay) {
-  this->mode = Animation::MODE_STOP;
   this->stopStepDelay = stepDelay;
   this->frame = 0;
+  this->changeMode(Animation::MODE_STOP);
 }
 
 void Animation::live(Stream &serial) {
-  this->mode = Animation::MODE_LIVE;
   this->serial = &serial;
+  this->changeMode(Animation::MODE_LIVE);
 }
 
 byte Animation::getMode() {

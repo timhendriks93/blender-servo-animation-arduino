@@ -7,6 +7,8 @@
 
 namespace BlenderServoAnimation {
 class Animation {
+  typedef void (*mcb)(byte, byte);
+
 private:
   static const int MAX_SERVO_COUNT = 256;
   static const long SECOND_IN_MICROS = 1000000;
@@ -26,11 +28,11 @@ private:
   Servo *servos[MAX_SERVO_COUNT] = {};
   Stream *serial;
   Command command;
+  mcb modeCallback = nullptr;
 
+  void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
-
   void handleStopMode();
-
   void handleLiveMode();
 
 public:
@@ -41,25 +43,16 @@ public:
   static const byte MODE_LIVE = 4;
 
   Animation();
-
   Animation(byte fps, int frames);
-
   void addServo(Servo &servo);
-
   void addServos(Servo servos[], byte servoAmount);
-
+  void onModeChange(mcb modeCallback);
   void run(unsigned long currentMicros = micros());
-
   void play();
-
   void pause();
-
   void stop(byte stepDelay = 20);
-
   void live(Stream &serial);
-
   byte getMode();
-
   int getFrame();
 };
 } // namespace BlenderServoAnimation
