@@ -89,6 +89,9 @@ void setup() {
 }
 
 void loop() {
+  // Update the mode button state on each loop
+  modeButton.tick();
+
   // Update the animation state on each loop
   animation.run();
 }

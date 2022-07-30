@@ -5,7 +5,8 @@
 using namespace BlenderServoAnimation;
 
 #define FPS 60
-#define FRAME_MILLIS 1000 / FPS
+#define FRAMES 5
+#define FRAME_MICROS 16667
 
 struct positionLog {
   int index;
@@ -34,7 +35,7 @@ const int positionsA[5] PROGMEM = {350, 340, 330, 340, 330};
 const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
 
 void test_play(void) {
-  Animation animation(FPS, 5);
+  Animation animation(FPS, FRAMES);
   Servo servos[] = {
       Servo(1, positionsA, move),
       Servo(2, positionsB, move),
@@ -48,20 +49,19 @@ void test_play(void) {
   int expA[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
   int expB[9] = {240, 230, 240, 230, 250, 240, 230, 240, 230};
 
+  for (long i = 0; i < FRAME_MICROS * (long)9; i++) {
+    animation.run(i);
+  }
+
   for (int i = 0; i < 9; i++) {
-    animation.run(FRAME_MILLIS * (i + 1));
     TEST_ASSERT_EQUAL(expA[i], lastPositions[1].positions[i]);
     TEST_ASSERT_EQUAL(expB[i], lastPositions[2].positions[i]);
     TEST_ASSERT_EQUAL(0, lastPositions[3].positions[i]);
-    animation.run(FRAME_MILLIS * (i + 1.5));
-    TEST_ASSERT_EQUAL(0, lastPositions[1].positions[i + 1]);
-    TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i + 1]);
-    TEST_ASSERT_EQUAL(0, lastPositions[3].positions[i + 1]);
   }
 }
 
 void test_pause(void) {
-  Animation animation(FPS, 5);
+  Animation animation(FPS, FRAMES);
   Servo servo(2, positionsA, move);
   animation.addServo(servo);
   animation.play();
@@ -70,7 +70,7 @@ void test_pause(void) {
   int exp[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
 
   for (int i = 0; i < 4; i++) {
-    animation.run(FRAME_MILLIS * (i + 1));
+    animation.run(FRAME_MICROS * (long)(i + 1));
     TEST_ASSERT_EQUAL(exp[i], lastPositions[2].positions[i]);
   }
 
@@ -78,7 +78,7 @@ void test_pause(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
 
   for (int i = 4; i < 8; i++) {
-    animation.run(FRAME_MILLIS * (i + 1));
+    animation.run(FRAME_MICROS * (long)(i + 1));
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
   }
 
@@ -86,13 +86,13 @@ void test_pause(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
   for (int i = 8; i < 14; i++) {
-    animation.run(FRAME_MILLIS * (i + 1));
+    animation.run(FRAME_MICROS * (long)(i + 1));
     TEST_ASSERT_EQUAL(exp[i - 5], lastPositions[2].positions[i - 5]);
   }
 }
 
 void test_stop(void) {
-  Animation animation(FPS, 5);
+  Animation animation(FPS, FRAMES);
   Servo servos[] = {
       Servo(0, positionsA, move),
       Servo(1, positionsB, move),
@@ -102,7 +102,7 @@ void test_stop(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  animation.run(FRAME_MILLIS);
+  animation.run(FRAME_MICROS);
   TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(240, lastPositions[1].positions[0]);
   TEST_ASSERT_EQUAL(0, lastPositions[2].positions[0]);
@@ -110,14 +110,14 @@ void test_stop(void) {
   animation.stop(0);
 
   for (int i = 0; i < 10; i++) {
-    animation.run(FRAME_MILLIS * (i + 2));
+    animation.run(FRAME_MICROS * (long)(i + 2));
     TEST_ASSERT_EQUAL(341 + i, lastPositions[0].positions[i + 1]);
     TEST_ASSERT_EQUAL(241 + i, lastPositions[1].positions[i + 1]);
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i + 1]);
     TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   }
 
-  animation.run(FRAME_MILLIS * 12);
+  animation.run(FRAME_MICROS * (long)12);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   TEST_ASSERT_EQUAL(0, animation.getFrame());
 }

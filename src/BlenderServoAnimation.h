@@ -9,23 +9,25 @@ namespace BlenderServoAnimation {
 class Animation {
 private:
   static const int MAX_SERVO_COUNT = 256;
-  static const int SECOND_IN_MILLIS = 1000;
+  static const long SECOND_IN_MICROS = 1000000;
 
-  byte frameMillis = 0;
+  byte fps = 0;
   byte stopStepDelay = 20;
   byte mode = MODE_DEFAULT;
 
-  int frame = 0;
-  int frames = 0;
+  int diffPerSecond = 0;
 
-  unsigned long currentMillis;
-  unsigned long lastMillis;
+  unsigned int frame = 0;
+  unsigned int frames = 0;
+  unsigned int frameMicros = 0;
+
+  unsigned long lastMicros;
 
   Servo *servos[MAX_SERVO_COUNT] = {};
   Stream *serial;
   Command command;
 
-  void handlePlayMode();
+  void handlePlayMode(unsigned long currentMicros);
 
   void handleStopMode();
 
@@ -46,7 +48,7 @@ public:
 
   void addServos(Servo servos[], byte servoAmount);
 
-  void run(unsigned long currentMillis = millis());
+  void run(unsigned long currentMicros = micros());
 
   void play();
 

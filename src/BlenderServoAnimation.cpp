@@ -8,8 +8,10 @@ Animation::Animation() {
 }
 
 Animation::Animation(byte fps, int frames) {
-  this->frameMillis = Animation::SECOND_IN_MILLIS / fps;
+  this->fps = fps;
   this->frames = frames;
+  this->frameMicros = round((float)Animation::SECOND_IN_MICROS / (float)fps);
+  this->diffPerSecond = Animation::SECOND_IN_MICROS - (this->frameMicros * fps);
 }
 
 void Animation::addServo(Servo &servo) {
@@ -23,12 +25,10 @@ void Animation::addServos(Servo servos[], byte servoAmount) {
   }
 }
 
-void Animation::run(unsigned long currentMillis) {
-  this->currentMillis = currentMillis;
-
+void Animation::run(unsigned long currentMicros) {
   switch (mode) {
   case MODE_PLAY:
-    this->handlePlayMode();
+    this->handlePlayMode(currentMicros);
     break;
   case MODE_STOP:
     this->handleStopMode();
@@ -39,18 +39,22 @@ void Animation::run(unsigned long currentMillis) {
   }
 }
 
-void Animation::handlePlayMode() {
-  bool isNewFrame = this->currentMillis - this->lastMillis >= this->frameMillis;
+void Animation::handlePlayMode(unsigned long currentMicros) {
+  bool isNewFrame = currentMicros - this->lastMicros >= this->frameMicros;
 
   if (!isNewFrame || this->frames == 0) {
     return;
   }
 
-  this->lastMillis = this->currentMillis;
+  this->lastMicros = currentMicros;
   this->frame++;
 
   if (this->frame >= this->frames) {
     this->frame = 0;
+  }
+
+  if (this->frame % this->fps == 0) {
+    this->lastMicros += this->diffPerSecond;
   }
 
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
@@ -76,7 +80,6 @@ void Animation::handleStopMode() {
 
   if (allNeutral) {
     this->mode = Animation::MODE_DEFAULT;
-    this->frame = 0;
     return;
   }
 
@@ -109,8 +112,7 @@ void Animation::handleLiveMode() {
 
 void Animation::play() {
   this->mode = Animation::MODE_PLAY;
-  this->currentMillis = millis();
-  this->lastMillis = this->currentMillis;
+  this->lastMicros = micros();
 }
 
 void Animation::pause() {
@@ -120,6 +122,7 @@ void Animation::pause() {
 void Animation::stop(byte stepDelay) {
   this->mode = Animation::MODE_STOP;
   this->stopStepDelay = stepDelay;
+  this->frame = 0;
 }
 
 void Animation::live(Stream &serial) {
