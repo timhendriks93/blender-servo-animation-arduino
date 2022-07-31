@@ -69,7 +69,7 @@ The callback function is used to specify what should happen when a servo needs t
 
 ```ino
 void myServoCallback(byte servoID, int position) {
-    // Do something
+  // Do something
 }
 ```
 
@@ -82,7 +82,7 @@ This allows to implement any kind of logic to handle the actual servo control. W
 using namespace BlenderServoAnimation;
 
 void move(byte servoID, int position) {
-    // Do something
+  // Do something
 }
 
 Servo myBlenderServo(0, Bone, move);
@@ -126,16 +126,16 @@ Alternatively, we can also create an array of servos and call the `addServos` me
 
 ```ino
 Servo myBlenderServos[] = {
-    Servo(0, BoneA, move),
-    Servo(1, BoneB, move),
-    Servo(2, BoneC, move),
-    ...
+  Servo(0, BoneA, move),
+  Servo(1, BoneB, move),
+  Servo(2, BoneC, move),
+  ...
 }
 
 Animation myBlenderAnimation(30, 1000);
 
 void setup() {
-    myBlenderAnimation.addServos(myBlenderServos);
+  myBlenderAnimation.addServos(myBlenderServos);
 }
 ```
 
@@ -145,21 +145,21 @@ The animation needs to be triggered regularly in order to update its state and c
 
 ```ino
 void loop() {
-    myBlenderAnimation.run();
+  myBlenderAnimation.run();
 }
 ```
 
 ### Animation Modes
 
-At first, an animation will be in the default mode. In this mode, the animation is simply not playing and waiting until the mode is changed.
+At first, an animation will be in the default mode. In this mode, the animation is simply not doing anything and waits until the mode has changed.
 
-| Mode | Description |
-|------|-------------|
-| default | Not playing / waiting |
-| play | Playing back the animation |
-| pause | Pausing the animation at the current frame |
-| stop | Slowly moving the servos to their neutral position |
-| live | Reading serial commands to move the servos in real-time |
+| Mode | Constant | Description |
+|------|----------|-------------|
+| default | MODE_DEFAULT | Not playing / waiting |
+| play | MODE_PLAY | Playing back the animation |
+| pause | MODE_PAUSE | Pausing the animation at the current frame |
+| stop | MODE_STOP | Slowly moving the servos to their neutral position |
+| live | MODE_LIVE | Reading serial commands to move the servos in real-time |
 
 The modes can be changed or triggered via the following methods:
 
@@ -174,13 +174,46 @@ myBlenderAnimation.live(stream);
 
 When calling the `stop` method, it is possible to pass a delay in milliseconds. This delay will be used when the servos are moved to their neutral position during the stop mode. To get to the neutral position, the current position will either be increased or decreased by 1. The delay therefore controls how fast or smooth this movement will take place. The default value for this parameter is `20`.
 
+```ino
+myBlenderAnimation.stop(); // Default reset speed applied
+myBlenderAnimation.stop(30); // Servos will reset slower
+```
+
 To use the `live` method, we have to pass a stream instance which will be used for reading serial commands. For example, we can pass `Serial` if we want to use the standard USB connection of an Arduino compatible board:
 
 ```ino
 void setup() {
-    Serial.begin(115200);
-    myBlenderAnimation.live(Serial);
+  Serial.begin(115200);
+  myBlenderAnimation.live(Serial);
 }
 ```
 
-Make sure to check out the [examples](examples) to get started quickly and learn more about using this library with your Arduino sketches / programs.
+To get the current animation mode, we can simply call the `getMode` method. This will return a `byte` representing one of the mode constants mentioned in the table above. We can then compare the return value to those constants to act according to the current mode:
+
+```ino
+byte currentMode = myBlenderAnimation.getMode();
+
+switch (currentMode) {
+case Animation::MODE_DEFAULT:
+  // Do something
+  break;
+case Animation::MODE_PLAY:
+  // Do something else
+  break;
+...
+}
+```
+
+On top of manually checking the animation mode, we can also register a callback function which is triggered as soon as the animation mode has changed. The function will receive both the previous mode and the new mode as `byte` values. To register the function, we can call the `onModeChange` method:
+
+```ino
+void modeChanged(byte prevMode, byte newMode) {
+  // Do something (e.g. using another switch)
+}
+
+void setup() {
+  myBlenderAnimation.onModeChange(modeChanged);
+}
+```
+
+The [SwitchModeButton example](examples/SwitchModeButton) shows how to combine all mode methods to control an animation based on a single button. Make sure to also check out the other [examples](examples) to get started quickly.
