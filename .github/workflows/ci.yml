@@ -3,6 +3,22 @@ name: Continuous Integration
 on: [push]
 
 jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build library ZIP
+      run: |
+        mkdir BlenderServoAnimation
+        cp -R src examples library.properties README.md LICENSE BlenderServoAnimation
+        zip -r blender_servo_animation_arduino_library BlenderServoAnimation
+    - name: Archive library ZIP
+      uses: actions/upload-artifact@v3
+      with:
+        name: blender_servo_animation_arduino_library.zip
+        path: |
+          blender_servo_animation_arduino_library.zip
   lint:
     name: "Lint"
     runs-on: ubuntu-22.04
