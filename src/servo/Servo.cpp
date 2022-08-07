@@ -38,8 +38,8 @@ void Servo::move(int position, bool force) {
   this->currentPosition = position;
 }
 
-void Servo::moveByStep(int step) {
-  int newPosition = pgm_read_word_near(this->positions + step);
+void Servo::moveByFrame(int frame) {
+  int newPosition = pgm_read_word_near(this->positions + frame);
   this->move(newPosition);
 }
 
