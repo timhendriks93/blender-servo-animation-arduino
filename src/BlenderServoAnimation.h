@@ -37,10 +37,11 @@ private:
 
 public:
   static const byte MODE_DEFAULT = 0;
-  static const byte MODE_PAUSE = 1;
-  static const byte MODE_PLAY = 2;
-  static const byte MODE_STOP = 3;
-  static const byte MODE_LIVE = 4;
+  static const byte MODE_PLAY = 1;
+  static const byte MODE_PAUSE = 2;
+  static const byte MODE_LOOP = 3;
+  static const byte MODE_STOP = 4;
+  static const byte MODE_LIVE = 5;
 
   Animation();
   Animation(byte fps, int frames);
@@ -50,6 +51,7 @@ public:
   void run(unsigned long currentMicros = micros());
   void play();
   void pause();
+  void loop();
   void stop(byte stepDelay = 20);
   void live(Stream &serial);
   byte getMode();

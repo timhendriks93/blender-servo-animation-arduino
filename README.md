@@ -153,24 +153,26 @@ void loop() {
 
 At first, an animation will be in the default mode. In this mode, the animation is simply not doing anything and waits until the mode has changed.
 
-| Mode | Constant | Description |
-|------|----------|-------------|
-| default | MODE_DEFAULT | Not playing / waiting |
-| play | MODE_PLAY | Playing back the animation |
-| pause | MODE_PAUSE | Pausing the animation at the current frame |
-| stop | MODE_STOP | Slowly moving the servos to their neutral position |
-| live | MODE_LIVE | Reading serial commands to move the servos in real-time |
+| Constant | Method | Description |
+|----------|--------|-------------|
+| MODE_DEFAULT | | Not playing / waiting |
+| MODE_PLAY | play() | Start or resume playing the animation once |
+| MODE_PAUSE | pause() | Pausing the animation at the current frame |
+| MODE_STOP | stop() | Slowly moving the servos to their neutral position |
+| MODE_LOOP | loop() | Start or resume playing the animation in a loop |
+| MODE_LIVE | live(stream) | Reading serial commands to move the servos in real-time |
 
-The modes can be changed or triggered via the following methods:
+The modes can be changed or triggered by calling the above methods on the animation object:
 
 ```ino
 myBlenderAnimation.play();
 myBlenderAnimation.pause();
-myBlenderAnimation.stop(stepDelay);
+myBlenderAnimation.loop();
+myBlenderAnimation.stop();
 myBlenderAnimation.live(stream);
 ```
 
-> Note: the default mode is only handled internally.
+> Note: the default mode can not be triggered as it is only handled internally.
 
 When calling the `stop` method, it is possible to pass a delay in milliseconds. This delay will be used when the servos are moved to their neutral position during the stop mode. To get to the neutral position, the current position will either be increased or decreased by 1. The delay therefore controls how fast or smooth this movement will take place. The default value for this parameter is `20`.
 

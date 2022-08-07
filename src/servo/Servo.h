@@ -22,7 +22,7 @@ public:
   Servo(byte id, const int positions[], cb moveCallback, byte threshold = 20);
   Servo(byte id, cb moveCallback, byte threshold = 20);
   void move(int position, bool force = false);
-  void moveByStep(int step);
+  void moveByFrame(int frame);
   void moveTowardsNeutral(bool inSteps = true);
   bool isNeutral();
   bool hasPositions();

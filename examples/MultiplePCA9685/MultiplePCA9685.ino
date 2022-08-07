@@ -73,8 +73,8 @@ void setup() {
     animation.addServo(servoMaps[i].servo);
   }
 
-  // Trigger the animation play mode
-  animation.play();
+  // Trigger the animation loop mode
+  animation.loop();
 
   // Initialize servo drivers
   pwmA.begin();

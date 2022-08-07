@@ -41,6 +41,7 @@ void Animation::changeMode(byte mode) {
 void Animation::run(unsigned long currentMicros) {
   switch (mode) {
   case MODE_PLAY:
+  case MODE_LOOP:
     this->handlePlayMode(currentMicros);
     break;
   case MODE_STOP:
@@ -74,7 +75,15 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
     Servo *servo = this->servos[i];
 
     if (servo && servo->hasPositions()) {
-      servo->moveByStep(this->frame);
+      servo->moveByFrame(this->frame);
+    }
+  }
+
+  if (this->frame == 0) {
+    if (this->mode == Animation::MODE_LOOP) {
+      this->changeMode(Animation::MODE_LOOP);
+    } else {
+      this->changeMode(Animation::MODE_DEFAULT);
     }
   }
 }
@@ -130,6 +139,11 @@ void Animation::play() {
 
 void Animation::pause() {
   this->changeMode(Animation::MODE_PAUSE);
+}
+
+void Animation::loop() {
+  this->lastMicros = micros();
+  this->changeMode(Animation::MODE_LOOP);
 }
 
 void Animation::stop(byte stepDelay) {

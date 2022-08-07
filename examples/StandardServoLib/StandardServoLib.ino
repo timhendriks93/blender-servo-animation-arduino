@@ -38,8 +38,8 @@ void setup() {
   // Add the Blender servo object to the animation
   animation.addServo(myBlenderServo);
 
-  // Trigger the animation play mode
-  animation.play();
+  // Trigger the animation loop mode
+  animation.loop();
 }
 
 void loop() {
