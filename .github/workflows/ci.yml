@@ -32,7 +32,10 @@ jobs:
       run: |
         find src test -regex '.*\.\(cpp\|h\)' -exec clang-format-13 --dry-run --Werror {} \;
         find examples -regex '.*\.ino' -exec clang-format-13 --dry-run --Werror {} \;
-    - uses: arduino/arduino-lint-action@v1
+    - name: Lint with arduino-lint
+      uses: arduino/arduino-lint-action@v1
+      with:
+        library-manager: update
   test:
     name: "Test"
     runs-on: ubuntu-latest
