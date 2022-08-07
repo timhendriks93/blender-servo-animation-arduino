@@ -10,6 +10,12 @@
   changes. For example, this can be used to control the animation audio. See the
   comments below to understand what happens on a short or long button press
   based on the current mode.
+
+  Starting the animation will only play it once, so another button press is
+  required to play it again. Alternatively, you can also use MODE_LOOP instead
+  of MODE_PLAY and loop() instead of play(). This will keep the animation
+  running until the button is short or long pressed again, thus pausing or
+  stopping the animation.
 */
 
 #include "simple.h"

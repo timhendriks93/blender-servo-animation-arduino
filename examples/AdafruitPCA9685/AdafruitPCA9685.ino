@@ -40,8 +40,8 @@ void setup() {
   animation.addServo(neckLeftServo);
   animation.addServo(neckRightServo);
 
-  // Trigger the animation play mode
-  animation.play();
+  // Trigger the animation loop mode
+  animation.loop();
 
   // Initialize servo driver
   pwm.begin();
