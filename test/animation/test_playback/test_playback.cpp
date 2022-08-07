@@ -1,4 +1,3 @@
-#include "../SerialMock.h"
 #include "BlenderServoAnimation.h"
 #include <unity.h>
 
@@ -31,13 +30,13 @@ void move(byte servoID, int position) {
   lastPositions[servoID].index++;
 }
 
-const int positionsA[5] PROGMEM = {350, 340, 330, 340, 330};
+const int positions[5] PROGMEM = {350, 340, 330, 340, 330};
 const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
 
 void test_play(void) {
   Animation animation(FPS, FRAMES);
   Servo servos[] = {
-      Servo(1, positionsA, move),
+      Servo(1, positions, move),
       Servo(2, positionsB, move),
       Servo(3, move),
   };
@@ -70,7 +69,7 @@ void test_play(void) {
 
 void test_pause_play(void) {
   Animation animation(FPS, FRAMES);
-  Servo servo(2, positionsA, move);
+  Servo servo(2, positions, move);
   animation.addServo(servo);
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
@@ -102,7 +101,7 @@ void test_pause_play(void) {
 void test_stop(void) {
   Animation animation(FPS, FRAMES);
   Servo servos[] = {
-      Servo(0, positionsA, move),
+      Servo(0, positions, move),
       Servo(1, positionsB, move),
       Servo(2, move),
   };
@@ -133,7 +132,7 @@ void test_stop(void) {
 void test_loop(void) {
   Animation animation(FPS, FRAMES);
   Servo servos[] = {
-      Servo(1, positionsA, move),
+      Servo(1, positions, move),
       Servo(2, positionsB, move),
       Servo(3, move),
   };
@@ -160,7 +159,7 @@ void test_loop(void) {
 
 void test_pause_loop(void) {
   Animation animation(FPS, FRAMES);
-  Servo servo(2, positionsA, move);
+  Servo servo(2, positions, move);
   animation.addServo(servo);
   animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());

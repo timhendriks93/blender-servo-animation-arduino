@@ -1,5 +1,5 @@
-#include "../SerialMock.h"
 #include "BlenderServoAnimation.h"
+#include "../../SerialMock.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
@@ -30,14 +30,13 @@ void move(byte servoID, int position) {
   lastPositions[servoID].index++;
 }
 
-const int positionsA[5] PROGMEM = {350, 340, 330, 340, 330};
-const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
+const int positions[5] PROGMEM = {350, 340, 330, 340, 330};
 
-void test_live(void) {
+void test_multiple_servos(void) {
   Animation animation;
   SerialMock mock;
   Servo servos[] = {
-      Servo(0, positionsA, move),
+      Servo(0, positions, move),
       Servo(1, move),
   };
   animation.addServos(servos, 2);
@@ -66,8 +65,29 @@ void test_live(void) {
   TEST_ASSERT_EQUAL(355, lastPositions[1].positions[1]);
 }
 
+void test_skip(void) {
+  Animation animation;
+  SerialMock mock;
+  Servo servo(0, move);
+  animation.addServo(servo);
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+
+  byte values[15] = {60, 0, 1, 94, 62, 60, 0, 1, 99, 0, 60, 0, 1, 104, 62};
+
+  for (int i = 0; i < 15; i++) {
+    mock.write(values[i]);
+  }
+
+  animation.run();
+
+  TEST_ASSERT_EQUAL(350, lastPositions[0].positions[0]);
+  TEST_ASSERT_EQUAL(360, lastPositions[0].positions[1]);
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  RUN_TEST(test_live);
+  RUN_TEST(test_multiple_servos);
+  RUN_TEST(test_skip);
   UNITY_END();
 }

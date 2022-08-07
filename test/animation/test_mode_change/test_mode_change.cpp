@@ -1,5 +1,5 @@
-#include "../SerialMock.h"
 #include "BlenderServoAnimation.h"
+#include "../../SerialMock.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
@@ -30,7 +30,33 @@ void onModeChange(byte prevMode, byte newMode) {
   modeIndex++;
 }
 
-void test_mode_change(void) {
+void test_different_mode(void) {
+  Animation animation(FPS, FRAMES);
+
+  animation.onModeChange(onModeChange);
+
+  animation.play();
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[0].newMode);
+  animation.pause();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[1].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, lastModes[1].newMode);
+}
+
+void test_same_mode(void) {
+  Animation animation(FPS, FRAMES);
+
+  animation.onModeChange(onModeChange);
+
+  animation.loop();
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[0].newMode);
+  animation.loop();
+  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[1].prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[1].newMode);
+}
+
+void test_all_modes(void) {
   SerialMock mock;
   Animation animation(FPS, FRAMES);
 
@@ -58,6 +84,8 @@ void test_mode_change(void) {
 
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  RUN_TEST(test_mode_change);
+  RUN_TEST(test_different_mode);
+  RUN_TEST(test_same_mode);
+  RUN_TEST(test_all_modes);
   UNITY_END();
 }
