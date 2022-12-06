@@ -23,6 +23,7 @@ using namespace BlenderServoAnimation;
 #define PIN_STEP 12
 
 int lastPos;
+int frameMicros = floor(1000000 / FPS);
 
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int position) {
@@ -45,11 +46,13 @@ void move(byte servoID, int position) {
     digitalWrite(PIN_DIR, LOW);
   }
 
+  int delayMicros = floor(frameMicros / abs(diff) / 2);
+
   for (int i = 0; i < abs(diff); i++) {
     digitalWrite(PIN_STEP, HIGH);
-    delayMicroseconds(100);
+    delayMicroseconds(delayMicros);
     digitalWrite(PIN_STEP, LOW);
-    delayMicroseconds(100);
+    delayMicroseconds(delayMicros);
   }
 }
 
