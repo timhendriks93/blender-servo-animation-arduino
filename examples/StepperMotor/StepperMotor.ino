@@ -46,11 +46,10 @@ void move(byte servoID, int position) {
     digitalWrite(PIN_DIR, LOW);
   }
 
-  int delayMicros = floor(frameMicros / abs(diff) / 2);
+  int delayMicros = floor(frameMicros / abs(diff));
 
   for (int i = 0; i < abs(diff); i++) {
     digitalWrite(PIN_STEP, HIGH);
-    delayMicroseconds(delayMicros);
     digitalWrite(PIN_STEP, LOW);
     delayMicroseconds(delayMicros);
   }
