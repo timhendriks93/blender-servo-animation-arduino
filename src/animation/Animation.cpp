@@ -1,4 +1,4 @@
-#include "BlenderServoAnimation.h"
+#include "animation/Animation.h"
 #include "servo/Servo.h"
 #include <Arduino.h>
 
@@ -7,11 +7,15 @@ using namespace BlenderServoAnimation;
 Animation::Animation() {
 }
 
-Animation::Animation(byte fps, int frames) {
+Animation::Animation(byte id, byte fps, int frames) {
+  this->id = id;
   this->fps = fps;
   this->frames = frames;
   this->frameMicros = round((float)Animation::SECOND_IN_MICROS / (float)fps);
   this->diffPerSecond = Animation::SECOND_IN_MICROS - (this->frameMicros * fps);
+}
+
+Animation::Animation(byte fps, int frames) : Animation::Animation(0, fps, frames) {
 }
 
 void Animation::addServo(Servo &servo) {
@@ -155,6 +159,10 @@ void Animation::stop(byte stepDelay) {
 void Animation::live(Stream &serial) {
   this->serial = &serial;
   this->changeMode(Animation::MODE_LIVE);
+}
+
+byte Animation::getID() {
+  return this->id;
 }
 
 byte Animation::getMode() {
