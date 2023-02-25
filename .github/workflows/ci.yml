@@ -49,7 +49,7 @@ jobs:
         path: /home/runner/.platformio
         key: platformio-dir
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: "3.10"
         cache: 'pip'
