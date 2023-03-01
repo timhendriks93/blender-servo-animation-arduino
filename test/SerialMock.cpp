@@ -30,3 +30,9 @@ size_t SerialMock::write(uint8_t value) {
 
   return 1;
 }
+
+void SerialMock::flush() {
+  for (int i = 0; i < BUFFER_SIZE; i++) {
+    this->buffer[i] = 0;
+  }
+}

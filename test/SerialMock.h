@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <Print.h>
 
 #ifndef BlenderServoAnimation_Serial_Mock_H
 #define BlenderServoAnimation_Serial_Mock_H
@@ -20,6 +19,8 @@ public:
   int peek();
 
   size_t write(uint8_t);
+
+  void flush();
 };
 
 #endif

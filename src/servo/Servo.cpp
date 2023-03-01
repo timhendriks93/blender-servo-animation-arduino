@@ -26,11 +26,6 @@ void Servo::move(int position, bool force) {
   bool exceedsThreshold = abs(position - this->currentPosition) > this->threshold;
 
   if (this->currentPosition > 0 && exceedsThreshold) {
-    char buffer[100];
-    const char pattern[] = "Position diff for servo %d exceeded: %d -> %d";
-    sprintf(buffer, pattern, this->id, this->currentPosition, position);
-    Serial.print(buffer);
-    Serial.println();
     return;
   }
 

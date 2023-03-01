@@ -35,7 +35,7 @@ void test_different_mode(void) {
 
   animation.onModeChange(onModeChange);
 
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[0].newMode);
   animation.pause();
@@ -48,10 +48,10 @@ void test_same_mode(void) {
 
   animation.onModeChange(onModeChange);
 
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[0].newMode);
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[1].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[1].newMode);
 }
@@ -62,19 +62,19 @@ void test_all_modes(void) {
 
   animation.onModeChange(onModeChange);
 
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[0].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[0].newMode);
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, lastModes[1].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, lastModes[1].newMode);
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, lastModes[2].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[2].newMode);
   animation.stop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, lastModes[3].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, lastModes[3].newMode);
-  animation.run();
+  animation.run(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, lastModes[4].prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, lastModes[4].newMode);
   animation.live(mock);

@@ -42,7 +42,7 @@ void test_play(void) {
   };
   animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
   int expA[5] = {340, 330, 340, 330, 350};
@@ -71,7 +71,7 @@ void test_pause_play(void) {
   Animation animation(FPS, FRAMES);
   Servo servo(2, positions, move);
   animation.addServo(servo);
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
   int exp[5] = {340, 330, 340, 330, 350};
@@ -89,7 +89,7 @@ void test_pause_play(void) {
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
   }
 
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
 
   for (int i = 5; i < 8; i++) {
@@ -107,7 +107,7 @@ void test_stop(void) {
   };
   animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.play();
+  animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
   animation.run(FRAME_MICROS);
   TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);
@@ -138,7 +138,7 @@ void test_loop(void) {
   };
   animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
 
   int expA[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
@@ -161,7 +161,7 @@ void test_pause_loop(void) {
   Animation animation(FPS, FRAMES);
   Servo servo(2, positions, move);
   animation.addServo(servo);
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
 
   int exp[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
@@ -179,7 +179,7 @@ void test_pause_loop(void) {
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
   }
 
-  animation.loop();
+  animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
 
   for (int i = 8; i < 14; i++) {

@@ -7,15 +7,11 @@ using namespace BlenderServoAnimation;
 Animation::Animation() {
 }
 
-Animation::Animation(byte id, byte fps, int frames) {
-  this->id = id;
+Animation::Animation(byte fps, int frames) {
   this->fps = fps;
   this->frames = frames;
   this->frameMicros = round((float)Animation::SECOND_IN_MICROS / (float)fps);
   this->diffPerSecond = Animation::SECOND_IN_MICROS - (this->frameMicros * fps);
-}
-
-Animation::Animation(byte fps, int frames) : Animation::Animation(0, fps, frames) {
 }
 
 void Animation::addServo(Servo &servo) {
@@ -43,7 +39,7 @@ void Animation::changeMode(byte mode) {
 }
 
 void Animation::run(unsigned long currentMicros) {
-  switch (mode) {
+  switch (this->mode) {
   case MODE_PLAY:
   case MODE_LOOP:
     this->handlePlayMode(currentMicros);
@@ -136,8 +132,8 @@ void Animation::handleLiveMode() {
   }
 }
 
-void Animation::play() {
-  this->lastMicros = micros();
+void Animation::play(unsigned long currentMicros) {
+  this->lastMicros = currentMicros;
   this->changeMode(Animation::MODE_PLAY);
 }
 
@@ -145,8 +141,8 @@ void Animation::pause() {
   this->changeMode(Animation::MODE_PAUSE);
 }
 
-void Animation::loop() {
-  this->lastMicros = micros();
+void Animation::loop(unsigned long currentMicros) {
+  this->lastMicros = currentMicros;
   this->changeMode(Animation::MODE_LOOP);
 }
 
@@ -161,14 +157,14 @@ void Animation::live(Stream &serial) {
   this->changeMode(Animation::MODE_LIVE);
 }
 
-byte Animation::getID() {
-  return this->id;
-}
-
 byte Animation::getMode() {
   return this->mode;
 }
 
 int Animation::getFrame() {
   return this->frame;
+}
+
+int Animation::getFrames() {
+  return this->frames;
 }

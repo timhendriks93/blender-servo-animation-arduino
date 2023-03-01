@@ -50,7 +50,7 @@ void test_multiple_servos(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(0, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(350, lastPositions[1].positions[0]);
@@ -59,7 +59,7 @@ void test_multiple_servos(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(355, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(355, lastPositions[1].positions[1]);
@@ -79,7 +79,7 @@ void test_skip(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(350, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(360, lastPositions[0].positions[1]);

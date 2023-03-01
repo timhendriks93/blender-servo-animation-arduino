@@ -39,8 +39,6 @@ jobs:
   test:
     name: "Test"
     runs-on: ubuntu-latest
-    env:
-      LD_LIBRARY_PATH: /home/runner/.platformio/packages/tool-simavr/lib
     steps:
     - uses: actions/checkout@v3
     - name: Cache PlatformIO directory
@@ -62,4 +60,4 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Run tests with platformio
       run: |
-        pio test --without-uploading
+        pio test -e native
