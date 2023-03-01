@@ -15,6 +15,7 @@ private:
   static const int MAX_SERVO_COUNT = 256;
   static const long SECOND_IN_MICROS = 1000000;
 
+  byte id = 0;
   byte fps = 0;
   byte stopStepDelay = 20;
   byte mode = MODE_DEFAULT;
@@ -47,6 +48,7 @@ public:
 
   Animation();
   Animation(byte fps, int frames);
+  Animation(byte id, byte fps, int frames);
 
   void addServo(Servo &servo);
   void addServos(Servo servos[], byte servoAmount);
@@ -58,6 +60,7 @@ public:
   void stop(byte stepDelay = 20);
   void live(Stream &serial);
 
+  byte getID();
   byte getMode();
 
   int getFrame();
