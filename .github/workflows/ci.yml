@@ -29,9 +29,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install --no-install-recommends -y clang-format-13
     - name: Lint with clang-format
-      run: |
-        find src test -regex '.*\.\(cpp\|h\)' -exec clang-format-13 --dry-run --Werror {} \;
-        find examples -regex '.*\.ino' -exec clang-format-13 --dry-run --Werror {} \;
+      uses: jidicula/clang-format-action@v4.10.2
+      with:
+        exclude-regex: '\.pio'
     - name: Lint with arduino-lint
       uses: arduino/arduino-lint-action@v1
       with:
