@@ -77,7 +77,7 @@ void Show::loop(unsigned long currentMicros) {
     this->animation = this->animations[this->playIndex];
   }
 
-  this->animation->loop(currentMicros);
+  this->animation->play(currentMicros);
   this->changeMode(MODE_LOOP);
 }
 

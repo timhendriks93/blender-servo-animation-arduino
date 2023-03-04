@@ -133,18 +133,19 @@ void test_loop(void) {
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
   TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
 
-  for (long i = 0; i < FRAME_MICROS * (long)9; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)6; i++) {
     show.run(i);
   }
 
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
   TEST_ASSERT_EQUAL(1, show.getCurrentAnimation()->getID());
 
-  // for (long i = 0; i < FRAME_MICROS * (long)5; i++) {
-  //   show.run(i);
-  // }
+  for (long i = 0; i < FRAME_MICROS * (long)5; i++) {
+    show.run(i);
+  }
 
-  // TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
+  TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
 }
 
 int main(int argc, char **argv) {
@@ -152,6 +153,6 @@ int main(int argc, char **argv) {
   RUN_TEST(test_play);
   RUN_TEST(test_play_single);
   RUN_TEST(test_play_random);
-  // RUN_TEST(test_loop);
+  RUN_TEST(test_loop);
   UNITY_END();
 }

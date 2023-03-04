@@ -2,6 +2,8 @@
 
 This library helps to control servos based on an exported Blender animation. It is specifically designed to work with the [Blender Servo Animation Add-on](https://github.com/timhendriks93/blender-servo-animation).
 
+[![Continuous Integration](https://github.com/timhendriks93/blender-servo-animation-arduino/actions/workflows/ci.yml/badge.svg)](https://github.com/timhendriks93/blender-servo-animation-arduino/actions/workflows/ci.yml)
+
 ## Installation
 
 Please refer to the official [Arduino documentation](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries) to see how you can install this library.
