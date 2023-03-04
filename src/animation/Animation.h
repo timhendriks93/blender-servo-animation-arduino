@@ -64,7 +64,6 @@ public:
   byte getMode();
 
   int getFrame();
-  int getFrames();
 };
 
 } // namespace BlenderServoAnimation

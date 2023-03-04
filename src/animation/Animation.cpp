@@ -172,7 +172,3 @@ byte Animation::getMode() {
 int Animation::getFrame() {
   return this->frame;
 }
-
-int Animation::getFrames() {
-  return this->frames;
-}
