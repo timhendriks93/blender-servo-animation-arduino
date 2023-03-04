@@ -13,7 +13,7 @@ bool Show::hasAnimations() {
 }
 
 bool Show::hasAnimation(byte id) {
-  return this->getAnimation(id) != nullptr;
+  return this->getAnimationIndex(id) > -1;
 }
 
 void Show::addAnimation(Animation &animation) {
@@ -27,22 +27,22 @@ void Show::addAnimations(Animation animations[], byte animationAmount) {
   }
 }
 
-Animation *Show::getAnimation(byte id) {
+int Show::getAnimationIndex(byte id) {
   for (int i = 0; i < this->addIndex; i++) {
     Animation *animation = this->animations[i];
 
     if (animation && animation->getID() == id) {
-      return this->animations[i];
+      return i;
     }
   }
 
-  return nullptr;
+  return -1;
 }
 
-Animation *Show::getRandomAnimation() {
+void Show::setRandomAnimation() {
   byte randomIndex = random(this->addIndex - 1);
-
-  return this->animations[randomIndex];
+  this->playIndex = randomIndex;
+  this->animation = this->animations[this->playIndex];
 }
 
 void Show::play(unsigned long currentMicros) {
@@ -59,13 +59,17 @@ void Show::play(unsigned long currentMicros) {
 }
 
 void Show::playSingle(byte id, unsigned long currentMicros) {
-  Animation *animation = this->getAnimation(id);
+  int animationIndex = this->getAnimationIndex(id);
 
-  if (!animation) {
+  if (animationIndex < 0) {
     return;
   }
 
-  this->animation = animation;
+  if (!this->animation || this->animation->getFrame() == 0) {
+    this->playIndex = animationIndex;
+    this->animation = this->animations[this->playIndex];
+  }
+
   this->animation->play(currentMicros);
   this->changeMode(MODE_PLAY_SINGLE);
 }
@@ -75,7 +79,10 @@ void Show::playRandom(unsigned long currentMicros) {
     return;
   }
 
-  this->animation = this->getRandomAnimation();
+  if (!this->animation || this->animation->getFrame() == 0) {
+    this->setRandomAnimation();
+  }
+
   this->animation->play(currentMicros);
   this->changeMode(MODE_PLAY_RANDOM);
 }
@@ -164,7 +171,7 @@ void Show::handlePlayMode(unsigned long currentMicros) {
     this->animation = nullptr;
     break;
   case MODE_PLAY_RANDOM:
-    this->animation = this->getRandomAnimation();
+    this->setRandomAnimation();
     this->changeMode(MODE_PLAY_RANDOM);
     break;
   case MODE_LOOP:

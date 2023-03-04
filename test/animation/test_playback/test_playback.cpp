@@ -67,12 +67,18 @@ void test_play(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 }
 
-void test_pause_play(void) {
+void test_pause(bool loop) {
   Animation animation(FPS, FRAMES);
   Servo servo(2, positions, move);
   animation.addServo(servo);
-  animation.play(0);
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+
+  if (loop) {
+    animation.loop(0);
+    TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  } else {
+    animation.play(0);
+    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  }
 
   int exp[5] = {340, 330, 340, 330, 350};
 
@@ -89,8 +95,13 @@ void test_pause_play(void) {
     TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
   }
 
-  animation.play(0);
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  if (loop) {
+    animation.loop(0);
+    TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  } else {
+    animation.play(0);
+    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  }
 
   for (int i = 5; i < 8; i++) {
     animation.run(FRAME_MICROS * (long)(i + 1));
@@ -157,35 +168,12 @@ void test_loop(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
 }
 
+void test_pause_play(void) {
+  test_pause(false);
+}
+
 void test_pause_loop(void) {
-  Animation animation(FPS, FRAMES);
-  Servo servo(2, positions, move);
-  animation.addServo(servo);
-  animation.loop(0);
-  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-
-  int exp[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
-
-  for (int i = 0; i < 4; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(exp[i], lastPositions[2].positions[i]);
-  }
-
-  animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-
-  for (int i = 4; i < 8; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
-  }
-
-  animation.loop(0);
-  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-
-  for (int i = 8; i < 14; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(exp[i - 5], lastPositions[2].positions[i - 5]);
-  }
+  test_pause(true);
 }
 
 int main(int argc, char **argv) {

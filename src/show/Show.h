@@ -25,9 +25,9 @@ private:
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode();
+  void setRandomAnimation();
 
-  Animation *getAnimation(byte id);
-  Animation *getRandomAnimation();
+  int getAnimationIndex(byte id);
 
 public:
   static const byte MODE_DEFAULT = 0;
