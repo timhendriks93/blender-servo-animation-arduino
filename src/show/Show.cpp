@@ -46,6 +46,10 @@ Animation *Show::getRandomAnimation() {
 }
 
 void Show::play(unsigned long currentMicros) {
+  if (!this->hasAnimations()) {
+    return;
+  }
+
   if (!this->animation) {
     this->animation = this->animations[this->playIndex];
   }
@@ -67,12 +71,20 @@ void Show::playSingle(byte id, unsigned long currentMicros) {
 }
 
 void Show::playRandom(unsigned long currentMicros) {
+  if (!this->hasAnimations()) {
+    return;
+  }
+
   this->animation = this->getRandomAnimation();
   this->animation->play(currentMicros);
   this->changeMode(MODE_PLAY_RANDOM);
 }
 
 void Show::loop(unsigned long currentMicros) {
+  if (!this->hasAnimations()) {
+    return;
+  }
+
   if (!this->animation) {
     this->animation = this->animations[this->playIndex];
   }

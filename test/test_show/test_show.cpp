@@ -148,11 +148,24 @@ void test_loop(void) {
   TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
 }
 
+void test_playback_without_animations(void) {
+  Show show;
+  show.play(0);
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  show.playRandom(0);
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  show.playSingle(0, 0);
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  show.loop(0);
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_play);
   RUN_TEST(test_play_single);
   RUN_TEST(test_play_random);
   RUN_TEST(test_loop);
+  RUN_TEST(test_playback_without_animations);
   UNITY_END();
 }
