@@ -26,8 +26,8 @@ private:
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode();
 
-  Animation* getAnimation(byte id);
-  Animation* getRandomAnimation();
+  Animation *getAnimation(byte id);
+  Animation *getRandomAnimation();
 
 public:
   static const byte MODE_DEFAULT = 0;
@@ -53,7 +53,7 @@ public:
   byte getMode();
   bool hasAnimations();
   bool hasAnimation(byte id);
-  Animation* getCurrentAnimation();
+  Animation *getCurrentAnimation();
 };
 
 } // namespace BlenderServoAnimation
