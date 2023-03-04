@@ -1,5 +1,5 @@
-#include "BlenderServoAnimation.h"
 #include "../../SerialMock.h"
+#include "BlenderServoAnimation.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;

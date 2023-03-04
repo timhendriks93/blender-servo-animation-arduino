@@ -8,8 +8,7 @@ using namespace fakeit;
 #define FRAMES 5
 #define FRAME_MICROS 16667
 
-void setUp(void)
-{
+void setUp(void) {
   ArduinoFakeReset();
 }
 
@@ -57,10 +56,10 @@ void test_play(void) {
 
 void test_play_single(void) {
   Animation animations[4] = {
-    {0, FPS, FRAMES},
-    {1, FPS, FRAMES},
-    {2, FPS, FRAMES},
-    {3, FPS, FRAMES}
+      {0, FPS, FRAMES},
+      {1, FPS, FRAMES},
+      {2, FPS, FRAMES},
+      {3, FPS, FRAMES},
   };
 
   Show show;
@@ -83,9 +82,9 @@ void test_play_single(void) {
 
 void test_play_random(void) {
   Animation animations[3] = {
-    {0, FPS, FRAMES},
-    {1, FPS, FRAMES},
-    {2, FPS, FRAMES}
+      {0, FPS, FRAMES},
+      {1, FPS, FRAMES},
+      {2, FPS, FRAMES},
   };
 
   Show show;

@@ -7,7 +7,8 @@ using namespace BlenderServoAnimation;
 Animation::Animation() {
 }
 
-Animation::Animation(byte fps, int frames) : Animation::Animation(0, fps, frames) {
+Animation::Animation(byte fps, int frames)
+    : Animation::Animation(0, fps, frames) {
 }
 
 Animation::Animation(byte id, byte fps, int frames) {

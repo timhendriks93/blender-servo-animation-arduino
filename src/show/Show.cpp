@@ -27,9 +27,9 @@ void Show::addAnimations(Animation animations[], byte animationAmount) {
   }
 }
 
-Animation* Show::getAnimation(byte id) {
+Animation *Show::getAnimation(byte id) {
   for (int i = 0; i < this->addIndex; i++) {
-    Animation* animation = this->animations[i];
+    Animation *animation = this->animations[i];
 
     if (animation && animation->getID() == id) {
       return this->animations[i];
@@ -39,7 +39,7 @@ Animation* Show::getAnimation(byte id) {
   return nullptr;
 }
 
-Animation* Show::getRandomAnimation() {
+Animation *Show::getRandomAnimation() {
   byte randomIndex = random(this->addIndex - 1);
 
   return this->animations[randomIndex];
@@ -55,7 +55,7 @@ void Show::play(unsigned long currentMicros) {
 }
 
 void Show::playSingle(byte id, unsigned long currentMicros) {
-  Animation* animation = this->getAnimation(id);
+  Animation *animation = this->getAnimation(id);
 
   if (!animation) {
     return;
@@ -114,15 +114,15 @@ byte Show::getMode() {
 
 void Show::run(unsigned long currentMicros) {
   switch (this->mode) {
-    case MODE_PLAY:
-    case MODE_PLAY_SINGLE:
-    case MODE_PLAY_RANDOM:
-    case MODE_LOOP:
-      this->handlePlayMode(currentMicros);
-      break;
-    case MODE_STOP:
-      this->handleStopMode();
-      break;
+  case MODE_PLAY:
+  case MODE_PLAY_SINGLE:
+  case MODE_PLAY_RANDOM:
+  case MODE_LOOP:
+    this->handlePlayMode(currentMicros);
+    break;
+  case MODE_STOP:
+    this->handleStopMode();
+    break;
   }
 }
 
@@ -140,30 +140,30 @@ void Show::handlePlayMode(unsigned long currentMicros) {
   bool lastAnimation = this->playIndex + 1 >= this->addIndex;
 
   switch (this->mode) {
-    case MODE_PLAY:
-      if (lastAnimation) {
-        this->animation = nullptr;
-      } else {
-        this->playIndex++;
-        this->animation = this->animations[this->playIndex];
-      }
-      break;
-    case MODE_PLAY_SINGLE:
+  case MODE_PLAY:
+    if (lastAnimation) {
       this->animation = nullptr;
-      break;
-    case MODE_PLAY_RANDOM:
-      this->animation = this->getRandomAnimation();
-      this->changeMode(MODE_PLAY_RANDOM);
-      break;
-    case MODE_LOOP:
-      if (lastAnimation) {
-        this->playIndex = 0;
-      } else {
-        this->playIndex++;
-      }
+    } else {
+      this->playIndex++;
       this->animation = this->animations[this->playIndex];
-      this->changeMode(MODE_LOOP);
-      break;
+    }
+    break;
+  case MODE_PLAY_SINGLE:
+    this->animation = nullptr;
+    break;
+  case MODE_PLAY_RANDOM:
+    this->animation = this->getRandomAnimation();
+    this->changeMode(MODE_PLAY_RANDOM);
+    break;
+  case MODE_LOOP:
+    if (lastAnimation) {
+      this->playIndex = 0;
+    } else {
+      this->playIndex++;
+    }
+    this->animation = this->animations[this->playIndex];
+    this->changeMode(MODE_LOOP);
+    break;
   }
 
   if (!this->animation) {
@@ -175,10 +175,9 @@ void Show::handlePlayMode(unsigned long currentMicros) {
 }
 
 void Show::handleStopMode() {
-
 }
 
-Animation* Show::getCurrentAnimation() {
+Animation *Show::getCurrentAnimation() {
   return this->animation;
 }
 
