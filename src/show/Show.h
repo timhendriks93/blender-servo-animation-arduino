@@ -1,5 +1,6 @@
 #include "animation/Animation.h"
 #include <Arduino.h>
+#include <stdarg.h>
 
 #ifndef BlenderServoAnimation_Show_H
 #define BlenderServoAnimation_Show_H
@@ -24,7 +25,7 @@ private:
 
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
-  void handleStopMode();
+  void handleStopMode(unsigned long currentMicros);
   void setRandomAnimation();
 
   int getAnimationIndex(byte id);
@@ -37,8 +38,11 @@ public:
   static const byte MODE_PAUSE = 4;
   static const byte MODE_LOOP = 5;
   static const byte MODE_STOP = 6;
+  static const byte MODE_LIVE = 7;
 
+  byte getMode();
   byte countAnimations();
+
   void addAnimation(Animation &animation);
   void addAnimations(Animation animations[], byte animationAmount);
   void onModeChange(mcb modeCallback);
@@ -49,10 +53,13 @@ public:
   void loop(unsigned long currentMicros = micros());
   void pause();
   void stop(byte stepDelay = 20);
+  void live(Stream &serial);
   void reset();
-  byte getMode();
+
   bool hasAnimations();
   bool hasAnimation(byte id);
+  bool modeIsIn(byte modeAmount, ...);
+
   Animation *getCurrentAnimation();
 };
 

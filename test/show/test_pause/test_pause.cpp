@@ -93,11 +93,49 @@ void test_pause_play_random(void) {
   test_pause(Show::MODE_PLAY_RANDOM);
 }
 
+void test_prevented(void) {
+  Serial_ mock;
+  Animation animation(FPS, FRAMES);
+  Show show;
+  show.addAnimation(animation);
+
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
+  show.play(0);
+  show.stop();
+  TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
+  show.run(0);
+  show.live(mock);
+  TEST_ASSERT_EQUAL(Show::MODE_LIVE, show.getMode());
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_LIVE, show.getMode());
+}
+
+void test_allowed(void) {
+  Animation animation(FPS, FRAMES);
+  Show show;
+  show.addAnimation(animation);
+
+  show.play(0);
+  TEST_ASSERT_EQUAL(Show::MODE_PLAY, show.getMode());
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
+  show.loop(0);
+  TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_pause_play);
   RUN_TEST(test_pause_loop);
   RUN_TEST(test_pause_play_single);
   RUN_TEST(test_pause_play_random);
+  RUN_TEST(test_prevented);
+  RUN_TEST(test_allowed);
   UNITY_END();
 }

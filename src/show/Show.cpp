@@ -40,13 +40,18 @@ int Show::getAnimationIndex(byte id) {
 }
 
 void Show::setRandomAnimation() {
-  byte randomIndex = random(this->addIndex - 1);
+  byte randomIndex = 0;
+
+  if (this->countAnimations() > 1) {
+    randomIndex = random(this->addIndex - 1);
+  }
+
   this->playIndex = randomIndex;
   this->animation = this->animations[this->playIndex];
 }
 
 void Show::play(unsigned long currentMicros) {
-  if (!this->hasAnimations()) {
+  if (!this->hasAnimations() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
 
@@ -61,7 +66,7 @@ void Show::play(unsigned long currentMicros) {
 void Show::playSingle(byte id, unsigned long currentMicros) {
   int animationIndex = this->getAnimationIndex(id);
 
-  if (animationIndex < 0) {
+  if (animationIndex < 0 || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
 
@@ -75,7 +80,7 @@ void Show::playSingle(byte id, unsigned long currentMicros) {
 }
 
 void Show::playRandom(unsigned long currentMicros) {
-  if (!this->hasAnimations()) {
+  if (!this->hasAnimations() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
 
@@ -88,7 +93,7 @@ void Show::playRandom(unsigned long currentMicros) {
 }
 
 void Show::loop(unsigned long currentMicros) {
-  if (!this->hasAnimations()) {
+  if (!this->hasAnimations() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
 
@@ -101,21 +106,35 @@ void Show::loop(unsigned long currentMicros) {
 }
 
 void Show::pause() {
-  if (!this->animation) {
+  if (!this->animation || !this->modeIsIn(4, MODE_PLAY, MODE_PLAY_SINGLE,
+                                          MODE_PLAY_RANDOM, MODE_LOOP)) {
     return;
   }
 
   this->animation->pause();
-  this->changeMode(Show::MODE_PAUSE);
+  this->changeMode(MODE_PAUSE);
 }
 
 void Show::stop(byte stepDelay) {
-  if (!this->animation) {
+  if (!this->animation || this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
     return;
   }
 
   this->animation->stop(stepDelay);
   this->changeMode(MODE_STOP);
+}
+
+void Show::live(Stream &serial) {
+  if (!this->hasAnimations() || this->mode != MODE_DEFAULT) {
+    return;
+  }
+
+  if (!this->animation) {
+    this->animation = this->animations[this->playIndex];
+  }
+
+  this->animation->live(serial);
+  this->changeMode(MODE_LIVE);
 }
 
 void Show::reset() {
@@ -140,13 +159,14 @@ void Show::run(unsigned long currentMicros) {
     this->handlePlayMode(currentMicros);
     break;
   case MODE_STOP:
-    this->handleStopMode();
+    this->handleStopMode(currentMicros);
     break;
   }
 }
 
 void Show::handlePlayMode(unsigned long currentMicros) {
   if (!this->animation) {
+    this->changeMode(MODE_DEFAULT);
     return;
   }
 
@@ -193,7 +213,17 @@ void Show::handlePlayMode(unsigned long currentMicros) {
   this->animation->play(currentMicros);
 }
 
-void Show::handleStopMode() {
+void Show::handleStopMode(unsigned long currentMicros) {
+  if (!this->animation) {
+    this->changeMode(MODE_DEFAULT);
+    return;
+  }
+
+  this->animation->run(currentMicros);
+
+  if (this->animation->getMode() == Animation::MODE_DEFAULT) {
+    this->changeMode(MODE_DEFAULT);
+  }
 }
 
 Animation *Show::getCurrentAnimation() {
@@ -211,4 +241,21 @@ void Show::changeMode(byte mode) {
   if (this->modeCallback) {
     this->modeCallback(prevMode, mode);
   }
+}
+
+bool Show::modeIsIn(byte modeAmount, ...) {
+  bool match = false;
+
+  va_list modes;
+  va_start(modes, modeAmount);
+
+  for (int i = 0; i < modeAmount; i++) {
+    if (this->mode == va_arg(modes, int)) {
+      match = true;
+    }
+  }
+
+  va_end(modes);
+
+  return match;
 }

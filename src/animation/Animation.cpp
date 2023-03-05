@@ -85,10 +85,10 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
   }
 
   if (this->frame == 0) {
-    if (this->mode == Animation::MODE_LOOP) {
-      this->changeMode(Animation::MODE_LOOP);
+    if (this->mode == MODE_LOOP) {
+      this->changeMode(MODE_LOOP);
     } else {
-      this->changeMode(Animation::MODE_DEFAULT);
+      this->changeMode(MODE_DEFAULT);
     }
   }
 }
@@ -106,7 +106,7 @@ void Animation::handleStopMode() {
   }
 
   if (allNeutral) {
-    this->changeMode(Animation::MODE_DEFAULT);
+    this->changeMode(MODE_DEFAULT);
     return;
   }
 
@@ -143,7 +143,7 @@ void Animation::play(unsigned long currentMicros) {
   }
 
   this->lastMicros = currentMicros;
-  this->changeMode(Animation::MODE_PLAY);
+  this->changeMode(MODE_PLAY);
 }
 
 void Animation::pause() {
@@ -151,7 +151,7 @@ void Animation::pause() {
     return;
   }
 
-  this->changeMode(Animation::MODE_PAUSE);
+  this->changeMode(MODE_PAUSE);
 }
 
 void Animation::loop(unsigned long currentMicros) {
@@ -160,7 +160,7 @@ void Animation::loop(unsigned long currentMicros) {
   }
 
   this->lastMicros = currentMicros;
-  this->changeMode(Animation::MODE_LOOP);
+  this->changeMode(MODE_LOOP);
 }
 
 void Animation::stop(byte stepDelay) {
@@ -170,7 +170,7 @@ void Animation::stop(byte stepDelay) {
 
   this->stopStepDelay = stepDelay;
   this->frame = 0;
-  this->changeMode(Animation::MODE_STOP);
+  this->changeMode(MODE_STOP);
 }
 
 void Animation::live(Stream &serial) {
@@ -179,7 +179,7 @@ void Animation::live(Stream &serial) {
   }
 
   this->serial = &serial;
-  this->changeMode(Animation::MODE_LIVE);
+  this->changeMode(MODE_LIVE);
 }
 
 byte Animation::getID() {
