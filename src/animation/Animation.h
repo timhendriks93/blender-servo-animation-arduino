@@ -1,6 +1,7 @@
 #include "command/Command.h"
 #include "servo/Servo.h"
 #include <Arduino.h>
+#include <stdarg.h>
 
 #ifndef BlenderServoAnimation_Animation_H
 #define BlenderServoAnimation_Animation_H
@@ -64,6 +65,8 @@ public:
   byte getMode();
 
   int getFrame();
+
+  bool modeIsIn(byte modeAmount, ...);
 };
 
 } // namespace BlenderServoAnimation

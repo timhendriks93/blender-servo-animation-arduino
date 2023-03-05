@@ -138,26 +138,46 @@ void Animation::handleLiveMode() {
 }
 
 void Animation::play(unsigned long currentMicros) {
+  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
   this->lastMicros = currentMicros;
   this->changeMode(Animation::MODE_PLAY);
 }
 
 void Animation::pause() {
+  if (!this->modeIsIn(2, MODE_PLAY, MODE_LOOP)) {
+    return;
+  }
+
   this->changeMode(Animation::MODE_PAUSE);
 }
 
 void Animation::loop(unsigned long currentMicros) {
+  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
   this->lastMicros = currentMicros;
   this->changeMode(Animation::MODE_LOOP);
 }
 
 void Animation::stop(byte stepDelay) {
+  if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
+    return;
+  }
+
   this->stopStepDelay = stepDelay;
   this->frame = 0;
   this->changeMode(Animation::MODE_STOP);
 }
 
 void Animation::live(Stream &serial) {
+  if (this->mode != MODE_DEFAULT) {
+    return;
+  }
+
   this->serial = &serial;
   this->changeMode(Animation::MODE_LIVE);
 }
@@ -172,4 +192,21 @@ byte Animation::getMode() {
 
 int Animation::getFrame() {
   return this->frame;
+}
+
+bool Animation::modeIsIn(byte modeAmount, ...) {
+  bool match = false;
+
+  va_list modes;
+  va_start(modes, modeAmount);
+
+  for (int i = 0; i < modeAmount; i++) {
+    if (this->mode == va_arg(modes, int)) {
+      match = true;
+    }
+  }
+
+  va_end(modes);
+
+  return match;
 }

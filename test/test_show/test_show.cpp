@@ -171,18 +171,18 @@ void test_pause(byte mode) {
   TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
 
   switch (mode) {
-    case Show::MODE_PLAY:
-      show.play(0);
-      break;
-    case Show::MODE_PLAY_SINGLE:
-      show.playSingle(0, 0);
-      break;
-    case Show::MODE_PLAY_RANDOM:
-      show.playRandom(0);
-      break;
-    case Show::MODE_LOOP:
-      show.loop(0);
-      break;
+  case Show::MODE_PLAY:
+    show.play(0);
+    break;
+  case Show::MODE_PLAY_SINGLE:
+    show.playSingle(0, 0);
+    break;
+  case Show::MODE_PLAY_RANDOM:
+    show.playRandom(0);
+    break;
+  case Show::MODE_LOOP:
+    show.loop(0);
+    break;
   }
 
   TEST_ASSERT_EQUAL(mode, show.getMode());
@@ -204,18 +204,18 @@ void test_pause(byte mode) {
   TEST_ASSERT_EQUAL(2, show.getCurrentAnimation()->getFrame());
 
   switch (mode) {
-    case Show::MODE_PLAY:
-      show.play(0);
-      break;
-    case Show::MODE_PLAY_SINGLE:
-      show.playSingle(1, 0);
-      break;
-    case Show::MODE_PLAY_RANDOM:
-      show.playRandom(0);
-      break;
-    case Show::MODE_LOOP:
-      show.loop(0);
-      break;
+  case Show::MODE_PLAY:
+    show.play(0);
+    break;
+  case Show::MODE_PLAY_SINGLE:
+    show.playSingle(1, 0);
+    break;
+  case Show::MODE_PLAY_RANDOM:
+    show.playRandom(0);
+    break;
+  case Show::MODE_LOOP:
+    show.loop(0);
+    break;
   }
 
   show.run(FRAME_MICROS);
