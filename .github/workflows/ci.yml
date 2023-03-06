@@ -47,13 +47,9 @@ jobs:
         run: pip install --upgrade platformio
       - name: Build PlatformIO examples
         run: |
-          pio ci \
+          pio ci examples/${{ matrix.example }} \
             --lib=. \
-            --project-conf=examples/${{ matrix.example }}/platformio.ini \
-            --board=uno \
-            --board=esp32dev
-        env:
-          PLATFORMIO_CI_SRC: examples/${{ matrix.example }}
+            --project-conf=examples/${{ matrix.example }}/platformio.ini
   lint:
     name: "Lint"
     runs-on: ubuntu-22.04
