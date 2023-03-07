@@ -43,7 +43,7 @@ void Show::setRandomAnimation() {
   byte randomIndex = 0;
 
   if (this->countAnimations() > 1) {
-    randomIndex = random(this->addIndex - 1);
+    randomIndex = random(this->addIndex);
   }
 
   this->playIndex = randomIndex;

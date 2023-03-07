@@ -29,6 +29,7 @@ jobs:
             AdafruitPCA9685,
             LiveMode,
             MultiplePCA9685,
+            Show,
             StandardServoLib,
             SwitchModeButton,
           ]
