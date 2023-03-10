@@ -12,8 +12,8 @@ bool Show::hasAnimations() {
   return this->countAnimations() > 0;
 }
 
-bool Show::hasAnimation(byte id) {
-  return this->getAnimationIndex(id) > -1;
+bool Show::hasAnimation(byte index) {
+  return this->animations[index] != nullptr;
 }
 
 void Show::addAnimation(Animation &animation) {
@@ -25,18 +25,6 @@ void Show::addAnimations(Animation animations[], byte animationAmount) {
   for (int i = 0; i < animationAmount; i++) {
     this->addAnimation(animations[i]);
   }
-}
-
-int Show::getAnimationIndex(byte id) {
-  for (int i = 0; i < this->addIndex; i++) {
-    Animation *animation = this->animations[i];
-
-    if (animation && animation->getID() == id) {
-      return i;
-    }
-  }
-
-  return -1;
 }
 
 void Show::setRandomAnimation() {
@@ -63,16 +51,16 @@ void Show::play(unsigned long currentMicros) {
   this->changeMode(MODE_PLAY);
 }
 
-void Show::playSingle(byte id, unsigned long currentMicros) {
-  int animationIndex = this->getAnimationIndex(id);
+void Show::playSingle(byte index, unsigned long currentMicros) {
+  Animation *animation = this->animations[index];
 
-  if (animationIndex < 0 || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+  if (animation == nullptr || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
 
   if (!this->animation || this->animation->getFrame() == 0) {
-    this->playIndex = animationIndex;
-    this->animation = this->animations[this->playIndex];
+    this->playIndex = index;
+    this->animation = animation;
   }
 
   this->animation->play(currentMicros);

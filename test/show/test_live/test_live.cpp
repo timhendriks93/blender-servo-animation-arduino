@@ -20,7 +20,7 @@ void test_without_animations(void) {
 }
 
 void test_prevented(void) {
-  Animation animation(0, FPS, FRAMES);
+  Animation animation(FPS, FRAMES);
   Serial_ mock;
   Show show;
   show.addAnimation(animation);

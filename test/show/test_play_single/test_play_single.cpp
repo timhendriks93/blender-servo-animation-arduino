@@ -14,10 +14,10 @@ void setUp(void) {
 
 void test_play_single(void) {
   Animation animations[4] = {
-      {0, FPS, FRAMES},
-      {1, FPS, FRAMES},
-      {2, FPS, FRAMES},
-      {3, FPS, FRAMES},
+      {FPS, FRAMES},
+      {FPS, FRAMES},
+      {FPS, 4},
+      {FPS, FRAMES},
   };
 
   Show show;
@@ -29,9 +29,9 @@ void test_play_single(void) {
   show.playSingle(2, 0);
 
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_SINGLE, show.getMode());
-  TEST_ASSERT_EQUAL(2, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(4, show.getCurrentAnimation()->getFrames());
 
-  for (long i = 0; i < FRAME_MICROS * (long)6; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)6; i += FRAME_MICROS) {
     show.run(i);
   }
 
@@ -45,7 +45,7 @@ void test_without_animations(void) {
 }
 
 void test_prevented(void) {
-  Animation animation(0, FPS, FRAMES);
+  Animation animation(FPS, FRAMES);
   Serial_ mock;
   Show show;
   show.addAnimation(animation);
@@ -78,7 +78,7 @@ void test_prevented(void) {
 }
 
 void test_allowed(void) {
-  Animation animation(0, FPS, FRAMES);
+  Animation animation(FPS, FRAMES);
   Show show;
   show.addAnimation(animation);
 

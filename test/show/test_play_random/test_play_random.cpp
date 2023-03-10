@@ -14,9 +14,9 @@ void setUp(void) {
 
 void test_play_random(void) {
   Animation animations[3] = {
-      {0, FPS, FRAMES},
-      {1, FPS, FRAMES},
-      {2, FPS, FRAMES},
+      {FPS, 2},
+      {FPS, 3},
+      {FPS, 4},
   };
 
   Show show;
@@ -30,21 +30,21 @@ void test_play_random(void) {
   show.playRandom(0);
 
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
-  TEST_ASSERT_EQUAL(1, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(3, show.getCurrentAnimation()->getFrames());
 
-  for (long i = 0; i < FRAME_MICROS * (long)6; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)4; i += FRAME_MICROS) {
     show.run(i);
   }
 
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
-  TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(2, show.getCurrentAnimation()->getFrames());
 
-  for (long i = 0; i < FRAME_MICROS * (long)5; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)2; i += FRAME_MICROS) {
     show.run(i);
   }
 
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
-  TEST_ASSERT_EQUAL(2, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(4, show.getCurrentAnimation()->getFrames());
 }
 
 void test_without_animations(void) {

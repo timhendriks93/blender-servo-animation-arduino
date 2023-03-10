@@ -26,7 +26,7 @@ void test_loop(void) {
   int expA[9] = {340, 330, 340, 330, 350, 340, 330, 340, 330};
   int expB[9] = {240, 230, 240, 230, 250, 240, 230, 240, 230};
 
-  for (long i = 0; i < FRAME_MICROS * (long)9; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)10; i += FRAME_MICROS) {
     animation.run(i);
   }
 

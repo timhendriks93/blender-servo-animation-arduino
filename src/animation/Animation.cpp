@@ -7,12 +7,7 @@ using namespace BlenderServoAnimation;
 Animation::Animation() {
 }
 
-Animation::Animation(byte fps, int frames)
-    : Animation::Animation(0, fps, frames) {
-}
-
-Animation::Animation(byte id, byte fps, int frames) {
-  this->id = id;
+Animation::Animation(byte fps, int frames) {
   this->fps = fps;
   this->frames = frames;
   this->frameMicros = round((float)Animation::SECOND_IN_MICROS / (float)fps);
@@ -182,8 +177,8 @@ void Animation::live(Stream &serial) {
   this->changeMode(MODE_LIVE);
 }
 
-byte Animation::getID() {
-  return this->id;
+byte Animation::getFPS() {
+  return this->fps;
 }
 
 byte Animation::getMode() {
@@ -192,6 +187,10 @@ byte Animation::getMode() {
 
 int Animation::getFrame() {
   return this->frame;
+}
+
+int Animation::getFrames() {
+  return this->frames;
 }
 
 bool Animation::modeIsIn(byte modeAmount, ...) {

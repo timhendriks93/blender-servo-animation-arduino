@@ -45,7 +45,7 @@ void setup() {
 
   // Trigger the show loop mode
   show.loop();
-  
+
   // There are also other playback options
   // show.play(); // Plays all animations once in the order they have been added
   // show.playRandom(); // Randomly plays animations in a loop

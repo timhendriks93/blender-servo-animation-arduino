@@ -28,8 +28,6 @@ private:
   void handleStopMode(unsigned long currentMicros);
   void setRandomAnimation();
 
-  int getAnimationIndex(byte id);
-
 public:
   static const byte MODE_DEFAULT = 0;
   static const byte MODE_PLAY = 1;
@@ -48,7 +46,7 @@ public:
   void onModeChange(mcb modeCallback);
   void run(unsigned long currentMicros = micros());
   void play(unsigned long currentMicros = micros());
-  void playSingle(byte id, unsigned long currentMicros = micros());
+  void playSingle(byte index, unsigned long currentMicros = micros());
   void playRandom(unsigned long currentMicros = micros());
   void loop(unsigned long currentMicros = micros());
   void pause();
@@ -57,7 +55,7 @@ public:
   void reset();
 
   bool hasAnimations();
-  bool hasAnimation(byte id);
+  bool hasAnimation(byte index);
   bool modeIsIn(byte modeAmount, ...);
 
   Animation *getCurrentAnimation();

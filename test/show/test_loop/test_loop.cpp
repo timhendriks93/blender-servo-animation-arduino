@@ -13,12 +13,12 @@ void setUp(void) {
 }
 
 void test_loop(void) {
-  Animation animationA(0, FPS, FRAMES);
-  Animation animationB(1, FPS, FRAMES);
+  Animation animationA(FPS, 4);
+  Animation animationB(FPS, 5);
 
   Show show;
-  show.addAnimation(animationA);
   show.addAnimation(animationB);
+  show.addAnimation(animationA);
 
   TEST_ASSERT_TRUE(show.hasAnimations());
   TEST_ASSERT_EQUAL(2, show.countAnimations());
@@ -28,21 +28,21 @@ void test_loop(void) {
   show.loop(0);
 
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
-  TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(5, show.getCurrentAnimation()->getFrames());
 
-  for (long i = 0; i < FRAME_MICROS * (long)6; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)6; i += FRAME_MICROS) {
     show.run(i);
   }
 
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
-  TEST_ASSERT_EQUAL(1, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(4, show.getCurrentAnimation()->getFrames());
 
-  for (long i = 0; i < FRAME_MICROS * (long)5; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)4; i += FRAME_MICROS) {
     show.run(i);
   }
 
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
-  TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getID());
+  TEST_ASSERT_EQUAL(5, show.getCurrentAnimation()->getFrames());
 }
 
 void test_without_animations(void) {
@@ -52,7 +52,7 @@ void test_without_animations(void) {
 }
 
 void test_prevented(void) {
-  Animation animation(0, FPS, FRAMES);
+  Animation animation(FPS, FRAMES);
   Serial_ mock;
   Show show;
   show.addAnimation(animation);

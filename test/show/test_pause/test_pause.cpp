@@ -13,8 +13,8 @@ void setUp(void) {
 }
 
 void test_pause(byte mode) {
-  Animation animationA(0, FPS, FRAMES);
-  Animation animationB(1, FPS, FRAMES);
+  Animation animationA(FPS, FRAMES);
+  Animation animationB(FPS, FRAMES);
 
   Show show;
   show.addAnimation(animationA);
@@ -40,7 +40,7 @@ void test_pause(byte mode) {
   TEST_ASSERT_EQUAL(mode, show.getMode());
   TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getFrame());
 
-  for (long i = 0; i < FRAME_MICROS * (long)3; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)3; i += FRAME_MICROS) {
     show.run(i);
   }
 
@@ -48,7 +48,7 @@ void test_pause(byte mode) {
 
   show.pause();
 
-  for (long i = 0; i < FRAME_MICROS * (long)3; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)3; i += FRAME_MICROS) {
     show.run(i);
   }
 

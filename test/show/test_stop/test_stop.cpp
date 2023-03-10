@@ -16,8 +16,8 @@ const int positionsA[5] PROGMEM = {350, 340, 330, 340, 330};
 const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
 
 void test_stop(byte mode) {
-  Animation animationA(0, FPS, FRAMES);
-  Animation animationB(1, FPS, FRAMES);
+  Animation animationA(FPS, FRAMES);
+  Animation animationB(FPS, FRAMES);
 
   Serial_ mock;
   Show show;
@@ -47,7 +47,7 @@ void test_stop(byte mode) {
   TEST_ASSERT_EQUAL(mode, show.getMode());
   TEST_ASSERT_EQUAL(0, show.getCurrentAnimation()->getFrame());
 
-  for (long i = 0; i < FRAME_MICROS * (long)3; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)3; i += FRAME_MICROS) {
     show.run(i);
   }
 
@@ -59,7 +59,7 @@ void test_stop(byte mode) {
 
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
 
-  for (long i = 0; i < FRAME_MICROS * (long)3; i++) {
+  for (long i = 0; i < FRAME_MICROS * (long)3; i += FRAME_MICROS) {
     show.run(i);
   }
 
