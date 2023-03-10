@@ -24,8 +24,8 @@ void move(byte servoID, int angle) {
 BlenderServoAnimation::Show show;
 
 // Animation objects to represent the original Blender animations
-BlenderServoAnimation::Animation animationA(0, SceneA::FPS, SceneA::FRAMES);
-BlenderServoAnimation::Animation animationB(1, SceneB::FPS, SceneB::FRAMES);
+BlenderServoAnimation::Animation animationA(SceneA::FPS, SceneA::FRAMES);
+BlenderServoAnimation::Animation animationB(SceneB::FPS, SceneB::FRAMES);
 
 // Servo objects to manage the positions
 BlenderServoAnimation::Servo myBlenderServoA(0, SceneA::Bone, move);

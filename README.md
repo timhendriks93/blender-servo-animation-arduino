@@ -29,6 +29,9 @@ BlenderServoAnimation::Servo(...);
 
 // Blender animation object
 BlenderServoAnimation::Animation(...);
+
+// Blender show object
+BlenderServoAnimation::Show();
 ```
 
 When not using the standard servo library, you can use the namespace and therefore skip the namespace prefix:
@@ -41,6 +44,9 @@ Servo(...);
 
 // Blender animation object
 Animation(...);
+
+// Blender show object
+Show();
 ```
 
 ## Defining Servos
@@ -221,3 +227,41 @@ void setup() {
 ```
 
 The [SwitchModeButton example](examples/SwitchModeButton) shows how to combine all mode methods to control an animation based on a single button. Make sure to also check out the other [examples](examples) to get started quickly.
+
+## Defining a Show
+
+A show object allows you to combine multiple animations and control their play back in an easy way. You can also think of a show as a playlist of animations. Since the show object does not expect any arguments, the initialization is very simple:
+
+```ino
+Show myBlenderShow;
+```
+
+### Registering Animations
+
+After defining some animations as shown above, we have to register them to the show object by calling the `addAnimation` method:
+
+```ino
+myBlenderShow.addAnimation(myBlenderAnimation);
+```
+
+This is usually done inside the `setup` function after the animation and servo objects have been defined globally (outside of any function like `setup` or `loop`).
+
+Alternatively, we can also create an array of animations and call the `addAnimations` method instead:
+
+```ino
+Animations myBlenderAnimations[] = {
+  Animation()
+}
+Servo myBlenderServos[] = {
+  Servo(0, BoneA, move),
+  Servo(1, BoneB, move),
+  Servo(2, BoneC, move),
+  ...
+}
+
+Animation myBlenderAnimation(30, 1000);
+
+void setup() {
+  myBlenderAnimation.addServos(myBlenderServos);
+}
+```
