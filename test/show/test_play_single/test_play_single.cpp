@@ -91,11 +91,28 @@ void test_allowed(void) {
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_SINGLE, show.getMode());
 }
 
+void test_prevent_sudden_index_change(void) {
+  Show show;
+  Animation animationA(FPS, FRAMES);
+  Animation animationB(FPS, FRAMES);
+  show.addAnimation(animationA);
+  show.addAnimation(animationB);
+
+  show.play(0);
+  TEST_ASSERT_EQUAL(Show::MODE_PLAY, show.getMode());
+  show.run(FRAME_MICROS);
+  show.pause();
+  TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
+  show.playSingle(1, 0);
+  TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_play_single);
   RUN_TEST(test_without_animations);
   RUN_TEST(test_prevented);
   RUN_TEST(test_allowed);
+  RUN_TEST(test_prevent_sudden_index_change);
   UNITY_END();
 }

@@ -54,7 +54,8 @@ void Show::play(unsigned long currentMicros) {
 void Show::playSingle(byte index, unsigned long currentMicros) {
   Animation *animation = this->animations[index];
 
-  if (animation == nullptr || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+  if (animation == nullptr || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE) ||
+      (this->mode == MODE_PAUSE && playIndex != index)) {
     return;
   }
 
@@ -136,6 +137,10 @@ void Show::reset() {
 
 byte Show::getMode() {
   return this->mode;
+}
+
+byte Show::getPlayIndex() {
+  return this->playIndex;
 }
 
 void Show::run(unsigned long currentMicros) {

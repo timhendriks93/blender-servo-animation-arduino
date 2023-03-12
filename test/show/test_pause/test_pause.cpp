@@ -60,7 +60,7 @@ void test_pause(byte mode) {
     show.play(0);
     break;
   case Show::MODE_PLAY_SINGLE:
-    show.playSingle(1, 0);
+    show.playSingle(0, 0);
     break;
   case Show::MODE_PLAY_RANDOM:
     show.playRandom(0);

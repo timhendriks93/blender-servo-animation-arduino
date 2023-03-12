@@ -39,6 +39,7 @@ public:
   static const byte MODE_LIVE = 7;
 
   byte getMode();
+  byte getPlayIndex();
   byte countAnimations();
 
   void addAnimation(Animation &animation);
