@@ -4,7 +4,9 @@
 #define BlenderServoAnimation_Command_H
 
 namespace BlenderServoAnimation {
+
 class Command {
+
 private:
   static const byte START_MARKER = 0x3C;
   static const byte END_MARKER = 0x3E;
@@ -26,13 +28,13 @@ public:
   void read(Stream *serial);
 
   bool isValid();
-
   bool isComplete();
 
   byte getServoID();
 
   int getServoPosition();
 };
+
 } // namespace BlenderServoAnimation
 
 #endif

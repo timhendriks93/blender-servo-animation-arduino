@@ -1,4 +1,4 @@
-#include "BlenderServoAnimation.h"
+#include "animation/Animation.h"
 #include "servo/Servo.h"
 #include <Arduino.h>
 
@@ -39,7 +39,7 @@ void Animation::changeMode(byte mode) {
 }
 
 void Animation::run(unsigned long currentMicros) {
-  switch (mode) {
+  switch (this->mode) {
   case MODE_PLAY:
   case MODE_LOOP:
     this->handlePlayMode(currentMicros);
@@ -80,10 +80,10 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
   }
 
   if (this->frame == 0) {
-    if (this->mode == Animation::MODE_LOOP) {
-      this->changeMode(Animation::MODE_LOOP);
+    if (this->mode == MODE_LOOP) {
+      this->changeMode(MODE_LOOP);
     } else {
-      this->changeMode(Animation::MODE_DEFAULT);
+      this->changeMode(MODE_DEFAULT);
     }
   }
 }
@@ -101,7 +101,7 @@ void Animation::handleStopMode() {
   }
 
   if (allNeutral) {
-    this->changeMode(Animation::MODE_DEFAULT);
+    this->changeMode(MODE_DEFAULT);
     return;
   }
 
@@ -132,29 +132,53 @@ void Animation::handleLiveMode() {
   }
 }
 
-void Animation::play() {
-  this->lastMicros = micros();
-  this->changeMode(Animation::MODE_PLAY);
+void Animation::play(unsigned long currentMicros) {
+  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
+  this->lastMicros = currentMicros;
+  this->changeMode(MODE_PLAY);
 }
 
 void Animation::pause() {
-  this->changeMode(Animation::MODE_PAUSE);
+  if (!this->modeIsIn(2, MODE_PLAY, MODE_LOOP)) {
+    return;
+  }
+
+  this->changeMode(MODE_PAUSE);
 }
 
-void Animation::loop() {
-  this->lastMicros = micros();
-  this->changeMode(Animation::MODE_LOOP);
+void Animation::loop(unsigned long currentMicros) {
+  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
+  this->lastMicros = currentMicros;
+  this->changeMode(MODE_LOOP);
 }
 
 void Animation::stop(byte stepDelay) {
+  if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
+    return;
+  }
+
   this->stopStepDelay = stepDelay;
   this->frame = 0;
-  this->changeMode(Animation::MODE_STOP);
+  this->changeMode(MODE_STOP);
 }
 
 void Animation::live(Stream &serial) {
+  if (this->mode != MODE_DEFAULT) {
+    return;
+  }
+
   this->serial = &serial;
-  this->changeMode(Animation::MODE_LIVE);
+  this->changeMode(MODE_LIVE);
+}
+
+byte Animation::getFPS() {
+  return this->fps;
 }
 
 byte Animation::getMode() {
@@ -163,4 +187,25 @@ byte Animation::getMode() {
 
 int Animation::getFrame() {
   return this->frame;
+}
+
+int Animation::getFrames() {
+  return this->frames;
+}
+
+bool Animation::modeIsIn(byte modeAmount, ...) {
+  bool match = false;
+
+  va_list modes;
+  va_start(modes, modeAmount);
+
+  for (int i = 0; i < modeAmount; i++) {
+    if (this->mode == va_arg(modes, int)) {
+      match = true;
+    }
+  }
+
+  va_end(modes);
+
+  return match;
 }

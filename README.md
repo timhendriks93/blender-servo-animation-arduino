@@ -2,6 +2,8 @@
 
 This library helps to control servos based on an exported Blender animation. It is specifically designed to work with the [Blender Servo Animation Add-on](https://github.com/timhendriks93/blender-servo-animation).
 
+[![Continuous Integration](https://github.com/timhendriks93/blender-servo-animation-arduino/actions/workflows/ci.yml/badge.svg)](https://github.com/timhendriks93/blender-servo-animation-arduino/actions/workflows/ci.yml)
+
 ## Installation
 
 Please refer to the official [Arduino documentation](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries) to see how you can install this library.
@@ -27,6 +29,9 @@ BlenderServoAnimation::Servo(...);
 
 // Blender animation object
 BlenderServoAnimation::Animation(...);
+
+// Blender show object
+BlenderServoAnimation::Show();
 ```
 
 When not using the standard servo library, you can use the namespace and therefore skip the namespace prefix:
@@ -39,6 +44,9 @@ Servo(...);
 
 // Blender animation object
 Animation(...);
+
+// Blender show object
+Show();
 ```
 
 ## Defining Servos
@@ -125,19 +133,20 @@ This is usually done inside the `setup` function after the servo objects have be
 Alternatively, we can also create an array of servos and call the `addServos` method instead:
 
 ```ino
+Animation myBlenderAnimation(30, 1000);
+
 Servo myBlenderServos[] = {
   Servo(0, BoneA, move),
   Servo(1, BoneB, move),
   Servo(2, BoneC, move),
-  ...
 }
-
-Animation myBlenderAnimation(30, 1000);
 
 void setup() {
-  myBlenderAnimation.addServos(myBlenderServos);
+  myBlenderAnimation.addServos(myBlenderServos, 3);
 }
 ```
+
+> Note: the `addServos` function expects the amount of servos in the array to be passed via the second argument.
 
 ### Updating the Animation State
 
@@ -210,7 +219,7 @@ On top of manually checking the animation mode, we can also register a callback 
 
 ```ino
 void modeChanged(byte prevMode, byte newMode) {
-  // Do something (e.g. using another switch)
+  // Do something (e.g. using a switch statement)
 }
 
 void setup() {
@@ -218,4 +227,110 @@ void setup() {
 }
 ```
 
-The [SwitchModeButton example](examples/SwitchModeButton) shows how to combine all mode methods to control an animation based on a single button. Make sure to also check out the other [examples](examples) to get started quickly.
+The [SwitchModeButton example](examples/SwitchModeButton) shows how to combine all mode methods to control an animation based on a single button.
+
+## Defining a Show
+
+A show object allows you to combine multiple animations and control their play back in an easy way. You can also think of a show as a playlist of animations. Since the show object does not expect any arguments, the initialization is very simple:
+
+```ino
+Show myBlenderShow;
+```
+
+### Registering Animations
+
+After defining some animations as shown above, we have to register them to the show object by calling the `addAnimation` method:
+
+```ino
+myBlenderShow.addAnimation(myBlenderAnimation);
+```
+
+This is usually done inside the `setup` function after the animation and servo objects have been defined globally (outside of any function like `setup` or `loop`).
+
+Alternatively, we can also create an array of animations and call the `addAnimations` method instead:
+
+```ino
+Show myBlenderShow;
+
+Animation animations[3] = {
+  {FPS, FRAMES_A},
+  {FPS, FRAMES_B},
+  {FPS, FRAMES_C},
+};
+
+void setup() {
+  myBlenderShow.addAnimations(animations, 3);
+}
+```
+
+> Note: the `addAnimations` function expects the amount of servos in the array to be passed via the second argument.
+
+### Updating the Show State
+
+Just like single animations, we have to regularly trigger the show instance in order to update its state and internally handle the servo movement of the current animation. We therefore need to call the `run` method during each `loop`:
+
+```ino
+void loop() {
+  myBlenderShow.run();
+}
+```
+
+### Show Modes
+
+The show modes are similar to the previously mentioned animation modes. In addition to those, there are various playback modes to handle a multitude of animations.
+
+Just like with animation modes, a show will be in the default mode at first. The following table is focusing on the differences and additions of the show modes compared to the animation modes:
+
+| Constant | Method | Description |
+|----------|--------|-------------|
+| MODE_PLAY | play() | Start or resume playing the show once |
+| MODE_PLAY_SINGLE | playSingle(index) | Start or resume playing a single animation once |
+| MODE_PLAY_RANDOM | playRandom() | Start or resume randomly playing animations of the show |
+
+The modes can be changed or triggered by calling the respective methods on the show object:
+
+```ino
+myBlenderShow.play();
+myBlenderShow.playSingle(index);
+myBlenderShow.playRandom();
+myBlenderShow.pause();
+myBlenderShow.loop();
+myBlenderShow.stop();
+myBlenderShow.live(stream);
+```
+
+> Note: the default mode can not be triggered as it is only handled internally.
+
+To get the current show mode, we can again call a `getMode` method. This will return a `byte` representing one of the mode constants mentioned in the table above. We can then compare the return value to those constants to act according to the current mode:
+
+```ino
+byte currentMode = myBlenderShow.getMode();
+
+switch (currentMode) {
+case Show::MODE_DEFAULT:
+  // Do something
+  break;
+case Show::MODE_PLAY:
+  // Do something else
+  break;
+...
+}
+```
+
+> Note: The actual byte values of the show modes differ from the animation modes. For example, `Show::MODE_PAUSE != Animation::MODE_PAUSE`.
+
+As with animations, we can also register an `onModeChange` callback function:
+
+```ino
+void modeChanged(byte prevMode, byte newMode) {
+  // Do something (e.g. using a switch statement)
+}
+
+void setup() {
+  myBlenderShow.onModeChange(modeChanged);
+}
+```
+
+There is also a specific [Show example](examples/Show) to illustrate a simple setup based on 2 different animations.
+
+Make sure to also check out the other [examples](examples) to get started more quickly.
