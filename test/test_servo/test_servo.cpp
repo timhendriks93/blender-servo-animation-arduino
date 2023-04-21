@@ -1,4 +1,4 @@
-#include "servo/Servo.h"
+#include "Servo.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;

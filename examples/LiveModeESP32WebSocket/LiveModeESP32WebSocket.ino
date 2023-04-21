@@ -39,7 +39,7 @@ BlenderServoAnimation::Servo myBlenderServo(0, move);
 
 // Live mode stream instance acting as a middleware between web socket and
 // animation object
-BlenderServoAnimation::Live live;
+BlenderServoAnimation::LiveStream liveStream;
 
 // Handler function writing data to the live stream instance when receiving data
 void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
@@ -49,7 +49,7 @@ void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
   }
 
   for (size_t i = 0; i < len; i++) {
-    live.write(data[i]);
+    liveStream.write(data[i]);
   }
 }
 
@@ -76,7 +76,7 @@ void setup() {
   animation.addServo(myBlenderServo);
 
   // Trigger the animation live mode
-  animation.live(live);
+  animation.live(liveStream);
 }
 
 void loop() {

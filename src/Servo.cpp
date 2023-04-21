@@ -1,4 +1,4 @@
-#include "servo/Servo.h"
+#include "Servo.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;

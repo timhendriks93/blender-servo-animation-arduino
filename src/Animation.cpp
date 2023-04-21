@@ -1,5 +1,5 @@
-#include "animation/Animation.h"
-#include "servo/Servo.h"
+#include "Animation.h"
+#include "Servo.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
@@ -112,14 +112,14 @@ void Animation::handleStopMode() {
 
 void Animation::handleLiveMode() {
   while (this->liveStream->available() > 0) {
-    this->command.read(this->liveStream);
+    this->liveCommand.read(this->liveStream);
 
-    if (!this->command.isComplete() || !this->command.isValid()) {
+    if (!this->liveCommand.isComplete() || !this->liveCommand.isValid()) {
       continue;
     }
 
-    byte id = this->command.getServoID();
-    int position = this->command.getServoPosition();
+    byte id = this->liveCommand.getServoID();
+    int position = this->liveCommand.getServoPosition();
 
     for (int i = 0; i < MAX_SERVO_COUNT; i++) {
       Servo *servo = this->servos[i];

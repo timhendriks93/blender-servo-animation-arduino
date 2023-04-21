@@ -1,5 +1,5 @@
-#include "animation/Animation.h"
-#include "live/Live.h"
-#include "servo/Servo.h"
-#include "show/Show.h"
+#include "Animation.h"
+#include "LiveStream.h"
+#include "Servo.h"
+#include "Show.h"
 #include <Arduino.h>

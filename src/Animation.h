@@ -1,5 +1,5 @@
-#include "command/Command.h"
-#include "servo/Servo.h"
+#include "LiveCommand.h"
+#include "Servo.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -30,7 +30,7 @@ private:
 
   Servo *servos[MAX_SERVO_COUNT] = {};
   Stream *liveStream;
-  Command command;
+  LiveCommand liveCommand;
   mcb modeCallback = nullptr;
 
   void changeMode(byte mode);

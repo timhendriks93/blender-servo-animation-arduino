@@ -1,9 +1,9 @@
-#include "command/Command.h"
+#include "LiveCommand.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-void Command::read(Stream *liveStream) {
+void LiveCommand::read(Stream *liveStream) {
   byte receivedByte = liveStream->read();
 
   if (!this->receiving && receivedByte != START_MARKER) {
@@ -29,20 +29,20 @@ void Command::read(Stream *liveStream) {
   }
 }
 
-bool Command::isValid() {
+bool LiveCommand::isValid() {
   return this->receivedBytes[0] == START_MARKER &&
          this->receivedBytes[LENGTH - 1] == END_MARKER;
 }
 
-bool Command::isComplete() {
+bool LiveCommand::isComplete() {
   return this->complete;
 }
 
-byte Command::getServoID() {
+byte LiveCommand::getServoID() {
   return this->receivedBytes[INDEX_SERVO_ID];
 }
 
-int Command::getServoPosition() {
+int LiveCommand::getServoPosition() {
   return this->receivedBytes[INDEX_POSITION_BYTE] |
          this->receivedBytes[INDEX_POSITION_SIG_BYTE] << BITS;
 }

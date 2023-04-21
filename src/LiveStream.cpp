@@ -1,17 +1,17 @@
-#include "Live.h"
+#include "LiveStream.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-int Live::available() {
+int LiveStream::available() {
   return this->readIndex != this->writeIndex;
 }
 
-int Live::peek() {
+int LiveStream::peek() {
   return this->buffer[this->readIndex];
 }
 
-int Live::read() {
+int LiveStream::read() {
   int value = this->buffer[this->readIndex++];
 
   if (this->readIndex >= BUFFER_SIZE) {
@@ -21,7 +21,7 @@ int Live::read() {
   return value;
 }
 
-size_t Live::write(uint8_t value) {
+size_t LiveStream::write(uint8_t value) {
   this->buffer[this->writeIndex++] = value;
 
   if (this->writeIndex >= BUFFER_SIZE) {
@@ -31,7 +31,7 @@ size_t Live::write(uint8_t value) {
   return 1;
 }
 
-void Live::flush() {
+void LiveStream::flush() {
   for (int i = 0; i < BUFFER_SIZE; i++) {
     this->buffer[i] = 0;
   }

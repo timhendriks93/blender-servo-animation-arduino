@@ -1,5 +1,5 @@
-#include "show/Show.h"
-#include "animation/Animation.h"
+#include "Show.h"
+#include "Animation.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;

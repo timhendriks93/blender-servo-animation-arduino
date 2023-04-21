@@ -5,7 +5,7 @@
 
 namespace BlenderServoAnimation {
 
-class Live : public Stream {
+class LiveStream : public Stream {
 private:
   static const byte BUFFER_SIZE = 20;
 

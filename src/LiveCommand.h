@@ -5,7 +5,7 @@
 
 namespace BlenderServoAnimation {
 
-class Command {
+class LiveCommand {
 
 private:
   static const byte START_MARKER = 0x3C;
