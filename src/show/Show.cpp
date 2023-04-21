@@ -113,7 +113,7 @@ void Show::stop(byte stepDelay) {
   this->changeMode(MODE_STOP);
 }
 
-void Show::live(Stream &serial) {
+void Show::live(Stream &liveStream) {
   if (!this->hasAnimations() || this->mode != MODE_DEFAULT) {
     return;
   }
@@ -122,7 +122,7 @@ void Show::live(Stream &serial) {
     this->animation = this->animations[this->playIndex];
   }
 
-  this->animation->live(serial);
+  this->animation->live(liveStream);
   this->changeMode(MODE_LIVE);
 }
 

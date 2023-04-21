@@ -1,12 +1,12 @@
-#include "../SerialMock.h"
 #include "command/Command.h"
+#include "live/Live.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
 
 void test_valid(void) {
   byte values[5] = {60, 3, 1, 119, 62};
-  SerialMock mock;
+  Live mock;
   Command command = Command();
 
   for (int i = 0; i < 5; i++) {
@@ -27,7 +27,7 @@ void test_valid(void) {
 
 void test_invalid(void) {
   byte values[5] = {60, 3, 1, 119, 0};
-  SerialMock mock;
+  Live mock;
   Command command = Command();
 
   for (int i = 0; i < 5; i++) {
@@ -46,7 +46,7 @@ void test_invalid(void) {
 
 void test_incomplete(void) {
   byte values[13] = {60, 3, 1, 60, 3, 1, 119, 62, 60, 3, 1, 144, 62};
-  SerialMock mock;
+  Live mock;
   Command command = Command();
 
   for (int i = 0; i < 13; i++) {

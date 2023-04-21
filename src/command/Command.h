@@ -25,7 +25,7 @@ private:
   bool complete = false;
 
 public:
-  void read(Stream *serial);
+  void read(Stream *liveStream);
 
   bool isValid();
   bool isComplete();

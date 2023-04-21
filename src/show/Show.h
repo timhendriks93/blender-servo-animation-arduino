@@ -52,7 +52,7 @@ public:
   void loop(unsigned long currentMicros = micros());
   void pause();
   void stop(byte stepDelay = 20);
-  void live(Stream &serial);
+  void live(Stream &liveStream);
   void reset();
 
   bool hasAnimations();

@@ -111,8 +111,8 @@ void Animation::handleStopMode() {
 }
 
 void Animation::handleLiveMode() {
-  while (this->serial->available() > 0) {
-    this->command.read(this->serial);
+  while (this->liveStream->available() > 0) {
+    this->command.read(this->liveStream);
 
     if (!this->command.isComplete() || !this->command.isValid()) {
       continue;
@@ -168,12 +168,12 @@ void Animation::stop(byte stepDelay) {
   this->changeMode(MODE_STOP);
 }
 
-void Animation::live(Stream &serial) {
+void Animation::live(Stream &liveStream) {
   if (this->mode != MODE_DEFAULT) {
     return;
   }
 
-  this->serial = &serial;
+  this->liveStream = &liveStream;
   this->changeMode(MODE_LIVE);
 }
 

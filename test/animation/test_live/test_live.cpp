@@ -1,4 +1,3 @@
-#include "../../SerialMock.h"
 #include "../helper.h"
 #include "BlenderServoAnimation.h"
 #include <unity.h>
@@ -13,7 +12,7 @@ const int positions[5] PROGMEM = {350, 340, 330, 340, 330};
 
 void test_live(void) {
   Animation animation;
-  SerialMock mock;
+  Live mock;
   Servo servos[] = {
       Servo(0, positions, move),
       Servo(1, move),
@@ -46,7 +45,7 @@ void test_live(void) {
 
 void test_skip_incomplete_command(void) {
   Animation animation;
-  SerialMock mock;
+  Live mock;
   Servo servo(0, move);
   animation.addServo(servo);
   animation.live(mock);

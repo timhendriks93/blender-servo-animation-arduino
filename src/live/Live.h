@@ -1,15 +1,17 @@
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_Serial_Mock_H
-#define BlenderServoAnimation_Serial_Mock_H
+#ifndef BlenderServoAnimation_Live_H
+#define BlenderServoAnimation_Live_H
 
-class SerialMock : public Stream {
+namespace BlenderServoAnimation {
+
+class Live : public Stream {
 private:
   static const byte BUFFER_SIZE = 20;
 
   byte buffer[BUFFER_SIZE];
-  byte readIndex = 0;
   byte writeIndex = 0;
+  byte readIndex = 0;
 
 public:
   int available();
@@ -22,5 +24,7 @@ public:
 
   void flush();
 };
+
+} // namespace BlenderServoAnimation
 
 #endif

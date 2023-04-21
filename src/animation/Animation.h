@@ -29,7 +29,7 @@ private:
   unsigned long lastMicros;
 
   Servo *servos[MAX_SERVO_COUNT] = {};
-  Stream *serial;
+  Stream *liveStream;
   Command command;
   mcb modeCallback = nullptr;
 
@@ -57,7 +57,7 @@ public:
   void pause();
   void loop(unsigned long currentMicros = micros());
   void stop(byte stepDelay = 20);
-  void live(Stream &serial);
+  void live(Stream &liveStream);
 
   byte getFPS();
   byte getMode();

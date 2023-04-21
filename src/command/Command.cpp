@@ -3,8 +3,8 @@
 
 using namespace BlenderServoAnimation;
 
-void Command::read(Stream *serial) {
-  byte receivedByte = serial->read();
+void Command::read(Stream *liveStream) {
+  byte receivedByte = liveStream->read();
 
   if (!this->receiving && receivedByte != START_MARKER) {
     return;
