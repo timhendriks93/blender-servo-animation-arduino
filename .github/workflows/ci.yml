@@ -28,6 +28,7 @@ jobs:
           [
             AdafruitPCA9685,
             LiveMode,
+            LiveModeESP32WebSocket,
             MultiplePCA9685,
             Show,
             StandardServoLib,
