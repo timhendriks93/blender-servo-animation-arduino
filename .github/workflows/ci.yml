@@ -23,12 +23,13 @@ jobs:
     name: "Build examples"
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         example:
           [
             AdafruitPCA9685,
-            LiveMode,
-            LiveModeESP32WebSocket,
+            SerialLiveMode,
+            WebSocketLiveMode,
             MultiplePCA9685,
             Show,
             StandardServoLib,
