@@ -25,9 +25,9 @@ AsyncWebSocket ws("/");
 Servo myServo;
 
 // Callback function which is called whenever a servo needs to be moved
-void move(byte servoID, int angle) {
-  // Ignore the servoID (there is only one servo) and write the current angle
-  myServo.write(angle);
+void move(byte servoID, int position) {
+  // Ignore the servoID (there is only one servo) and write the current position
+  myServo.writeMicroseconds(position);
 }
 
 // Animation object to manage the servos

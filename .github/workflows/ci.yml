@@ -49,9 +49,8 @@ jobs:
         run: pip install --upgrade platformio
       - name: Build PlatformIO examples
         run: |
-          pio ci examples/${{ matrix.example }} \
-            --lib=. \
-            --project-conf=examples/${{ matrix.example }}/platformio.ini
+          cd examples/${{ matrix.example }}
+          pio run
   lint:
     name: "Lint"
     runs-on: ubuntu-22.04

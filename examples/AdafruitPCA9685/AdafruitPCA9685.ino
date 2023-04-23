@@ -13,12 +13,6 @@
 // Using the namespace to have short class references (Animation and Servo)
 using namespace BlenderServoAnimation;
 
-// Frames per second - see original Blender animation / ik.h
-#define FPS 30
-
-// Total animation frames - see original Blender animation / ik.h
-#define FRAMES 100
-
 // PWM driver instance to set PWM output
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
