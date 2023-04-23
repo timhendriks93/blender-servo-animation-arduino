@@ -24,7 +24,7 @@ void Servo::move(int position, bool force) {
   }
 
   int positionDiff = abs(position - this->currentPosition);
-  bool exceedsThreshold = positionDiff > this->threshold;
+  bool exceedsThreshold = this->threshold && positionDiff > this->threshold;
 
   if (this->currentPosition > 0 && exceedsThreshold) {
     return;

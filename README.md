@@ -69,7 +69,7 @@ Servo(id, callback, threshold);
 | id | byte | Unique servo ID as specified via the Add-on |
 | positions | const&#160;int[] | Exported positions per frame |
 | callback | void&#160;(byte,&#160;int) | Function to trigger when a servo is moved |
-| threshold | byte | Max allowed position diff (default=20) |
+| threshold | byte | Max allowed position diff (default=0 / no threshold handling) |
 
 ### Callback Function
 

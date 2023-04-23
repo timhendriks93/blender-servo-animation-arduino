@@ -21,8 +21,8 @@ private:
   cb moveCallback;
 
 public:
-  Servo(byte id, const int positions[], cb moveCallback, byte threshold = 20);
-  Servo(byte id, cb moveCallback, byte threshold = 20);
+  Servo(byte id, const int positions[], cb moveCallback, byte threshold = 0);
+  Servo(byte id, cb moveCallback, byte threshold = 0);
 
   void move(int position, bool force = false);
   void moveByFrame(int frame);
