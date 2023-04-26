@@ -94,7 +94,7 @@ void Animation::handleStopMode(unsigned long currentMicros) {
   if (currentMicros - this->lastMicros < 10000) {
     return;
   }
-  
+
   this->lastMicros = currentMicros;
 
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
