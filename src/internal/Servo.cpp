@@ -40,6 +40,7 @@ void Servo::moveByFrame(int frame) {
 }
 
 void Servo::moveTowardsNeutral(bool inSteps) {
+  int step = round(this->threshold / 10);
   int newPosition = this->currentPosition;
 
   if (inSteps == false) {
@@ -48,9 +49,13 @@ void Servo::moveTowardsNeutral(bool inSteps) {
   }
 
   if (this->currentPosition > this->neutralPosition) {
-    newPosition--;
+    newPosition -= step;
   } else if (this->currentPosition < this->neutralPosition) {
-    newPosition++;
+    newPosition += step;
+  }
+
+  if (abs(this->neutralPosition - newPosition) < step) {
+    newPosition = this->neutralPosition;
   }
 
   this->move(newPosition);

@@ -93,7 +93,7 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());

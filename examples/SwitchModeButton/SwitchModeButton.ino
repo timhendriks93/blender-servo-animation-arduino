@@ -60,7 +60,7 @@ void modeChanged(byte prevMode, byte newMode) {
 BlenderServoAnimation::Animation animation(FPS, FRAMES);
 
 // Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, Bone, move);
+BlenderServoAnimation::Servo myBlenderServo(0, Bone, move, 100);
 
 // Callback to be triggered on a short button press
 void onPressed() {

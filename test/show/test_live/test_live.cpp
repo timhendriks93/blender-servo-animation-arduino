@@ -50,7 +50,7 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
   show.live(mock);
   TEST_ASSERT_EQUAL(Show::MODE_PAUSE, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
   show.live(mock);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());

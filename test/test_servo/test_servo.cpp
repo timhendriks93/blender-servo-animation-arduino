@@ -41,7 +41,7 @@ void test_move_by_frame(void) {
 }
 
 void test_move_towards_neutral(void) {
-  Servo servo(0, positions, move);
+  Servo servo(0, positions, move, 10);
   TEST_ASSERT_TRUE(servo.isNeutral());
   servo.moveByFrame(1);
   TEST_ASSERT_EQUAL(340, lastPositions[0].positions[0]);

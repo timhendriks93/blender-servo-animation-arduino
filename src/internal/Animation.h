@@ -17,7 +17,6 @@ private:
   static const long SECOND_IN_MICROS = 1000000;
 
   byte fps = 0;
-  byte stopStepDelay = 20;
   byte mode = MODE_DEFAULT;
 
   int diffPerSecond = 0;
@@ -35,7 +34,7 @@ private:
 
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
-  void handleStopMode();
+  void handleStopMode(unsigned long currentMicros);
   void handleLiveMode();
 
 public:
@@ -56,7 +55,7 @@ public:
   void play(unsigned long currentMicros = micros());
   void pause();
   void loop(unsigned long currentMicros = micros());
-  void stop(byte stepDelay = 20);
+  void stop(unsigned long currentMicros = micros());
   void live(Stream &liveStream);
 
   byte getFPS();

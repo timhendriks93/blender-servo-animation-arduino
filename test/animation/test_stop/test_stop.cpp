@@ -14,9 +14,9 @@ const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
 void test_stop(void) {
   Animation animation(FPS, FRAMES);
   Servo servos[] = {
-      Servo(0, positions, move),
-      Servo(1, positionsB, move),
-      Servo(2, move),
+      Servo(0, positions, move, 10),
+      Servo(1, positionsB, move, 10),
+      Servo(2, move, 10),
   };
   animation.addServos(servos, 3);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
@@ -48,9 +48,9 @@ void test_call_twice(void) {
 
   animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
 
   TEST_ASSERT_EQUAL(2, modeChangeCount);
@@ -60,7 +60,7 @@ void test_prevented(void) {
   Animation animation(FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 }
 
@@ -70,23 +70,23 @@ void test_allowed(void) {
 
   animation.play(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(0);
+  animation.run(10000);
   animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(0);
+  animation.run(10000);
   animation.play(0);
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(0);
+  animation.run(10000);
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
 }
 

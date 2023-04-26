@@ -55,7 +55,7 @@ void test_stop(byte mode) {
     TEST_ASSERT_EQUAL(2, show.getCurrentAnimation()->getFrame());
   }
 
-  show.stop();
+  show.stop(0);
 
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
 
@@ -94,7 +94,7 @@ void test_prevented(void) {
   show.addAnimation(animation);
 
   TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
 }
 
@@ -106,27 +106,27 @@ void test_allowed(void) {
 
   show.play(0);
   TEST_ASSERT_EQUAL(Show::MODE_PLAY, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.playSingle(0, 0);
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_SINGLE, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.playRandom(0);
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.loop(0);
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.live(mock);
   TEST_ASSERT_EQUAL(Show::MODE_LIVE, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
 }
 

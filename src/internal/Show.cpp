@@ -104,12 +104,12 @@ void Show::pause() {
   this->changeMode(MODE_PAUSE);
 }
 
-void Show::stop(byte stepDelay) {
+void Show::stop(unsigned long currentMicros) {
   if (!this->animation || this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
     return;
   }
 
-  this->animation->stop(stepDelay);
+  this->animation->stop(currentMicros);
   this->changeMode(MODE_STOP);
 }
 

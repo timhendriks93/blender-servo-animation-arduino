@@ -51,7 +51,7 @@ public:
   void playRandom(unsigned long currentMicros = micros());
   void loop(unsigned long currentMicros = micros());
   void pause();
-  void stop(byte stepDelay = 20);
+  void stop(unsigned long currentMicros = micros());
   void live(Stream &liveStream);
   void reset();
 
