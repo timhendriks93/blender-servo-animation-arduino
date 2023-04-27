@@ -69,7 +69,9 @@ Servo(id, callback, threshold);
 | id | byte | Unique servo ID as specified via the Add-on |
 | positions | const&#160;int[] | Exported positions per frame |
 | callback | void&#160;(byte,&#160;int) | Function to trigger when a servo is moved |
-| threshold | byte | Max allowed position diff (default=20) |
+| threshold | byte | Max allowed position diff (default=0 / no threshold handling) |
+
+> Note: the threshold is also used to define the speed for moving a servo to its neutral position when stopping an animation.
 
 ### Callback Function
 
@@ -183,12 +185,7 @@ myBlenderAnimation.live(stream);
 
 > Note: the default mode can not be triggered as it is only handled internally.
 
-When calling the `stop` method, it is possible to pass a delay in milliseconds. This delay will be used when the servos are moved to their neutral position during the stop mode. To get to the neutral position, the current position will either be increased or decreased by 1. The delay therefore controls how fast or smooth this movement will take place. The default value for this parameter is `20`.
-
-```ino
-myBlenderAnimation.stop(); // Default reset speed applied
-myBlenderAnimation.stop(30); // Servos will reset slower
-```
+When calling the `stop` method, the threshold values of the animation's servos are considered to control how fast or smooth they are moving towards their neutral position. Keep in mind that the servos will not have a threshold value by default which results in the stop mode to immediately trigger the neutral position of the servos. A slower and safer movement can be achieved by setting the threshold values as low as possible with the actual animation still able to run properly.
 
 To use the `live` method, we have to pass a stream instance which will be used for reading serial commands. For example, we can pass `Serial` if we want to use the standard USB connection of an Arduino compatible board:
 
@@ -198,6 +195,8 @@ void setup() {
   myBlenderAnimation.live(Serial);
 }
 ```
+
+This library also comes with a `LiveStream` class which allows for a more generic way to listen to live commands. For example, it can be used as part of the web socket based live mode for which you can find a dedicated example [here](examples/WebSocketLiveMode).
 
 To get the current animation mode, we can simply call the `getMode` method. This will return a `byte` representing one of the mode constants mentioned in the table above. We can then compare the return value to those constants to act according to the current mode:
 

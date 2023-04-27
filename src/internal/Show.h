@@ -1,4 +1,4 @@
-#include "animation/Animation.h"
+#include "Animation.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -51,8 +51,8 @@ public:
   void playRandom(unsigned long currentMicros = micros());
   void loop(unsigned long currentMicros = micros());
   void pause();
-  void stop(byte stepDelay = 20);
-  void live(Stream &serial);
+  void stop(unsigned long currentMicros = micros());
+  void live(Stream &liveStream);
   void reset();
 
   bool hasAnimations();

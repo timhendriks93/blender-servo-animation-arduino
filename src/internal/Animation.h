@@ -1,5 +1,5 @@
-#include "command/Command.h"
-#include "servo/Servo.h"
+#include "LiveCommand.h"
+#include "Servo.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -17,7 +17,6 @@ private:
   static const long SECOND_IN_MICROS = 1000000;
 
   byte fps = 0;
-  byte stopStepDelay = 20;
   byte mode = MODE_DEFAULT;
 
   int diffPerSecond = 0;
@@ -29,13 +28,13 @@ private:
   unsigned long lastMicros;
 
   Servo *servos[MAX_SERVO_COUNT] = {};
-  Stream *serial;
-  Command command;
+  Stream *liveStream;
+  LiveCommand liveCommand;
   mcb modeCallback = nullptr;
 
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
-  void handleStopMode();
+  void handleStopMode(unsigned long currentMicros);
   void handleLiveMode();
 
 public:
@@ -56,8 +55,8 @@ public:
   void play(unsigned long currentMicros = micros());
   void pause();
   void loop(unsigned long currentMicros = micros());
-  void stop(byte stepDelay = 20);
-  void live(Stream &serial);
+  void stop(unsigned long currentMicros = micros());
+  void live(Stream &liveStream);
 
   byte getFPS();
   byte getMode();

@@ -1,4 +1,5 @@
-#include "animation/Animation.h"
-#include "servo/Servo.h"
-#include "show/Show.h"
+#include "internal/Animation.h"
+#include "internal/LiveStream.h"
+#include "internal/Servo.h"
+#include "internal/Show.h"
 #include <Arduino.h>

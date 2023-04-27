@@ -5,7 +5,7 @@
 
 namespace BlenderServoAnimation {
 
-class Command {
+class LiveCommand {
 
 private:
   static const byte START_MARKER = 0x3C;
@@ -25,7 +25,7 @@ private:
   bool complete = false;
 
 public:
-  void read(Stream *serial);
+  void read(Stream *liveStream);
 
   bool isValid();
   bool isComplete();

@@ -81,11 +81,11 @@ void test_all_modes(void) {
   TEST_ASSERT_EQUAL(Show::MODE_PAUSE, prevMode);
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, newMode);
   TEST_ASSERT_EQUAL(0, show.getPlayIndex());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_LOOP, prevMode);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, newMode);
   TEST_ASSERT_EQUAL(0, show.getPlayIndex());
-  show.run(0);
+  show.run(10000);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, prevMode);
   TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, newMode);
   TEST_ASSERT_EQUAL(0, show.getPlayIndex());

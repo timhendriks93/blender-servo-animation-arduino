@@ -83,11 +83,11 @@ void test_prevented(void) {
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.play(0);
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(0);
+  animation.run(10000);
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
   animation.pause();

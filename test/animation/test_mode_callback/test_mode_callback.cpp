@@ -58,10 +58,10 @@ void test_all_modes(void) {
   animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, newMode);
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, newMode);
-  animation.run(0);
+  animation.run(10000);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, newMode);
   animation.live(mock);

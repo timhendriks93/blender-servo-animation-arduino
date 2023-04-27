@@ -13,12 +13,6 @@
 // Using the namespace to have short class references (Animation and Servo)
 using namespace BlenderServoAnimation;
 
-// Frames per second - see original Blender animation / ik.h
-#define FPS 30
-
-// Total animation frames - see original Blender animation / ik.h
-#define FRAMES 100
-
 // PWM driver instances to set PWM output
 Adafruit_PWMServoDriver pwmA(0x40);
 Adafruit_PWMServoDriver pwmB(0x41);
@@ -36,12 +30,12 @@ struct servoMap {
 // Forward declare the callback as it will be referenced in the following array
 void setPWM(byte servoID, int position);
 
-// Define an array of servo maps
+// Define an array of servo mapsf
 servoMap servoMaps[] = {
     // Servo attached to board A on channel 0
     {Servo(0, NeckLeft, setPWM), pwmA, 0},
 
-    // Servo attached to board A on channel 0
+    // Servo attached to board B on channel 0
     {Servo(1, NeckRight, setPWM), pwmB, 0},
 };
 

@@ -9,15 +9,20 @@
 #include "scene-a.h"
 #include "scene-b.h"
 #include <BlenderServoAnimation.h>
+
+#ifdef ARDUINO_ARCH_ESP32
+#include <ESP32Servo.h>
+#else
 #include <Servo.h>
+#endif
 
 // Servo object to send positions
 Servo myServo;
 
 // Callback function which is called whenever a servo needs to be moved
-void move(byte servoID, int angle) {
-  // Ignore the servoID (there is only one servo) and write the current angle
-  myServo.write(angle);
+void move(byte servoID, int position) {
+  // Ignore the servoID (there is only one servo) and write the current position
+  myServo.writeMicroseconds(position);
 }
 
 // Show object to manage all Blender animations
@@ -32,8 +37,8 @@ BlenderServoAnimation::Servo myBlenderServoA(0, SceneA::Bone, move);
 BlenderServoAnimation::Servo myBlenderServoB(0, SceneB::Bone, move);
 
 void setup() {
-  // Attach the servo to pin 9
-  myServo.attach(9);
+  // Attach the servo to pin 12
+  myServo.attach(12);
 
   // Add the Blender servo objects to the animations
   animationA.addServo(myBlenderServoA);

@@ -73,11 +73,11 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
   show.loop(0);
   TEST_ASSERT_EQUAL(Show::MODE_PLAY_RANDOM, show.getMode());
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
   show.loop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.live(mock);
   TEST_ASSERT_EQUAL(Show::MODE_LIVE, show.getMode());
   show.loop(0);

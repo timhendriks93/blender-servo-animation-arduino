@@ -60,11 +60,11 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
   animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  animation.stop();
+  animation.stop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.loop(0);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(0);
+  animation.run(10000);
   animation.live(mock);
   TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
   animation.loop(0);

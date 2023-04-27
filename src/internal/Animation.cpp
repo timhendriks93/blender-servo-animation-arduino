@@ -1,5 +1,5 @@
-#include "animation/Animation.h"
-#include "servo/Servo.h"
+#include "Animation.h"
+#include "Servo.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
@@ -45,7 +45,7 @@ void Animation::run(unsigned long currentMicros) {
     this->handlePlayMode(currentMicros);
     break;
   case MODE_STOP:
-    this->handleStopMode();
+    this->handleStopMode(currentMicros);
     break;
   case MODE_LIVE:
     this->handleLiveMode();
@@ -88,8 +88,14 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
   }
 }
 
-void Animation::handleStopMode() {
+void Animation::handleStopMode(unsigned long currentMicros) {
   bool allNeutral = true;
+
+  if (currentMicros - this->lastMicros < 10000) {
+    return;
+  }
+
+  this->lastMicros = currentMicros;
 
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     Servo *servo = this->servos[i];
@@ -100,26 +106,23 @@ void Animation::handleStopMode() {
     }
   }
 
-  if (allNeutral) {
-    this->changeMode(MODE_DEFAULT);
+  if (!allNeutral) {
     return;
   }
 
-  if (this->stopStepDelay > 0) {
-    delay(this->stopStepDelay);
-  }
+  this->changeMode(MODE_DEFAULT);
 }
 
 void Animation::handleLiveMode() {
-  while (this->serial->available() > 0) {
-    this->command.read(this->serial);
+  while (this->liveStream->available() > 0) {
+    this->liveCommand.read(this->liveStream);
 
-    if (!this->command.isComplete() || !this->command.isValid()) {
+    if (!this->liveCommand.isComplete() || !this->liveCommand.isValid()) {
       continue;
     }
 
-    byte id = this->command.getServoID();
-    int position = this->command.getServoPosition();
+    byte id = this->liveCommand.getServoID();
+    int position = this->liveCommand.getServoPosition();
 
     for (int i = 0; i < MAX_SERVO_COUNT; i++) {
       Servo *servo = this->servos[i];
@@ -158,22 +161,22 @@ void Animation::loop(unsigned long currentMicros) {
   this->changeMode(MODE_LOOP);
 }
 
-void Animation::stop(byte stepDelay) {
+void Animation::stop(unsigned long currentMicros) {
   if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
     return;
   }
 
-  this->stopStepDelay = stepDelay;
   this->frame = 0;
+  this->lastMicros = currentMicros;
   this->changeMode(MODE_STOP);
 }
 
-void Animation::live(Stream &serial) {
+void Animation::live(Stream &liveStream) {
   if (this->mode != MODE_DEFAULT) {
     return;
   }
 
-  this->serial = &serial;
+  this->liveStream = &liveStream;
   this->changeMode(MODE_LIVE);
 }
 

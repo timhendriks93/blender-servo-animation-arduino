@@ -103,11 +103,11 @@ void test_prevented(void) {
   show.pause();
   TEST_ASSERT_EQUAL(Show::MODE_DEFAULT, show.getMode());
   show.play(0);
-  show.stop();
+  show.stop(0);
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
   show.pause();
   TEST_ASSERT_EQUAL(Show::MODE_STOP, show.getMode());
-  show.run(0);
+  show.run(10000);
   show.live(mock);
   TEST_ASSERT_EQUAL(Show::MODE_LIVE, show.getMode());
   show.pause();
