@@ -21,24 +21,23 @@
 #include "simple.h"
 #include <BlenderServoAnimation.h>
 #include <OneButton.h>
+
+#ifdef ARDUINO_ARCH_ESP32
+#include <ESP32Servo.h>
+#else
 #include <Servo.h>
-
-// Frames per second - see original Blender animation / simple.h
-#define FPS 30
-
-// Total animation frames - see original Blender animation / simple.h
-#define FRAMES 100
+#endif
 
 // The button instance for switching animation modes
-OneButton modeButton(2, false, false);
+OneButton modeButton(2, true, true);
 
 // Servo object to send positions
 Servo myServo;
 
 // Callback function which is called whenever a servo needs to be moved
-void move(byte servoID, int angle) {
-  // Ignore the servoID (there is only one servo) and write the current angle
-  myServo.write(angle);
+void move(byte servoID, int position) {
+  // Ignore the servoID (there is only one servo) and write the current position
+  myServo.writeMicroseconds(position);
 }
 
 // Callback function which is called whenever the animation mode changes
@@ -61,7 +60,7 @@ void modeChanged(byte prevMode, byte newMode) {
 BlenderServoAnimation::Animation animation(FPS, FRAMES);
 
 // Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, Bone, move);
+BlenderServoAnimation::Servo myBlenderServo(0, Bone, move, 100);
 
 // Callback to be triggered on a short button press
 void onPressed() {
@@ -100,8 +99,8 @@ void onLongPressed() {
 }
 
 void setup() {
-  // Attach the servo to pin 9
-  myServo.attach(9);
+  // Attach the servo to pin 12
+  myServo.attach(12);
 
   // Attach the callbacks to the mode button
   modeButton.attachClick(onPressed);

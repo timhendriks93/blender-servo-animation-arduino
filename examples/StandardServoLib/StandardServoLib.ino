@@ -8,21 +8,20 @@
 
 #include "simple.h"
 #include <BlenderServoAnimation.h>
+
+#ifdef ARDUINO_ARCH_ESP32
+#include <ESP32Servo.h>
+#else
 #include <Servo.h>
-
-// Frames per second - see original Blender animation / simple.h
-#define FPS 30
-
-// Total animation frames - see original Blender animation / simple.h
-#define FRAMES 100
+#endif
 
 // Servo object to send positions
 Servo myServo;
 
 // Callback function which is called whenever a servo needs to be moved
-void move(byte servoID, int angle) {
-  // Ignore the servoID (there is only one servo) and write the current angle
-  myServo.write(angle);
+void move(byte servoID, int position) {
+  // Ignore the servoID (there is only one servo) and write the current position
+  myServo.writeMicroseconds(position);
 }
 
 // Animation object to represent the original Blender animation
@@ -32,8 +31,8 @@ BlenderServoAnimation::Animation animation(FPS, FRAMES);
 BlenderServoAnimation::Servo myBlenderServo(0, Bone, move);
 
 void setup() {
-  // Attach the servo to pin 9
-  myServo.attach(9);
+  // Attach the servo to pin 12
+  myServo.attach(12);
 
   // Add the Blender servo object to the animation
   animation.addServo(myBlenderServo);

@@ -1,40 +1,18 @@
+#include "../helper.h"
 #include "BlenderServoAnimation.h"
-#include "../../SerialMock.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
 
-#define FPS 60
-#define FRAMES 5
-
-struct positionLog {
-  int index;
-  int positions[20];
-};
-
-positionLog lastPositions[16];
-
 void setUp(void) {
-  for (int id = 0; id < 16; id++) {
-    lastPositions[id].index = 0;
-
-    for (int i = 0; i < 20; i++) {
-      lastPositions[id].positions[i] = 0;
-    }
-  }
-}
-
-void move(byte servoID, int position) {
-  int index = lastPositions[servoID].index;
-  lastPositions[servoID].positions[index] = position;
-  lastPositions[servoID].index++;
+  setUpHelper();
 }
 
 const int positions[5] PROGMEM = {350, 340, 330, 340, 330};
 
-void test_multiple_servos(void) {
+void test_live(void) {
   Animation animation;
-  SerialMock mock;
+  LiveStream mock;
   Servo servos[] = {
       Servo(0, positions, move),
       Servo(1, move),
@@ -50,7 +28,7 @@ void test_multiple_servos(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(0, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(350, lastPositions[1].positions[0]);
@@ -59,15 +37,15 @@ void test_multiple_servos(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(355, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(355, lastPositions[1].positions[1]);
 }
 
-void test_skip(void) {
+void test_skip_incomplete_command(void) {
   Animation animation;
-  SerialMock mock;
+  LiveStream mock;
   Servo servo(0, move);
   animation.addServo(servo);
   animation.live(mock);
@@ -79,15 +57,63 @@ void test_skip(void) {
     mock.write(values[i]);
   }
 
-  animation.run();
+  animation.run(0);
 
   TEST_ASSERT_EQUAL(350, lastPositions[0].positions[0]);
   TEST_ASSERT_EQUAL(360, lastPositions[0].positions[1]);
 }
 
+void test_call_twice(void) {
+  Serial_ mock;
+  Animation animation(FPS, FRAMES);
+  animation.onModeChange(onModeChange);
+
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+
+  TEST_ASSERT_EQUAL(1, modeChangeCount);
+}
+
+void test_prevented(void) {
+  Serial_ mock;
+  Animation animation(FPS, FRAMES);
+
+  animation.play(0);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.pause();
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  animation.loop(0);
+  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  animation.stop(0);
+  TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+}
+
+void test_allowed(void) {
+  Serial_ mock;
+  Animation animation(FPS, FRAMES);
+
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+}
+
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  RUN_TEST(test_multiple_servos);
-  RUN_TEST(test_skip);
+  RUN_TEST(test_live);
+  RUN_TEST(test_skip_incomplete_command);
+  RUN_TEST(test_call_twice);
+  RUN_TEST(test_prevented);
+  RUN_TEST(test_allowed);
   UNITY_END();
 }
