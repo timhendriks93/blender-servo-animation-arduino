@@ -6,4 +6,4 @@ In this example we are using a button to handle both short and long presses. Not
 
 Starting the animation will only play it once, so another button press is required to play it again. A long press will stop the animation and slowly move the servo to its neutral position.
 
-![test](../../images/arduino-nano-with-servo-and-button.png)
+![Arduino Nano with servo and button](../../images/arduino-nano-with-servo-and-button.png)
