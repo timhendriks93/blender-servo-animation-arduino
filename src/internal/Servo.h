@@ -1,3 +1,4 @@
+#include "typedefs.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimation_Servo_H
@@ -7,31 +8,30 @@ namespace BlenderServoAnimation {
 
 class Servo {
 
-  typedef void (*cb)(byte, int);
+public:
+  Servo(byte id, pcb positionCallback, byte threshold = 0);
+
+  void move(int position);
+  void moveTowardsNeutral();
+  void setThreshold(byte value);
+  void setPositionCallback(pcb positionCallback);
+
+  bool isNeutral();
 
 private:
-  byte id;
-  byte threshold;
+  const byte STEP_DIVIDER = 10;
+
+  byte id = 0;
+  byte threshold = 0;
+  byte step = 0;
 
   int neutralPosition = -1;
   int currentPosition = -1;
 
-  const int *positions = nullptr;
+  pcb positionCallback = nullptr;
 
-  cb moveCallback;
+  bool positionExceedsThreshold(int position);
 
-public:
-  Servo(byte id, const int positions[], cb moveCallback, byte threshold = 0);
-  Servo(byte id, cb moveCallback, byte threshold = 0);
-
-  void move(int position, bool force = false);
-  void moveByFrame(int frame);
-  void moveTowardsNeutral(bool inSteps = true);
-
-  bool isNeutral();
-  bool hasPositions();
-
-  byte getID();
 };
 
 } // namespace BlenderServoAnimation

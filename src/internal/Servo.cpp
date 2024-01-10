@@ -1,61 +1,45 @@
 #include "Servo.h"
+#include "typedefs.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-Servo::Servo(byte id, const int positions[], cb moveCallback, byte threshold) {
+Servo::Servo(byte id, pcb positionCallback, byte threshold) {
   this->id = id;
-  this->positions = positions;
-  this->moveCallback = moveCallback;
-  this->threshold = threshold;
-  this->neutralPosition = pgm_read_word_near(positions + 0);
-  this->currentPosition = this->neutralPosition;
+  this->positionCallback = positionCallback;
+  this->setThreshold(threshold);
 }
 
-Servo::Servo(byte id, cb moveCallback, byte threshold) {
-  this->id = id;
-  this->moveCallback = moveCallback;
-  this->threshold = threshold;
-}
-
-void Servo::move(int position, bool force) {
-  if (position == this->currentPosition && force == false) {
+void Servo::move(int position) {
+  if (position == this->currentPosition || this->positionExceedsThreshold(position)) {
     return;
   }
 
-  int positionDiff = abs(position - this->currentPosition);
-  bool exceedsThreshold = this->threshold && positionDiff > this->threshold;
-
-  if (this->currentPosition > 0 && exceedsThreshold) {
-    return;
-  }
-
-  this->moveCallback(this->id, position);
+  this->positionCallback(this->id, position);
   this->currentPosition = position;
+
+  if (this->neutralPosition == -1) {
+    this->neutralPosition = this->currentPosition;
+  }
 }
 
-void Servo::moveByFrame(int frame) {
-  int newPosition = pgm_read_word_near(this->positions + frame);
-  this->move(newPosition);
-}
+void Servo::moveTowardsNeutral() {
+  if (this->neutralPosition == -1) {
+    return;
+  }
 
-void Servo::moveTowardsNeutral(bool inSteps) {
-  int step = round(this->threshold / 10);
+  if (this->threshold == 0) {
+    return this->move(this->neutralPosition);
+  }
+
   int newPosition = this->currentPosition;
 
-  if (inSteps == false) {
-    this->move(newPosition, true);
-    return;
-  }
-
-  if (this->currentPosition > this->neutralPosition) {
-    newPosition -= step;
-  } else if (this->currentPosition < this->neutralPosition) {
-    newPosition += step;
-  }
-
-  if (abs(this->neutralPosition - newPosition) < step) {
+  if (abs(this->neutralPosition - newPosition) < this->step) {
     newPosition = this->neutralPosition;
+  } else if (this->currentPosition > this->neutralPosition) {
+    newPosition -= this->step;
+  } else if (this->currentPosition < this->neutralPosition) {
+    newPosition += this->step;
   }
 
   this->move(newPosition);
@@ -65,10 +49,21 @@ bool Servo::isNeutral() {
   return this->currentPosition == this->neutralPosition;
 }
 
-bool Servo::hasPositions() {
-  return this->positions != nullptr;
+void Servo::setPositionCallback(pcb positionCallback) {
+  this->positionCallback = positionCallback;
 }
 
-byte Servo::getID() {
-  return this->id;
+void Servo::setThreshold(byte value) {
+  this->threshold = value;
+  this->step = round(value / STEP_DIVIDER);
+}
+
+bool Servo::positionExceedsThreshold(int position) {
+  if (this->currentPosition == -1) {
+    return false;
+  }
+
+  int positionDiff = abs(position - this->currentPosition);
+
+  return this->threshold && positionDiff > this->threshold;
 }

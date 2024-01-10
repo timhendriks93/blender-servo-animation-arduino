@@ -1,107 +1,122 @@
-#include "../helper.h"
-#include "BlenderServoAnimation.h"
+#include "internal/Animation.h"
+#include "internal/LiveStream.h"
+#include "../test/helper.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
+using namespace fakeit;
 
 void setUp(void) {
-  setUpHelper();
+  ArduinoFakeReset();
+  resetPositionLog();
 }
 
-const int positions[5] PROGMEM = {350, 340, 330, 340, 330};
-const int positionsB[5] PROGMEM = {250, 240, 230, 240, 230};
+void test_pause(byte mode) {
+  Animation animation;
+  animation.onPositionChange(move);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
-void test_pause(bool loop) {
-  Animation animation(FPS, FRAMES);
-  Servo servo(2, positions, move);
-  animation.addServo(servo);
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 
-  if (loop) {
-    animation.loop(0);
-    TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-  } else {
-    animation.play(0);
-    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  switch (mode) {
+  case Animation::MODE_PLAY:
+    animation.play();
+    break;
+  case Animation::MODE_PLAY_SINGLE:
+    animation.playSingle(0);
+    break;
+  case Animation::MODE_PLAY_RANDOM:
+    animation.playRandom();
+    break;
+  case Animation::MODE_LOOP:
+    animation.loop();
+    break;
   }
 
-  int exp[5] = {340, 330, 340, 330, 350};
+  TEST_ASSERT_EQUAL(mode, animation.getMode());
+  TEST_ASSERT_EQUAL(0, animation.getCurrentScene()->getFrame());
 
-  for (int i = 0; i < 2; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(exp[i], lastPositions[2].positions[i]);
+  for (int i = 0; i < FRAME_MICROS * 3; i += FRAME_MICROS) {
+    animation.run(i);
   }
+
+  TEST_ASSERT_EQUAL(3, animation.getCurrentScene()->getFrame());
 
   animation.pause();
+
+  for (int i = FRAME_MICROS * 3; i < FRAME_MICROS * 6; i += FRAME_MICROS) {
+    animation.run(i);
+  }
+
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  TEST_ASSERT_EQUAL(3, animation.getCurrentScene()->getFrame());
 
-  for (int i = 2; i < 5; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(0, lastPositions[2].positions[i]);
+  switch (mode) {
+  case Animation::MODE_PLAY:
+    animation.play();
+    break;
+  case Animation::MODE_PLAY_SINGLE:
+    animation.playSingle(0);
+    break;
+  case Animation::MODE_PLAY_RANDOM:
+    animation.playRandom();
+    break;
+  case Animation::MODE_LOOP:
+    animation.loop();
+    break;
   }
 
-  if (loop) {
-    animation.loop(0);
-    TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-  } else {
-    animation.play(0);
-    TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  }
+  animation.run(FRAME_MICROS * 7);
 
-  for (int i = 5; i < 8; i++) {
-    animation.run(FRAME_MICROS * (long)(i + 1));
-    TEST_ASSERT_EQUAL(exp[i - 3], lastPositions[2].positions[i - 3]);
-  }
+  TEST_ASSERT_EQUAL(mode, animation.getMode());
+  TEST_ASSERT_EQUAL(4, animation.getCurrentScene()->getFrame());
+  TEST_ASSERT_EQUAL(8, logIndex);
 }
 
 void test_pause_play(void) {
-  test_pause(false);
+  test_pause(Animation::MODE_PLAY);
 }
 
 void test_pause_loop(void) {
-  test_pause(true);
+  test_pause(Animation::MODE_LOOP);
 }
 
-void test_call_twice(void) {
-  Animation animation(FPS, FRAMES);
-  animation.onModeChange(onModeChange);
+void test_pause_play_single(void) {
+  test_pause(Animation::MODE_PLAY_SINGLE);
+}
 
-  animation.play(0);
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
-  animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-  animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-
-  TEST_ASSERT_EQUAL(2, modeChangeCount);
+void test_pause_play_random(void) {
+  When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0);
+  test_pause(Animation::MODE_PLAY_RANDOM);
 }
 
 void test_prevented(void) {
-  Serial_ mock;
-  Animation animation(FPS, FRAMES);
+  LiveStream stream;
+  Animation animation;
+  animation.onPositionChange(move);
+  animation.addScene(stream, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.play(0);
-  animation.stop(0);
+  animation.play();
+  animation.stop();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.run(10000);
-  animation.live(mock);
-  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
-  animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
 }
 
 void test_allowed(void) {
-  Animation animation(FPS, FRAMES);
+  LiveStream stream;
+  Animation animation;
+  animation.onPositionChange(move);
+  animation.addScene(stream, FPS, FRAMES);
 
-  animation.play(0);
+  animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-  animation.loop(0);
+  animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
@@ -111,7 +126,8 @@ int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_pause_play);
   RUN_TEST(test_pause_loop);
-  RUN_TEST(test_call_twice);
+  RUN_TEST(test_pause_play_single);
+  RUN_TEST(test_pause_play_random);
   RUN_TEST(test_prevented);
   RUN_TEST(test_allowed);
   UNITY_END();

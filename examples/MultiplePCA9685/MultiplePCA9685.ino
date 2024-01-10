@@ -18,25 +18,22 @@ Adafruit_PWMServoDriver pwmA(0x40);
 Adafruit_PWMServoDriver pwmB(0x41);
 
 // Animation object to represent the original Blender animation
-Animation animation(FPS, FRAMES);
+Animation animation;
 
 // We use a struct to map a servo to a PCA9685 board and channel
-struct servoMap {
-  Servo servo;
+struct servoMapping {
+  byte id;
   Adafruit_PWMServoDriver pwm;
   byte channel;
 };
 
-// Forward declare the callback as it will be referenced in the following array
-void setPWM(byte servoID, int position);
-
 // Define an array of servo mapsf
-servoMap servoMaps[] = {
-    // Servo attached to board A on channel 0
-    {Servo(0, NeckLeft, setPWM), pwmA, 0},
+servoMapping servoMappings[] = {
+    // Servo 0 attached to board A on channel 0
+    {0, pwmA, 0},
 
-    // Servo attached to board B on channel 0
-    {Servo(1, NeckRight, setPWM), pwmB, 0},
+    // Servo 1 attached to board B on channel 0
+    {1, pwmB, 0},
 };
 
 // Calculate the amount of servos so that we can easily extend the array
@@ -47,25 +44,26 @@ void setPWM(byte servoID, int position) {
   // Iterate through the available servos
   for (int i = 0; i < servoAmount; i++) {
     // Check if the current servo ID matches the target servo ID
-    if (servoMaps[i].servo.getID() == servoID) {
+    if (servoMappings[i].id == servoID) {
       // Get the PWM driver instance and channel from the mapping
-      Adafruit_PWMServoDriver pwm = servoMaps[i].pwm;
-      byte channel = servoMaps[i].channel;
+      Adafruit_PWMServoDriver pwm = servoMappings[i].pwm;
+      byte channel = servoMappings[i].channel;
 
       // Set the current position as PWM output
       pwm.setPWM(channel, 0, position);
 
-      // Break the loop as we already handled the servo movement
+      // Break the for loop as we already handled the servo movement
       break;
     }
   }
 }
 
 void setup() {
-  // Dynamically add the Blender servo objects to the animation
-  for (int i = 0; i < servoAmount; i++) {
-    animation.addServo(servoMaps[i].servo);
-  }
+  // Set the position callback
+  animation.onPositionChange(setPWM);
+
+  // Add a scene based on PROGMEM data
+  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
   // Trigger the animation loop mode
   animation.loop();

@@ -1,32 +1,234 @@
 #include "Animation.h"
-#include "Servo.h"
+#include "ProgmemStream.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-Animation::Animation() {
-}
-
-Animation::Animation(byte fps, int frames) {
-  this->fps = fps;
-  this->frames = frames;
-  this->frameMicros = round((float)Animation::SECOND_IN_MICROS / (float)fps);
-  this->diffPerSecond = Animation::SECOND_IN_MICROS - (this->frameMicros * fps);
-}
-
-void Animation::addServo(Servo &servo) {
-  byte id = servo.getID();
-  this->servos[id] = &servo;
-}
-
-void Animation::addServos(Servo servos[], byte servoAmount) {
-  for (int i = 0; i < servoAmount; i++) {
-    this->addServo(servos[i]);
+Animation::~Animation() {
+  for (int i = 0; i < this->addIndex; i++) {
+    if (this->scenes[i]) {
+      delete this->scenes[i];
+    }
   }
+}
+
+int Animation::countScenes() {
+  return this->addIndex;
+}
+
+bool Animation::hasFinished() {
+  return this->playIndex + 1 >= this->addIndex;
+}
+
+bool Animation::hasScenes() {
+  return this->countScenes() > 0;
+}
+
+bool Animation::hasScene(byte index) {
+  return this->scenes[index] != nullptr;
+}
+
+void Animation::addScene(const byte PROGMEM *data, int dataLength, byte fps, int frames) {
+  ProgmemStream* stream = new ProgmemStream(data, dataLength);
+  this->addScene(*stream, fps, frames);
+}
+
+void Animation::addScene(Stream &data, byte fps, int frames) {
+  this->scenes[this->addIndex] = new Scene(this->servoManager, data, fps, frames);
+  this->addIndex++;
+}
+
+void Animation::setDefaultServoThreshold(byte value) {
+  this->servoManager.setDefaultThreshold(value);
+}
+
+void Animation::setServoThreshold(byte id, byte value) {
+  this->servoManager.setThreshold(id, value);
+}
+
+void Animation::setRandomScene() {
+  byte randomIndex = 0;
+
+  if (this->countScenes() > 1) {
+    randomIndex = random(this->addIndex);
+  }
+
+  this->playIndex = randomIndex;
+  this->scene = this->scenes[this->playIndex];
+}
+
+void Animation::play() {
+  if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
+  if (!this->scene) {
+    this->scene = this->scenes[this->playIndex];
+  }
+
+  this->changeMode(MODE_PLAY);
+}
+
+void Animation::playSingle(byte index) {
+  Scene *scene = this->scenes[index];
+
+  if (scene == nullptr || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE) ||
+      (this->mode == MODE_PAUSE && playIndex != index)) {
+    return;
+  }
+
+  if (!this->scene || this->scene->getFrame() == 0) {
+    this->playIndex = index;
+    this->scene = scene;
+  }
+
+  this->changeMode(MODE_PLAY_SINGLE);
+}
+
+void Animation::playRandom() {
+  if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
+  if (!this->scene || this->scene->getFrame() == 0) {
+    this->setRandomScene();
+  }
+
+  this->changeMode(MODE_PLAY_RANDOM);
+}
+
+void Animation::loop() {
+  if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
+    return;
+  }
+
+  if (!this->scene) {
+    this->scene = this->scenes[this->playIndex];
+  }
+
+  this->changeMode(MODE_LOOP);
+}
+
+void Animation::pause() {
+  if (!this->scene || !this->modeIsIn(4, MODE_PLAY, MODE_PLAY_SINGLE,
+                                          MODE_PLAY_RANDOM, MODE_LOOP)) {
+    return;
+  }
+
+  this->changeMode(MODE_PAUSE);
+}
+
+void Animation::stop() {
+  if (!this->scene || this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
+    return;
+  }
+
+  this->changeMode(MODE_STOP);
+}
+
+void Animation::reset() {
+  this->addIndex = 0;
+  this->playIndex = 0;
+
+  for (int i = 0; i < this->addIndex; i++) {
+    this->scenes[i] = nullptr;
+  }
+}
+
+byte Animation::getMode() {
+  return this->mode;
+}
+
+byte Animation::getPlayIndex() {
+  return this->playIndex;
+}
+
+void Animation::run(unsigned long currentMicros) {
+  switch (this->mode) {
+  case MODE_PLAY:
+  case MODE_PLAY_SINGLE:
+  case MODE_PLAY_RANDOM:
+  case MODE_LOOP:
+    this->handlePlayMode(currentMicros);
+    break;
+  case MODE_STOP:
+    this->handleStopMode(currentMicros);
+    break;
+  }
+}
+
+void Animation::handlePlayMode(unsigned long currentMicros) {
+  if (!this->scene) {
+    this->changeMode(MODE_DEFAULT);
+    return;
+  }
+
+  this->scene->play(currentMicros);
+
+  if (!this->scene->hasFinished()) {
+    return;
+  }
+
+  switch (this->mode) {
+  case MODE_PLAY:
+    if (this->hasFinished()) {
+      this->scene = nullptr;
+    } else {
+      this->playIndex++;
+      this->scene = this->scenes[this->playIndex];
+    }
+    break;
+  case MODE_PLAY_SINGLE:
+    this->scene = nullptr;
+    break;
+  case MODE_PLAY_RANDOM:
+    this->setRandomScene();
+    this->changeMode(MODE_PLAY_RANDOM);
+    break;
+  case MODE_LOOP:
+    if (this->hasFinished()) {
+      this->playIndex = 0;
+    } else {
+      this->playIndex++;
+    }
+    this->scene = this->scenes[this->playIndex];
+    this->changeMode(MODE_LOOP);
+    break;
+  }
+
+  if (!this->scene) {
+    this->changeMode(MODE_DEFAULT);
+    return;
+  }
+}
+
+void Animation::handleStopMode(unsigned long currentMicros) {
+  if (!this->scene) {
+    this->changeMode(MODE_DEFAULT);
+    return;
+  }
+
+  this->scene->stop(currentMicros);
+
+  if (this->servoManager.servosAreAllNeutral()) {
+    this->changeMode(MODE_DEFAULT);
+  }
+}
+
+Scene* Animation::getCurrentScene() {
+  return this->scene;
+}
+
+void Animation::onPositionChange(pcb positionCallback) {
+  this->servoManager.setPositionCallback(positionCallback);
 }
 
 void Animation::onModeChange(mcb modeCallback) {
   this->modeCallback = modeCallback;
+}
+
+void Animation::onSceneChange(scb sceneCallback) {
+  this->sceneCallback = sceneCallback;
 }
 
 void Animation::changeMode(byte mode) {
@@ -36,164 +238,6 @@ void Animation::changeMode(byte mode) {
   if (this->modeCallback) {
     this->modeCallback(prevMode, mode);
   }
-}
-
-void Animation::run(unsigned long currentMicros) {
-  switch (this->mode) {
-  case MODE_PLAY:
-  case MODE_LOOP:
-    this->handlePlayMode(currentMicros);
-    break;
-  case MODE_STOP:
-    this->handleStopMode(currentMicros);
-    break;
-  case MODE_LIVE:
-    this->handleLiveMode();
-    break;
-  }
-}
-
-void Animation::handlePlayMode(unsigned long currentMicros) {
-  bool isNewFrame = currentMicros - this->lastMicros >= this->frameMicros;
-
-  if (!isNewFrame || this->frames == 0) {
-    return;
-  }
-
-  this->lastMicros = currentMicros;
-  this->frame++;
-
-  if (this->frame >= this->frames) {
-    this->frame = 0;
-  }
-
-  if (this->frame % this->fps == 0) {
-    this->lastMicros += this->diffPerSecond;
-  }
-
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    Servo *servo = this->servos[i];
-
-    if (servo && servo->hasPositions()) {
-      servo->moveByFrame(this->frame);
-    }
-  }
-
-  if (this->frame == 0) {
-    if (this->mode == MODE_LOOP) {
-      this->changeMode(MODE_LOOP);
-    } else {
-      this->changeMode(MODE_DEFAULT);
-    }
-  }
-}
-
-void Animation::handleStopMode(unsigned long currentMicros) {
-  bool allNeutral = true;
-
-  if (currentMicros - this->lastMicros < 10000) {
-    return;
-  }
-
-  this->lastMicros = currentMicros;
-
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    Servo *servo = this->servos[i];
-
-    if (servo && servo->hasPositions() && !servo->isNeutral()) {
-      servo->moveTowardsNeutral();
-      allNeutral = false;
-    }
-  }
-
-  if (!allNeutral) {
-    return;
-  }
-
-  this->changeMode(MODE_DEFAULT);
-}
-
-void Animation::handleLiveMode() {
-  while (this->liveStream->available() > 0) {
-    this->liveCommand.read(this->liveStream);
-
-    if (!this->liveCommand.isComplete() || !this->liveCommand.isValid()) {
-      continue;
-    }
-
-    byte id = this->liveCommand.getServoID();
-    int position = this->liveCommand.getServoPosition();
-
-    for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-      Servo *servo = this->servos[i];
-
-      if (servo && servo->getID() == id) {
-        servo->move(position);
-        break;
-      }
-    }
-  }
-}
-
-void Animation::play(unsigned long currentMicros) {
-  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
-    return;
-  }
-
-  this->lastMicros = currentMicros;
-  this->changeMode(MODE_PLAY);
-}
-
-void Animation::pause() {
-  if (!this->modeIsIn(2, MODE_PLAY, MODE_LOOP)) {
-    return;
-  }
-
-  this->changeMode(MODE_PAUSE);
-}
-
-void Animation::loop(unsigned long currentMicros) {
-  if (!this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
-    return;
-  }
-
-  this->lastMicros = currentMicros;
-  this->changeMode(MODE_LOOP);
-}
-
-void Animation::stop(unsigned long currentMicros) {
-  if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
-    return;
-  }
-
-  this->frame = 0;
-  this->lastMicros = currentMicros;
-  this->changeMode(MODE_STOP);
-}
-
-void Animation::live(Stream &liveStream) {
-  if (this->mode != MODE_DEFAULT) {
-    return;
-  }
-
-  this->liveStream = &liveStream;
-  this->changeMode(MODE_LIVE);
-}
-
-byte Animation::getFPS() {
-  return this->fps;
-}
-
-byte Animation::getMode() {
-  return this->mode;
-}
-
-int Animation::getFrame() {
-  return this->frame;
-}
-
-int Animation::getFrames() {
-  return this->frames;
 }
 
 bool Animation::modeIsIn(byte modeAmount, ...) {

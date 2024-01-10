@@ -1,4 +1,5 @@
 #include "internal/Animation.h"
+#include "internal/LiveStream.h"
 #include "../test/helper.h"
 #include <unity.h>
 
@@ -10,88 +11,91 @@ void setUp(void) {
   resetPositionLog();
 }
 
-void test_play(void) {
+void test_play_random(void) {
   Animation animation;
   animation.onPositionChange(move);
-
-  TEST_ASSERT_FALSE(animation.hasScenes());
-  TEST_ASSERT_EQUAL(0, animation.countScenes());
-  TEST_ASSERT_FALSE(animation.hasScene(0));
-  TEST_ASSERT_EQUAL(nullptr, animation.getCurrentScene());
-
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
-  TEST_ASSERT_TRUE(animation.hasScenes());
-  TEST_ASSERT_EQUAL(1, animation.countScenes());
-  TEST_ASSERT_TRUE(animation.hasScene(0));
-
+  TEST_ASSERT_EQUAL(3, animation.countScenes());
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 
-  animation.play();
+  When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0, 2);
 
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.playRandom();
+
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
   TEST_ASSERT_NOT_EQUAL(nullptr, animation.getCurrentScene());
-  TEST_ASSERT_EQUAL(5, animation.getCurrentScene()->getFrames());
+  TEST_ASSERT_EQUAL(1, animation.getPlayIndex());
 
   for (int i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
     animation.run(i);
   }
 
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  TEST_ASSERT_EQUAL(10, logIndex);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+
+  for (long i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
+    animation.run(i);
+  }
+
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(2, animation.getPlayIndex());
+  TEST_ASSERT_EQUAL(20, logIndex);
 }
 
 void test_without_scenes(void) {
   Animation animation;
   animation.onPositionChange(move);
-  animation.play();
+  animation.playRandom();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 }
 
 void test_prevented(void) {
+  LiveStream stream;
   Animation animation;
   animation.onPositionChange(move);
-  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
-
-  When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(0);
+  animation.addScene(stream, FPS, FRAMES);
 
   animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
-  animation.play();
+  animation.playRandom();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  animation.pause();
+  animation.play();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.playRandom();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
   animation.pause();
   animation.playSingle(0);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, animation.getMode());
-  animation.play();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, animation.getMode());
-  animation.pause();
   animation.playRandom();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
-  animation.play();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, animation.getMode());
   animation.stop();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
-  animation.play();
+  animation.playRandom();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
 }
 
 void test_allowed(void) {
+  LiveStream stream;
   Animation animation;
   animation.onPositionChange(move);
-  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
+  animation.addScene(stream, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
-  animation.play();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.playRandom();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
-  animation.play();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  animation.playRandom();
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
 }
 
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  RUN_TEST(test_play);
+  RUN_TEST(test_play_random);
   RUN_TEST(test_without_scenes);
   RUN_TEST(test_prevented);
   RUN_TEST(test_allowed);

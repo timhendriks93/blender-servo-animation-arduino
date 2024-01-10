@@ -6,8 +6,8 @@
   class of this library (BlenderServoAnimation::Servo).
 */
 
-#include "simple.h"
 #include <BlenderServoAnimation.h>
+#include <SD.h>
 
 #ifdef ARDUINO_ARCH_ESP32
 #include <ESP32Servo.h>
@@ -28,14 +28,17 @@ void move(byte servoID, int position) {
 BlenderServoAnimation::Animation animation;
 
 void setup() {
+  SD.begin(4);
+  File myFile = SD.open("test.txt", FILE_READ);
+
   // Attach the servo to pin 12
   myServo.attach(12);
 
   // Set the position callback
   animation.onPositionChange(move);
 
-  // Add a scene based on PROGMEM data
-  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
+  // Add a scene with the File stream
+  animation.addScene(myFile, 30, 100);
 
   // Trigger the animation loop mode
   animation.loop();

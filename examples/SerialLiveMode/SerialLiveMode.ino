@@ -23,12 +23,8 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to manage the servos
-// We skip providing fps or frames as we just want to use the live mode
+// Animation object to represent the original Blender animation
 BlenderServoAnimation::Animation animation;
-
-// Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, move);
 
 void setup() {
   Serial.begin(115200);
@@ -36,11 +32,14 @@ void setup() {
   // Attach the servo to pin 12
   myServo.attach(12);
 
-  // Add the Blender servo object to the animation
-  animation.addServo(myBlenderServo);
+  // Set the position callback
+  animation.onPositionChange(move);
 
-  // Trigger the animation live mode
-  animation.live(Serial);
+  // Add a new scene with the Serial stream - we can omit fps and frames
+  animation.addScene(Serial);
+
+  // Trigger the animation play mode
+  animation.play();
 }
 
 void loop() {

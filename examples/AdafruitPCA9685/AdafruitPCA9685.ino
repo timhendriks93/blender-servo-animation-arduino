@@ -23,16 +23,14 @@ void move(byte servoID, int position) {
 }
 
 // Animation object to represent the original Blender animation
-Animation animation(FPS, FRAMES);
-
-// Servo objects to manage the positions
-Servo neckLeftServo(0, NeckLeft, move);
-Servo neckRightServo(1, NeckRight, move);
+Animation animation;
 
 void setup() {
-  // Add the Blender servo objects to the animation
-  animation.addServo(neckLeftServo);
-  animation.addServo(neckRightServo);
+  // Set the position callback
+  animation.onPositionChange(move);
+
+  // Add a scene based on PROGMEM data
+  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
   // Trigger the animation loop mode
   animation.loop();

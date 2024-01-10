@@ -1,10 +1,10 @@
-#include "BlenderServoAnimation.h"
+#include "internal/Animation.h"
+#include "internal/LiveStream.h"
+#include "../test/helper.h"
+
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
-
-#define FPS 60
-#define FRAMES 5
 
 int prevMode = -1;
 int newMode = -1;
@@ -20,53 +20,72 @@ void onModeChange(byte prevArg, byte newArg) {
 }
 
 void test_different_mode(void) {
-  Animation animation(FPS, FRAMES);
+  LiveStream stream;
+  Animation animation;
+  animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
+  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(stream, FPS, FRAMES);
 
-  animation.play(0);
+  TEST_ASSERT_EQUAL(-1, prevMode);
+  TEST_ASSERT_EQUAL(-1, newMode);
+  animation.playSingle(1);
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, newMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, newMode);
+  TEST_ASSERT_EQUAL(1, animation.getPlayIndex());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, newMode);
 }
 
 void test_same_mode(void) {
-  Animation animation(FPS, FRAMES);
+  LiveStream stream;
+  Animation animation;
+  animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
+  animation.addScene(stream, FPS, FRAMES);
 
-  animation.loop(0);
+  animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, newMode);
-  animation.loop(0);
+  animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, newMode);
 }
 
 void test_all_modes(void) {
-  Serial_ mock;
-  Animation animation(FPS, FRAMES);
-
+  LiveStream stream;
+  Animation animation;
+  animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
+  animation.addScene(stream, FPS, FRAMES);
 
-  animation.play(0);
+  animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
   animation.pause();
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, newMode);
-  animation.loop(0);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.playRandom();
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.pause();
+  animation.playSingle(0);
+  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_PLAY_SINGLE, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.pause();
+  animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, newMode);
-  animation.stop(0);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.stop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, newMode);
-  animation.run(10000);
-  TEST_ASSERT_EQUAL(Animation::MODE_STOP, prevMode);
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, newMode);
-  animation.live(mock);
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
-  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
 }
 
 int main(int argc, char **argv) {

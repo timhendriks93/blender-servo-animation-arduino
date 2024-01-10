@@ -1,28 +1,28 @@
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_Live_H
-#define BlenderServoAnimation_Live_H
+#ifndef BlenderServoAnimation_LiveStream_H
+#define BlenderServoAnimation_LiveStream_H
 
 namespace BlenderServoAnimation {
 
 class LiveStream : public Stream {
-private:
-  static const byte BUFFER_SIZE = 20;
-
-  byte buffer[BUFFER_SIZE];
-  byte writeIndex = 0;
-  byte readIndex = 0;
 
 public:
   int available();
-
   int read();
-
   int peek();
-
+  
   size_t write(uint8_t);
 
   void flush();
+
+private:
+  static const byte BUFFER_SIZE = 64;
+
+  byte buffer[BUFFER_SIZE] = {0};
+  byte writeIndex = 0;
+  byte readIndex = 0;
+
 };
 
 } // namespace BlenderServoAnimation

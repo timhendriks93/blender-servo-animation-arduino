@@ -57,26 +57,20 @@ void modeChanged(byte prevMode, byte newMode) {
 }
 
 // Animation object to represent the original Blender animation
-BlenderServoAnimation::Animation animation(FPS, FRAMES);
-
-// Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, Bone, move, 100);
+BlenderServoAnimation::Animation animation;
 
 // Callback to be triggered on a short button press
 void onPressed() {
   // Get the current mode, act accordingly and trigger another mode
   switch (animation.getMode()) {
-    // On short press in default mode, we want to start the animation
+    // On short press in default or pause mode, we want to start or resume the animation
   case BlenderServoAnimation::Animation::MODE_DEFAULT:
+  case BlenderServoAnimation::Animation::MODE_PAUSE:
     animation.play();
     break;
     // On short press in play mode, we want to pause the animation
   case BlenderServoAnimation::Animation::MODE_PLAY:
     animation.pause();
-    break;
-    // On short press in pause mode, we want to resume the animation
-  case BlenderServoAnimation::Animation::MODE_PAUSE:
-    animation.play();
     break;
   }
 }
@@ -91,8 +85,10 @@ void onLongPressed() {
     break;
     // On long press in any other mode, we want to stop the animation
   case BlenderServoAnimation::Animation::MODE_PLAY:
+  case BlenderServoAnimation::Animation::MODE_PLAY_SINGLE:
+  case BlenderServoAnimation::Animation::MODE_PLAY_RANDOM:
+  case BlenderServoAnimation::Animation::MODE_LOOP:
   case BlenderServoAnimation::Animation::MODE_PAUSE:
-  case BlenderServoAnimation::Animation::MODE_LIVE:
     animation.stop();
     break;
   }
@@ -106,8 +102,8 @@ void setup() {
   modeButton.attachClick(onPressed);
   modeButton.attachLongPressStart(onLongPressed);
 
-  // Add the Blender servo object to the animation
-  animation.addServo(myBlenderServo);
+  // Add a scene based on PROGMEM data
+  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
   // Register the mode change callback function
   animation.onModeChange(modeChanged);

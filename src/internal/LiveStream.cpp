@@ -4,11 +4,19 @@
 using namespace BlenderServoAnimation;
 
 int LiveStream::available() {
-  return this->readIndex != this->writeIndex;
+  if (this->writeIndex >= this->readIndex) {
+    return this->writeIndex - this->readIndex;
+  } else {
+    return BUFFER_SIZE - this->readIndex + this->writeIndex;
+  }
 }
 
 int LiveStream::peek() {
-  return this->buffer[this->readIndex];
+  if (this->available()) {
+    return this->buffer[this->readIndex];
+  } else {
+    return -1;
+  } 
 }
 
 int LiveStream::read() {

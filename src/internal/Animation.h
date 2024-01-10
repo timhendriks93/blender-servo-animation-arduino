@@ -1,5 +1,6 @@
-#include "LiveCommand.h"
-#include "Servo.h"
+#include "Scene.h"
+#include "ServoManager.h"
+#include "typedefs.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -10,61 +11,66 @@ namespace BlenderServoAnimation {
 
 class Animation {
 
-  typedef void (*mcb)(byte, byte);
+public:
+  static const byte MODE_DEFAULT = 0;
+  static const byte MODE_PLAY = 1;
+  static const byte MODE_PLAY_SINGLE = 2;
+  static const byte MODE_PLAY_RANDOM = 3;
+  static const byte MODE_PAUSE = 4;
+  static const byte MODE_LOOP = 5;
+  static const byte MODE_STOP = 6;
+
+  ~Animation();
+
+  byte getMode();
+  byte getPlayIndex();
+
+  int countScenes();
+
+  void addScene(const byte PROGMEM *data, int dataLength, byte fps, int frames);
+  void addScene(Stream &data, byte fps = 0, int frames = 0);
+  void onPositionChange(pcb positionCallback);
+  void onModeChange(mcb modeCallback);
+  void onSceneChange(scb sceneCallback);
+  void run(unsigned long currentMicros = micros());
+  void play();
+  void playSingle(byte index);
+  void playRandom();
+  void loop();
+  void pause();
+  void stop();
+  void reset();
+  void setDefaultServoThreshold(byte value);
+  void setServoThreshold(byte id, byte value);
+
+  bool hasFinished();
+  bool hasScenes();
+  bool hasScene(byte index);
+  bool modeIsIn(byte modeAmount, ...);
+
+  Scene* getCurrentScene();
 
 private:
-  static const int MAX_SERVO_COUNT = 256;
-  static const long SECOND_IN_MICROS = 1000000;
+  static const int MAX_SCENE_COUNT = 256;
 
-  byte fps = 0;
+  ServoManager servoManager;
+
+  Scene* scenes[MAX_SCENE_COUNT] = {nullptr};
+  Scene* scene = nullptr;
+
+  mcb modeCallback = nullptr;
+  scb sceneCallback = nullptr;
+
   byte mode = MODE_DEFAULT;
 
-  int diffPerSecond = 0;
-
-  unsigned int frame = 0;
-  unsigned int frames = 0;
-  unsigned int frameMicros = 0;
-
-  unsigned long lastMicros;
-
-  Servo *servos[MAX_SERVO_COUNT] = {};
-  Stream *liveStream;
-  LiveCommand liveCommand;
-  mcb modeCallback = nullptr;
+  int addIndex = 0;
+  int playIndex = 0;
 
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode(unsigned long currentMicros);
-  void handleLiveMode();
+  void setRandomScene();
 
-public:
-  static const byte MODE_DEFAULT = 0;
-  static const byte MODE_PLAY = 1;
-  static const byte MODE_PAUSE = 2;
-  static const byte MODE_LOOP = 3;
-  static const byte MODE_STOP = 4;
-  static const byte MODE_LIVE = 5;
-
-  Animation();
-  Animation(byte fps, int frames);
-
-  void addServo(Servo &servo);
-  void addServos(Servo servos[], byte servoAmount);
-  void onModeChange(mcb modeCallback);
-  void run(unsigned long currentMicros = micros());
-  void play(unsigned long currentMicros = micros());
-  void pause();
-  void loop(unsigned long currentMicros = micros());
-  void stop(unsigned long currentMicros = micros());
-  void live(Stream &liveStream);
-
-  byte getFPS();
-  byte getMode();
-
-  int getFrame();
-  int getFrames();
-
-  bool modeIsIn(byte modeAmount, ...);
 };
 
 } // namespace BlenderServoAnimation
