@@ -9,7 +9,8 @@ namespace BlenderServoAnimation {
 class Scene {
 
 public:
-  Scene(ServoManager &servoManager, Stream &data, byte fps = 0, int frames = 0, bool hasProgmemStream = false);
+  Scene(ServoManager &servoManager, Stream &data, byte fps = 0, int frames = 0,
+        bool hasProgmemStream = false);
   ~Scene();
 
   void play(unsigned long currentMicros);
@@ -39,16 +40,15 @@ private:
 
   bool hasProgmemStream = false;
 
-  ServoManager* servoManager;
+  ServoManager *servoManager;
 
-  Stream* data = nullptr;
+  Stream *data = nullptr;
 
   void parseCommands();
 
   bool isNewFrame(unsigned long currentMicros);
 
-  int getMicrosDiff(unsigned long currentMicros);
-
+  unsigned int getMicrosDiff(unsigned long currentMicros);
 };
 
 } // namespace BlenderServoAnimation

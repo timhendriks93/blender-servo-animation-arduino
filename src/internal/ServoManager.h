@@ -25,7 +25,7 @@ public:
 private:
   static const int MAX_SERVO_COUNT = 256;
 
-  Servo* servos[MAX_SERVO_COUNT] = {nullptr};
+  Servo *servos[MAX_SERVO_COUNT] = {nullptr};
 
   pcb positionCallback = nullptr;
 
@@ -33,7 +33,6 @@ private:
   byte thresholds[MAX_SERVO_COUNT] = {0};
 
   void addServo(byte id);
-
 };
 
 } // namespace BlenderServoAnimation

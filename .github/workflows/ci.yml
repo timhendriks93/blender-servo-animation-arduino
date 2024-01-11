@@ -28,12 +28,14 @@ jobs:
         example:
           [
             AdafruitPCA9685,
-            SerialLiveMode,
-            WebSocketLiveMode,
             MultiplePCA9685,
-            Show,
+            MultipleScenes,
+            MultipleScenesSD,
+            SDAnimation,
+            SerialLiveMode,
             StandardServoLib,
             SwitchModeButton,
+            WebSocketLiveMode,
           ]
     steps:
       - uses: actions/checkout@v3

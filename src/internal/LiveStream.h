@@ -11,7 +11,7 @@ public:
   int available();
   int read();
   int peek();
-  
+
   size_t write(uint8_t);
 
   void flush();
@@ -22,7 +22,6 @@ private:
   byte buffer[BUFFER_SIZE] = {0};
   byte writeIndex = 0;
   byte readIndex = 0;
-
 };
 
 } // namespace BlenderServoAnimation

@@ -11,7 +11,8 @@ Servo::Servo(byte id, pcb positionCallback, byte threshold) {
 }
 
 void Servo::move(int position) {
-  if (position == this->currentPosition || this->positionExceedsThreshold(position)) {
+  if (position == this->currentPosition ||
+      this->positionExceedsThreshold(position)) {
     return;
   }
 

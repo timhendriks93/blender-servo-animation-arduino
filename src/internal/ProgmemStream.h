@@ -8,22 +8,21 @@ namespace BlenderServoAnimation {
 class ProgmemStream : public Stream {
 
 public:
-    ProgmemStream(const byte PROGMEM *data, size_t size);
+  ProgmemStream(const byte *data, size_t size);
 
-    int available();
-    int read();
-    int peek();
+  int available();
+  int read();
+  int peek();
 
-    size_t write(uint8_t);
-    
-    void flush();
+  size_t write(uint8_t);
+
+  void flush();
 
 private:
-    const byte PROGMEM *data = nullptr;
+  const byte *data = nullptr;
 
-    size_t size = 0;
-    size_t position = 0;
-
+  size_t size = 0;
+  size_t position = 0;
 };
 
 } // namespace BlenderServoAnimation

@@ -27,7 +27,7 @@ public:
 
   int countScenes();
 
-  void addScene(const byte PROGMEM *data, int dataLength, byte fps, int frames);
+  void addScene(const byte *data, int dataLength, byte fps, int frames);
   void addScene(Stream &data, byte fps = 0, int frames = 0);
   void onPositionChange(pcb positionCallback);
   void onModeChange(mcb modeCallback);
@@ -48,15 +48,15 @@ public:
   bool hasScene(byte index);
   bool modeIsIn(byte modeAmount, ...);
 
-  Scene* getCurrentScene();
+  Scene *getCurrentScene();
 
 private:
   static const int MAX_SCENE_COUNT = 256;
 
   ServoManager servoManager;
 
-  Scene* scenes[MAX_SCENE_COUNT] = {nullptr};
-  Scene* scene = nullptr;
+  Scene *scenes[MAX_SCENE_COUNT] = {nullptr};
+  Scene *scene = nullptr;
 
   mcb modeCallback = nullptr;
   scb sceneCallback = nullptr;
@@ -70,7 +70,6 @@ private:
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode(unsigned long currentMicros);
   void setRandomScene();
-
 };
 
 } // namespace BlenderServoAnimation

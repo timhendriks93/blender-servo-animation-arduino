@@ -16,7 +16,7 @@ int LiveStream::peek() {
     return this->buffer[this->readIndex];
   } else {
     return -1;
-  } 
+  }
 }
 
 int LiveStream::read() {

@@ -7,7 +7,7 @@ using namespace BlenderServoAnimation;
 ServoManager::~ServoManager() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     if (this->servos[i]) {
-        delete this->servos[i];
+      delete this->servos[i];
     }
   }
 }
@@ -17,7 +17,7 @@ void ServoManager::setPositionCallback(pcb positionCallback) {
 
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     if (this->servos[i]) {
-        this->servos[i]->setPositionCallback(positionCallback);
+      this->servos[i]->setPositionCallback(positionCallback);
     }
   }
 }
@@ -51,7 +51,7 @@ void ServoManager::handleCommand(Command command) {
 
 void ServoManager::moveAllServosToNeutral() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    Servo* servo = this->servos[i];
+    Servo *servo = this->servos[i];
 
     if (servo && !servo->isNeutral()) {
       servo->moveTowardsNeutral();
@@ -65,7 +65,7 @@ bool ServoManager::hasPositionCallback() {
 
 bool ServoManager::servosAreAllNeutral() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    Servo* servo = this->servos[i];
+    Servo *servo = this->servos[i];
 
     if (servo && !servo->isNeutral()) {
       return false;

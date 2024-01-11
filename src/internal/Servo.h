@@ -31,7 +31,6 @@ private:
   pcb positionCallback = nullptr;
 
   bool positionExceedsThreshold(int position);
-
 };
 
 } // namespace BlenderServoAnimation

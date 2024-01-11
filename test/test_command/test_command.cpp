@@ -26,7 +26,7 @@ void test_invalid(void) {
 
   for (int i = 0; i < 5; i++) {
     command.write(values[i]);
-    
+
     TEST_ASSERT_FALSE(command.isValid());
   }
 }

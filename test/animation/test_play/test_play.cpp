@@ -1,5 +1,5 @@
-#include "internal/Animation.h"
 #include "../test/helper.h"
+#include "internal/Animation.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;

@@ -28,13 +28,15 @@ bool Animation::hasScene(byte index) {
   return this->scenes[index] != nullptr;
 }
 
-void Animation::addScene(const byte PROGMEM *data, int dataLength, byte fps, int frames) {
-  ProgmemStream* stream = new ProgmemStream(data, dataLength);
+void Animation::addScene(const byte *data, int dataLength, byte fps,
+                         int frames) {
+  ProgmemStream *stream = new ProgmemStream(data, dataLength);
   this->addScene(*stream, fps, frames);
 }
 
 void Animation::addScene(Stream &data, byte fps, int frames) {
-  this->scenes[this->addIndex] = new Scene(this->servoManager, data, fps, frames);
+  this->scenes[this->addIndex] =
+      new Scene(this->servoManager, data, fps, frames);
   this->addIndex++;
 }
 
@@ -111,7 +113,7 @@ void Animation::loop() {
 
 void Animation::pause() {
   if (!this->scene || !this->modeIsIn(4, MODE_PLAY, MODE_PLAY_SINGLE,
-                                          MODE_PLAY_RANDOM, MODE_LOOP)) {
+                                      MODE_PLAY_RANDOM, MODE_LOOP)) {
     return;
   }
 
@@ -215,7 +217,7 @@ void Animation::handleStopMode(unsigned long currentMicros) {
   }
 }
 
-Scene* Animation::getCurrentScene() {
+Scene *Animation::getCurrentScene() {
   return this->scene;
 }
 

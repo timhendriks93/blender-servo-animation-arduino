@@ -24,7 +24,8 @@ AsyncWebSocket ws("/");
 // Servo object to send positions
 Servo myServo;
 
-// LiveStream instance acting as a middleware between web socket and animation instance
+// LiveStream instance acting as a middleware between web socket and animation
+// instance
 BlenderServoAnimation::LiveStream liveStream;
 
 // Callback function which is called whenever a servo needs to be moved

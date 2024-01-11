@@ -10,14 +10,14 @@ void test_read_write(void) {
 
   for (int i = 0; i < 200; i += 20) {
     for (int x = i; x < i + 20; x++) {
-        TEST_ASSERT_EQUAL(1, stream.write(x));
+      TEST_ASSERT_EQUAL(1, stream.write(x));
     }
 
     TEST_ASSERT_EQUAL(20, stream.available());
     TEST_ASSERT_EQUAL(i, stream.peek());
 
     for (int x = i; x < i + 20; x++) {
-        TEST_ASSERT_EQUAL(x, stream.read());
+      TEST_ASSERT_EQUAL(x, stream.read());
     }
   }
 

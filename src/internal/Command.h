@@ -35,7 +35,6 @@ private:
   byte index = 0;
 
   void reset();
-
 };
 
 } // namespace BlenderServoAnimation

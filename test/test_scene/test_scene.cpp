@@ -1,6 +1,6 @@
-#include "internal/Scene.h"
-#include "internal/ProgmemStream.h"
 #include "../test/helper.h"
+#include "internal/ProgmemStream.h"
+#include "internal/Scene.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
@@ -16,16 +16,8 @@ void test_play_with_frames(void) {
   Scene scene(servoManager, stream, FPS, FRAMES);
 
   positionLog exp[10] = {
-    {0, 375},
-    {1, 375},
-    {0, 376},
-    {1, 376},
-    {0, 377},
-    {1, 379},
-    {0, 380},
-    {1, 383},
-    {0, 384},
-    {1, 388},
+      {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
+      {1, 379}, {0, 380}, {1, 383}, {0, 384}, {1, 388},
   };
 
   for (int i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
@@ -47,16 +39,8 @@ void test_play_without_frames(void) {
   Scene scene(servoManager, stream);
 
   positionLog exp[10] = {
-    {0, 375},
-    {1, 375},
-    {0, 376},
-    {1, 376},
-    {0, 377},
-    {1, 379},
-    {0, 380},
-    {1, 383},
-    {0, 384},
-    {1, 388},
+      {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
+      {1, 379}, {0, 380}, {1, 383}, {0, 384}, {1, 388},
   };
 
   scene.play(0);
@@ -77,22 +61,22 @@ void test_stop(void) {
   Scene scene(servoManager, stream, FPS, FRAMES);
 
   positionLog exp[15] = {
-    {0, 375},
-    {1, 375},
-    {0, 376},
-    {1, 376},
-    {0, 377},
-    {1, 379},
-    {0, 380},
-    {1, 383},
-    // stop
-    {0, 378},
-    {1, 381},
-    {0, 376},
-    {1, 379},
-    {0, 375},
-    {1, 377},
-    {1, 375},
+      {0, 375},
+      {1, 375},
+      {0, 376},
+      {1, 376},
+      {0, 377},
+      {1, 379},
+      {0, 380},
+      {1, 383},
+      // stop
+      {0, 378},
+      {1, 381},
+      {0, 376},
+      {1, 379},
+      {0, 375},
+      {1, 377},
+      {1, 375},
   };
 
   for (int i = 0; i < FRAME_MICROS * 4; i += FRAME_MICROS) {

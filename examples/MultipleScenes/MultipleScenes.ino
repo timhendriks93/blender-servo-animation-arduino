@@ -36,8 +36,10 @@ void setup() {
   animation.onPositionChange(move);
 
   // Add multiple scenes based on PROGMEM data
-  animation.addScene(SceneA::ANIMATION_DATA, SceneA::LENGTH, SceneA::FPS, SceneA::FRAMES);
-  animation.addScene(SceneB::ANIMATION_DATA, SceneB::LENGTH, SceneB::FPS, SceneB::FRAMES);
+  animation.addScene(SceneA::ANIMATION_DATA, SceneA::LENGTH, SceneA::FPS,
+                     SceneA::FRAMES);
+  animation.addScene(SceneB::ANIMATION_DATA, SceneB::LENGTH, SceneB::FPS,
+                     SceneB::FRAMES);
 
   // Trigger the show loop mode
   animation.loop();

@@ -1,12 +1,13 @@
-#include "Command.h"
 #include "Scene.h"
-#include "Servo.h"
+#include "Command.h"
 #include "ProgmemStream.h"
+#include "Servo.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-Scene::Scene(ServoManager &servoManager, Stream &data, byte fps, int frames, bool hasProgmemStream) {
+Scene::Scene(ServoManager &servoManager, Stream &data, byte fps, int frames,
+             bool hasProgmemStream) {
   this->servoManager = &servoManager;
   this->data = &data;
   this->fps = fps;
@@ -60,7 +61,7 @@ void Scene::stop(unsigned long currentMicros) {
   }
 }
 
-int Scene::getMicrosDiff(unsigned long currentMicros) {
+unsigned int Scene::getMicrosDiff(unsigned long currentMicros) {
   if (currentMicros >= this->lastMicros) {
     return currentMicros - this->lastMicros;
   }
@@ -69,7 +70,8 @@ int Scene::getMicrosDiff(unsigned long currentMicros) {
 }
 
 bool Scene::isNewFrame(unsigned long currentMicros) {
-  return this->lastMicros == 0 || this->getMicrosDiff(currentMicros) >= this->frameMicros;
+  return this->lastMicros == 0 ||
+         this->getMicrosDiff(currentMicros) >= this->frameMicros;
 }
 
 bool Scene::hasFinished() {

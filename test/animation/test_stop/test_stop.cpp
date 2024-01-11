@@ -1,8 +1,8 @@
-#include "internal/Animation.h"
-#include "internal/Scene.h"
-#include "internal/ProgmemStream.h"
-#include "internal/LiveStream.h"
 #include "../test/helper.h"
+#include "internal/Animation.h"
+#include "internal/LiveStream.h"
+#include "internal/ProgmemStream.h"
+#include "internal/Scene.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;

@@ -1,5 +1,5 @@
-#include "internal/ServoManager.h"
 #include "../test/helper.h"
+#include "internal/ServoManager.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;

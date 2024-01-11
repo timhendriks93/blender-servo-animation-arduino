@@ -63,7 +63,8 @@ BlenderServoAnimation::Animation animation;
 void onPressed() {
   // Get the current mode, act accordingly and trigger another mode
   switch (animation.getMode()) {
-    // On short press in default or pause mode, we want to start or resume the animation
+    // On short press in default or pause mode, we want to start or resume the
+    // animation
   case BlenderServoAnimation::Animation::MODE_DEFAULT:
   case BlenderServoAnimation::Animation::MODE_PAUSE:
     animation.play();
