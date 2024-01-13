@@ -19,6 +19,7 @@ public:
   static const byte MODE_PAUSE = 4;
   static const byte MODE_LOOP = 5;
   static const byte MODE_STOP = 6;
+  static const byte MODE_LIVE = 7;
 
   ~Animation();
 
@@ -39,14 +40,13 @@ public:
   void loop();
   void pause();
   void stop();
-  void reset();
+  void live(Stream &stream);
   void setDefaultServoThreshold(byte value);
   void setServoThreshold(byte id, byte value);
 
   bool hasFinished();
   bool hasScenes();
   bool hasScene(byte index);
-  bool modeIsIn(byte modeAmount, ...);
 
   Scene *getCurrentScene();
 
@@ -58,6 +58,8 @@ private:
   Scene *scenes[MAX_SCENE_COUNT] = {nullptr};
   Scene *scene = nullptr;
 
+  Stream *liveStream;
+
   mcb modeCallback = nullptr;
   scb sceneCallback = nullptr;
 
@@ -66,10 +68,14 @@ private:
   int addIndex = 0;
   int playIndex = 0;
 
+  void registerScene(Scene *scene);
   void changeMode(byte mode);
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode(unsigned long currentMicros);
+  void handleLiveMode();
   void setRandomScene();
+
+  bool modeIsIn(byte modeAmount, ...);
 };
 
 } // namespace BlenderServoAnimation

@@ -37,7 +37,7 @@ servoMapping servoMappings[] = {
 };
 
 // Calculate the amount of servos so that we can easily extend the array
-const byte servoAmount = sizeof(servoMaps) / sizeof(servoMaps[0]);
+const byte servoAmount = sizeof(servoMappings) / sizeof(servoMappings[0]);
 
 // Callback function which is called whenever a servo needs to be moved
 void setPWM(byte servoID, int position) {

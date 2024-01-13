@@ -32,6 +32,11 @@
         "__locale": "cpp",
         "iterator": "cpp",
         "locale": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "mutex": "cpp",
+        "optional": "cpp",
+        "__tree": "cpp"
     }
 }

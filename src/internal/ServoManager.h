@@ -16,7 +16,7 @@ public:
   void setPositionCallback(pcb positionCallback);
   void setDefaultThreshold(byte value);
   void setThreshold(byte servoId, byte value);
-  void handleCommand(Command command);
+  void parseStream(Stream *stream, bool considerLineBreaks = true);
   void moveAllServosToNeutral();
 
   bool hasPositionCallback();
@@ -33,6 +33,7 @@ private:
   byte thresholds[MAX_SERVO_COUNT] = {0};
 
   void addServo(byte id);
+  void handleCommand(Command command);
 };
 
 } // namespace BlenderServoAnimation

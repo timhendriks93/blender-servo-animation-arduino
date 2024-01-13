@@ -1,4 +1,5 @@
 #include "ServoManager.h"
+#include "ProgmemStream.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimation_Scene_H
@@ -9,10 +10,11 @@ namespace BlenderServoAnimation {
 class Scene {
 
 public:
-  Scene(ServoManager &servoManager, Stream &data, byte fps = 0, int frames = 0,
-        bool hasProgmemStream = false);
+  Scene(ServoManager &servoManager, byte fps, int frames);
   ~Scene();
 
+  void setData(Stream *data);
+  void setProgmemData(ProgmemStream *data);
   void play(unsigned long currentMicros);
   void stop(unsigned long currentMicros);
 
@@ -38,17 +40,17 @@ private:
 
   unsigned long lastMicros = 0;
 
-  bool hasProgmemStream = false;
-
   ServoManager *servoManager;
 
   Stream *data = nullptr;
 
-  void parseCommands();
+  ProgmemStream *progmemData = nullptr;
 
   bool isNewFrame(unsigned long currentMicros);
 
   unsigned int getMicrosDiff(unsigned long currentMicros);
+
+  Stream* getAnimationData();
 };
 
 } // namespace BlenderServoAnimation

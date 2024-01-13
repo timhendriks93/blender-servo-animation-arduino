@@ -28,15 +28,21 @@ bool Animation::hasScene(byte index) {
   return this->scenes[index] != nullptr;
 }
 
-void Animation::addScene(const byte *data, int dataLength, byte fps,
-                         int frames) {
-  ProgmemStream *stream = new ProgmemStream(data, dataLength);
-  this->addScene(*stream, fps, frames);
+void Animation::addScene(const byte *data, int size, byte fps, int frames) {
+  ProgmemStream *stream = new ProgmemStream(data, size);
+  Scene *scene = new Scene(this->servoManager, fps, frames);
+  scene->setProgmemData(stream);
+  this->registerScene(scene);
 }
 
 void Animation::addScene(Stream &data, byte fps, int frames) {
-  this->scenes[this->addIndex] =
-      new Scene(this->servoManager, data, fps, frames);
+  Scene *scene = new Scene(this->servoManager, fps, frames);
+  scene->setData(&data);
+  this->registerScene(scene);
+}
+
+void Animation::registerScene(Scene *scene) {
+  this->scenes[this->addIndex] = scene;
   this->addIndex++;
 }
 
@@ -112,8 +118,7 @@ void Animation::loop() {
 }
 
 void Animation::pause() {
-  if (!this->scene || !this->modeIsIn(4, MODE_PLAY, MODE_PLAY_SINGLE,
-                                      MODE_PLAY_RANDOM, MODE_LOOP)) {
+  if (!this->scene || this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP)) {
     return;
   }
 
@@ -128,13 +133,13 @@ void Animation::stop() {
   this->changeMode(MODE_STOP);
 }
 
-void Animation::reset() {
-  this->addIndex = 0;
-  this->playIndex = 0;
-
-  for (int i = 0; i < this->addIndex; i++) {
-    this->scenes[i] = nullptr;
+void Animation::live(Stream &stream) {
+  if (this->mode != MODE_DEFAULT) {
+    return;
   }
+
+  this->liveStream = &stream;
+  this->changeMode(MODE_LIVE);
 }
 
 byte Animation::getMode() {
@@ -155,6 +160,9 @@ void Animation::run(unsigned long currentMicros) {
     break;
   case MODE_STOP:
     this->handleStopMode(currentMicros);
+    break;
+  case MODE_LIVE:
+    this->handleLiveMode();
     break;
   }
 }
@@ -215,6 +223,10 @@ void Animation::handleStopMode(unsigned long currentMicros) {
   if (this->servoManager.servosAreAllNeutral()) {
     this->changeMode(MODE_DEFAULT);
   }
+}
+
+void Animation::handleLiveMode() {
+  this->servoManager.parseStream(this->liveStream);
 }
 
 Scene *Animation::getCurrentScene() {

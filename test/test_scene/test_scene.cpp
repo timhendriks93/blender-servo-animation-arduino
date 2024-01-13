@@ -12,8 +12,9 @@ void setUp(void) {
 void test_play_with_frames(void) {
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, stream, FPS, FRAMES);
+  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(servoManager, FPS, FRAMES);
+  scene.setProgmemData(stream);
 
   positionLog exp[10] = {
       {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
@@ -32,51 +33,18 @@ void test_play_with_frames(void) {
   }
 }
 
-void test_play_without_frames(void) {
-  ServoManager servoManager;
-  servoManager.setPositionCallback(move);
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, stream);
-
-  positionLog exp[10] = {
-      {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
-      {1, 379}, {0, 380}, {1, 383}, {0, 384}, {1, 388},
-  };
-
-  scene.play(0);
-
-  TEST_ASSERT_EQUAL(10, logIndex);
-
-  for (byte i = 0; i < 10; i++) {
-    TEST_ASSERT_EQUAL(exp[i].servoId, positions[i].servoId);
-    TEST_ASSERT_EQUAL(exp[i].position, positions[i].position);
-  }
-}
-
 void test_stop(void) {
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
   servoManager.setDefaultThreshold(20);
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, stream, FPS, FRAMES);
+  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(servoManager, FPS, FRAMES);
+  scene.setProgmemData(stream);
 
   positionLog exp[15] = {
-      {0, 375},
-      {1, 375},
-      {0, 376},
-      {1, 376},
-      {0, 377},
-      {1, 379},
-      {0, 380},
-      {1, 383},
-      // stop
-      {0, 378},
-      {1, 381},
-      {0, 376},
-      {1, 379},
-      {0, 375},
-      {1, 377},
-      {1, 375},
+      {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
+      {1, 379}, {0, 380}, {1, 383}, {0, 378}, {1, 381},
+      {0, 376}, {1, 379}, {0, 375}, {1, 377}, {1, 375},
   };
 
   for (int i = 0; i < FRAME_MICROS * 4; i += FRAME_MICROS) {
@@ -102,8 +70,9 @@ void test_stop(void) {
 
 void test_has_finished(void) {
   ServoManager servoManager;
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, stream, FPS, FRAMES);
+  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(servoManager, FPS, FRAMES);
+  scene.setProgmemData(stream);
 
   TEST_ASSERT_FALSE(scene.hasFinished());
 
@@ -120,8 +89,9 @@ void test_has_finished(void) {
 
 void test_get_frame(void) {
   ServoManager servoManager;
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, stream, FPS, FRAMES);
+  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(servoManager, FPS, FRAMES);
+  scene.setProgmemData(stream);
 
   TEST_ASSERT_EQUAL(0, scene.getFrame());
 
@@ -135,7 +105,6 @@ void test_get_frame(void) {
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_play_with_frames);
-  RUN_TEST(test_play_without_frames);
   RUN_TEST(test_stop);
   RUN_TEST(test_has_finished);
   RUN_TEST(test_get_frame);

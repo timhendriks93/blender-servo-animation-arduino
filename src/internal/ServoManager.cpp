@@ -34,6 +34,26 @@ void ServoManager::setThreshold(byte servoId, byte value) {
   }
 }
 
+void ServoManager::parseStream(Stream *stream, bool considerLineBreaks) {
+  if (!stream || !this->hasPositionCallback()) {
+    return;
+  }
+
+  Command command;
+
+  while (stream->available() > 0) {
+    byte value = stream->read();
+
+    if (considerLineBreaks && value == Command::LINE_BREAK) {
+      break;
+    }
+
+    command.write(value);
+
+    this->handleCommand(command);
+  }
+}
+
 void ServoManager::handleCommand(Command command) {
   if (!command.isValid()) {
     return;

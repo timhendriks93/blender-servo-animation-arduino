@@ -6,26 +6,33 @@
 
 using namespace BlenderServoAnimation;
 
-Scene::Scene(ServoManager &servoManager, Stream &data, byte fps, int frames,
-             bool hasProgmemStream) {
+Scene::Scene(ServoManager &servoManager, byte fps, int frames) {
   this->servoManager = &servoManager;
-  this->data = &data;
   this->fps = fps;
   this->frames = frames;
   this->frameMicros = round((float)Scene::SECOND_IN_MICROS / (float)fps);
   this->diffPerSecond = Scene::SECOND_IN_MICROS - (this->frameMicros * fps);
-  this->hasProgmemStream = hasProgmemStream;
 }
 
 Scene::~Scene() {
-  if (this->hasProgmemStream) {
-    delete this->data;
+  if (this->progmemData) {
+    delete this->progmemData;
   }
 }
 
+void Scene::setData(Stream *data) {
+  this->data = data;
+}
+
+void Scene::setProgmemData(ProgmemStream *data) {
+  this->progmemData = data;
+}
+
 void Scene::play(unsigned long currentMicros) {
+  Stream *data = this->getAnimationData();
+
   if (this->frames == 0) {
-    this->parseCommands();
+    this->servoManager->parseStream(data);
     return;
   }
 
@@ -45,7 +52,7 @@ void Scene::play(unsigned long currentMicros) {
     this->lastMicros += this->diffPerSecond;
   }
 
-  this->parseCommands();
+  this->servoManager->parseStream(data);
 }
 
 void Scene::stop(unsigned long currentMicros) {
@@ -90,22 +97,10 @@ int Scene::getFrames() {
   return this->frames;
 }
 
-void Scene::parseCommands() {
-  if (!this->servoManager->hasPositionCallback()) {
-    return;
+Stream* Scene::getAnimationData() {
+  if (this->progmemData) {
+    return this->progmemData;
   }
 
-  Command command;
-
-  while (this->data->available() > 0) {
-    byte value = this->data->read();
-
-    if (this->frames > 0 && value == Command::LINE_BREAK) {
-      break;
-    }
-
-    command.write(value);
-
-    this->servoManager->handleCommand(command);
-  }
+  return this->data;
 }
