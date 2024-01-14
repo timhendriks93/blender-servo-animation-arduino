@@ -226,7 +226,7 @@ void Animation::handleStopMode(unsigned long currentMicros) {
 }
 
 void Animation::handleLiveMode() {
-  this->servoManager.parseStream(this->liveStream);
+  this->servoManager.parseStream(this->liveStream, false);
 }
 
 Scene *Animation::getCurrentScene() {

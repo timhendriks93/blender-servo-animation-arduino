@@ -69,7 +69,7 @@ void ServoManager::handleCommand(Command command) {
   this->servos[id]->move(position);
 }
 
-void ServoManager::moveAllServosToNeutral() {
+void ServoManager::moveAllTowardsNeutral() {
   for (int i = 0; i < MAX_SERVO_COUNT; i++) {
     Servo *servo = this->servos[i];
 

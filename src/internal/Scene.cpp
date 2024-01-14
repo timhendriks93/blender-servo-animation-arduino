@@ -61,7 +61,7 @@ void Scene::stop(unsigned long currentMicros) {
   }
 
   this->lastMicros = currentMicros;
-  this->servoManager->moveAllServosToNeutral();
+  this->servoManager->moveAllTowardsNeutral();
 
   if (this->servoManager->servosAreAllNeutral()) {
     this->frame = 0;
@@ -97,7 +97,7 @@ int Scene::getFrames() {
   return this->frames;
 }
 
-Stream* Scene::getAnimationData() {
+Stream *Scene::getAnimationData() {
   if (this->progmemData) {
     return this->progmemData;
   }

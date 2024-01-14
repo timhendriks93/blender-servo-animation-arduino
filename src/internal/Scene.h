@@ -1,5 +1,5 @@
-#include "ServoManager.h"
 #include "ProgmemStream.h"
+#include "ServoManager.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimation_Scene_H
@@ -50,7 +50,7 @@ private:
 
   unsigned int getMicrosDiff(unsigned long currentMicros);
 
-  Stream* getAnimationData();
+  Stream *getAnimationData();
 };
 
 } // namespace BlenderServoAnimation

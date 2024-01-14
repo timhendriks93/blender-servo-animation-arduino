@@ -17,7 +17,7 @@ public:
   void setDefaultThreshold(byte value);
   void setThreshold(byte servoId, byte value);
   void parseStream(Stream *stream, bool considerLineBreaks = true);
-  void moveAllServosToNeutral();
+  void moveAllTowardsNeutral();
 
   bool hasPositionCallback();
   bool servosAreAllNeutral();

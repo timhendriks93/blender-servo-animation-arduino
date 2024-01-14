@@ -111,10 +111,10 @@ void test_allowed(void) {
 int main(int argc, char **argv) {
   UNITY_BEGIN();
   RUN_TEST(test_stop_play);
-  // RUN_TEST(test_stop_play_single);
-  // RUN_TEST(test_stop_play_random);
-  // RUN_TEST(test_stop_loop);
-  // RUN_TEST(test_prevented);
-  // RUN_TEST(test_allowed);
+  RUN_TEST(test_stop_play_single);
+  RUN_TEST(test_stop_play_random);
+  RUN_TEST(test_stop_loop);
+  RUN_TEST(test_prevented);
+  RUN_TEST(test_allowed);
   UNITY_END();
 }
