@@ -24,10 +24,6 @@ AsyncWebSocket ws("/");
 // Servo object to send positions
 Servo myServo;
 
-// LiveStream instance acting as a middleware between web socket and animation
-// instance
-BlenderServoAnimation::LiveStream liveStream;
-
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int position) {
   // Ignore the servoID (there is only one servo) and write the current position
@@ -36,6 +32,10 @@ void move(byte servoID, int position) {
 
 // Animation object to represent the original Blender animation
 BlenderServoAnimation::Animation animation;
+
+// AnimationData instance acting as a middleware between web socket and
+// animation instance
+BlenderServoAnimation::AnimationData liveStream;
 
 // Handler function writing data to the live stream instance when receiving data
 void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
@@ -71,11 +71,8 @@ void setup() {
   // Set the position callback
   animation.onPositionChange(move);
 
-  // Add a new scene with the LiveStream - we can omit fps and frames
-  animation.addScene(liveStream);
-
-  // Trigger the animation play mode
-  animation.play();
+  // Trigger the animation live mode
+  animation.live(liveStream);
 }
 
 void loop() {

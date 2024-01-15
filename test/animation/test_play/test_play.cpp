@@ -49,6 +49,7 @@ void test_without_scenes(void) {
 }
 
 void test_prevented(void) {
+  StreamMock mock;
   Animation animation;
   animation.onPositionChange(move);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
@@ -73,6 +74,11 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+  animation.run(10000);
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+  animation.play();
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
 }
 
 void test_allowed(void) {

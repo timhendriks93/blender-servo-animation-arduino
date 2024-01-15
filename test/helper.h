@@ -38,3 +38,27 @@ const byte PROGMEM PROGMEM_DATA[DATA_SIZE] = {
     1,   1,  123, 62,  10, 60,  0,  1,  124, 62, 60,  1,   1,  127,
     62,  10, 60,  0,   1,  128, 62, 60, 1,   1,  132, 62,  10,
 };
+
+class StreamMock : public Stream {
+public:
+  int availableValue = 1;
+
+  int available() {
+    return this->availableValue;
+  }
+
+  int read() {
+    return 123;
+  }
+
+  int peek() {
+    return 1;
+  }
+
+  void flush() {
+  }
+
+  size_t write(uint8_t) {
+    return 1;
+  }
+};

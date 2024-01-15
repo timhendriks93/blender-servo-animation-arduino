@@ -1,5 +1,5 @@
 #include "Animation.h"
-#include "ProgmemStream.h"
+#include "AnimationData.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
@@ -9,6 +9,10 @@ Animation::~Animation() {
     if (this->scenes[i]) {
       delete this->scenes[i];
     }
+  }
+
+  if (this->liveStream) {
+    delete this->liveStream;
   }
 }
 
@@ -29,15 +33,14 @@ bool Animation::hasScene(byte index) {
 }
 
 void Animation::addScene(const byte *data, int size, byte fps, int frames) {
-  ProgmemStream *stream = new ProgmemStream(data, size);
-  Scene *scene = new Scene(this->servoManager, fps, frames);
-  scene->setProgmemData(stream);
+  AnimationData *animationData = new AnimationData(data, size);
+  Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
 }
 
 void Animation::addScene(Stream &data, byte fps, int frames) {
-  Scene *scene = new Scene(this->servoManager, fps, frames);
-  scene->setData(&data);
+  AnimationData *animationData = new AnimationData(&data);
+  Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
 }
 
@@ -118,7 +121,8 @@ void Animation::loop() {
 }
 
 void Animation::pause() {
-  if (!this->scene || this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP)) {
+  if (!this->scene ||
+      this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP, MODE_LIVE)) {
     return;
   }
 
@@ -126,7 +130,7 @@ void Animation::pause() {
 }
 
 void Animation::stop() {
-  if (!this->scene || this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
+  if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
     return;
   }
 
@@ -138,7 +142,7 @@ void Animation::live(Stream &stream) {
     return;
   }
 
-  this->liveStream = &stream;
+  this->liveStream = new AnimationData(&stream);
   this->changeMode(MODE_LIVE);
 }
 
@@ -226,7 +230,7 @@ void Animation::handleStopMode(unsigned long currentMicros) {
 }
 
 void Animation::handleLiveMode() {
-  this->servoManager.parseStream(this->liveStream, false);
+  this->servoManager.parseData(this->liveStream, false);
 }
 
 Scene *Animation::getCurrentScene() {

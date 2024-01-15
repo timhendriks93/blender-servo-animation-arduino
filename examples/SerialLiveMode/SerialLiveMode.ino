@@ -35,11 +35,8 @@ void setup() {
   // Set the position callback
   animation.onPositionChange(move);
 
-  // Add a new scene with the Serial stream - we can omit fps and frames
-  animation.addScene(Serial);
-
-  // Trigger the animation play mode
-  animation.play();
+  // Trigger the animation live mode
+  animation.live(Serial);
 }
 
 void loop() {

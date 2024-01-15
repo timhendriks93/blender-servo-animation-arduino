@@ -1,3 +1,4 @@
+#include "AnimationData.h"
 #include "Scene.h"
 #include "ServoManager.h"
 #include "typedefs.h"
@@ -58,7 +59,7 @@ private:
   Scene *scenes[MAX_SCENE_COUNT] = {nullptr};
   Scene *scene = nullptr;
 
-  Stream *liveStream;
+  AnimationData *liveStream = nullptr;
 
   mcb modeCallback = nullptr;
   scb sceneCallback = nullptr;

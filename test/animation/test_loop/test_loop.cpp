@@ -1,6 +1,5 @@
 #include "../test/helper.h"
 #include "internal/Animation.h"
-#include "internal/LiveStream.h"
 #include <unity.h>
 
 using namespace BlenderServoAnimation;
@@ -51,10 +50,10 @@ void test_without_scenes(void) {
 }
 
 void test_prevented(void) {
-  LiveStream stream;
+  StreamMock mock;
   Animation animation;
   animation.onPositionChange(move);
-  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(0);
 
@@ -76,13 +75,17 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
   animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+  animation.run(10000);
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+  animation.loop();
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
 }
 
 void test_allowed(void) {
-  LiveStream stream;
   Animation animation;
   animation.onPositionChange(move);
-  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.loop();

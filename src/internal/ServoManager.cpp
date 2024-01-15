@@ -34,15 +34,15 @@ void ServoManager::setThreshold(byte servoId, byte value) {
   }
 }
 
-void ServoManager::parseStream(Stream *stream, bool considerLineBreaks) {
-  if (!stream || !this->hasPositionCallback()) {
+void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
+  if (!data || !this->hasPositionCallback()) {
     return;
   }
 
   Command command;
 
-  while (stream->available() > 0) {
-    byte value = stream->read();
+  while (data->isAvailable()) {
+    byte value = data->getNextByte();
 
     if (considerLineBreaks && value == Command::LINE_BREAK) {
       break;

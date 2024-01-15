@@ -1,5 +1,5 @@
 #include "../test/helper.h"
-#include "internal/ProgmemStream.h"
+#include "internal/AnimationData.h"
 #include "internal/Scene.h"
 #include <unity.h>
 
@@ -12,9 +12,8 @@ void setUp(void) {
 void test_play_with_frames(void) {
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
-  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, FPS, FRAMES);
-  scene.setProgmemData(stream);
+  AnimationData *data = new AnimationData(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(&servoManager, data, FPS, FRAMES);
 
   positionLog exp[10] = {
       {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
@@ -37,9 +36,8 @@ void test_stop(void) {
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
   servoManager.setDefaultThreshold(20);
-  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, FPS, FRAMES);
-  scene.setProgmemData(stream);
+  AnimationData *data = new AnimationData(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(&servoManager, data, FPS, FRAMES);
 
   positionLog exp[15] = {
       {0, 375}, {1, 375}, {0, 376}, {1, 376}, {0, 377},
@@ -70,9 +68,8 @@ void test_stop(void) {
 
 void test_has_finished(void) {
   ServoManager servoManager;
-  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, FPS, FRAMES);
-  scene.setProgmemData(stream);
+  AnimationData *data = new AnimationData(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(&servoManager, data, FPS, FRAMES);
 
   TEST_ASSERT_FALSE(scene.hasFinished());
 
@@ -89,9 +86,8 @@ void test_has_finished(void) {
 
 void test_get_frame(void) {
   ServoManager servoManager;
-  ProgmemStream *stream = new ProgmemStream(PROGMEM_DATA, DATA_SIZE);
-  Scene scene(servoManager, FPS, FRAMES);
-  scene.setProgmemData(stream);
+  AnimationData *data = new AnimationData(PROGMEM_DATA, DATA_SIZE);
+  Scene scene(&servoManager, data, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(0, scene.getFrame());
 

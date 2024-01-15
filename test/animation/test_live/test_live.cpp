@@ -11,7 +11,7 @@ void setUp(void) {
 
 void test_prevented(void) {
   Animation animation;
-  Serial_ mock;
+  StreamMock mock;
   animation.addScene(mock);
 
   When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(0);
@@ -46,7 +46,7 @@ void test_prevented(void) {
 }
 
 void test_allowed(void) {
-  Serial_ mock;
+  StreamMock mock;
   Animation animation;
   animation.addScene(mock);
 

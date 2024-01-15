@@ -1,13 +1,14 @@
 #include "Scene.h"
 #include "Command.h"
-#include "ProgmemStream.h"
 #include "Servo.h"
 #include <Arduino.h>
 
 using namespace BlenderServoAnimation;
 
-Scene::Scene(ServoManager &servoManager, byte fps, int frames) {
-  this->servoManager = &servoManager;
+Scene::Scene(ServoManager *servoManager, AnimationData *data, byte fps,
+             int frames) {
+  this->servoManager = servoManager;
+  this->data = data;
   this->fps = fps;
   this->frames = frames;
   this->frameMicros = round((float)Scene::SECOND_IN_MICROS / (float)fps);
@@ -15,24 +16,14 @@ Scene::Scene(ServoManager &servoManager, byte fps, int frames) {
 }
 
 Scene::~Scene() {
-  if (this->progmemData) {
-    delete this->progmemData;
+  if (this->data) {
+    delete this->data;
   }
 }
 
-void Scene::setData(Stream *data) {
-  this->data = data;
-}
-
-void Scene::setProgmemData(ProgmemStream *data) {
-  this->progmemData = data;
-}
-
 void Scene::play(unsigned long currentMicros) {
-  Stream *data = this->getAnimationData();
-
   if (this->frames == 0) {
-    this->servoManager->parseStream(data);
+    this->servoManager->parseData(this->data);
     return;
   }
 
@@ -52,7 +43,7 @@ void Scene::play(unsigned long currentMicros) {
     this->lastMicros += this->diffPerSecond;
   }
 
-  this->servoManager->parseStream(data);
+  this->servoManager->parseData(this->data);
 }
 
 void Scene::stop(unsigned long currentMicros) {
@@ -95,12 +86,4 @@ int Scene::getFrame() {
 
 int Scene::getFrames() {
   return this->frames;
-}
-
-Stream *Scene::getAnimationData() {
-  if (this->progmemData) {
-    return this->progmemData;
-  }
-
-  return this->data;
 }

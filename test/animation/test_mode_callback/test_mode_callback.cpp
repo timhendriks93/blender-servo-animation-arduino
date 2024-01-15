@@ -1,6 +1,5 @@
 #include "../test/helper.h"
 #include "internal/Animation.h"
-#include "internal/LiveStream.h"
 
 #include <unity.h>
 
@@ -20,12 +19,11 @@ void onModeChange(byte prevArg, byte newArg) {
 }
 
 void test_different_mode(void) {
-  LiveStream stream;
   Animation animation;
   animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
-  animation.addScene(stream, FPS, FRAMES);
-  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(-1, prevMode);
   TEST_ASSERT_EQUAL(-1, newMode);
@@ -39,11 +37,10 @@ void test_different_mode(void) {
 }
 
 void test_same_mode(void) {
-  LiveStream stream;
   Animation animation;
   animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
-  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   animation.loop();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
@@ -54,11 +51,11 @@ void test_same_mode(void) {
 }
 
 void test_all_modes(void) {
-  LiveStream stream;
+  StreamMock mock;
   Animation animation;
   animation.onPositionChange(move);
   animation.onModeChange(onModeChange);
-  animation.addScene(stream, FPS, FRAMES);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   animation.play();
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
@@ -85,6 +82,14 @@ void test_all_modes(void) {
   animation.stop();
   TEST_ASSERT_EQUAL(Animation::MODE_LOOP, prevMode);
   TEST_ASSERT_EQUAL(Animation::MODE_STOP, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.run(10000);
+  TEST_ASSERT_EQUAL(Animation::MODE_STOP, prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, newMode);
+  TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  animation.live(mock);
+  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, prevMode);
+  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, newMode);
   TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
 }
 

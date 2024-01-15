@@ -1,3 +1,4 @@
+#include "AnimationData.h"
 #include "Command.h"
 #include "Servo.h"
 #include "typedefs.h"
@@ -16,7 +17,7 @@ public:
   void setPositionCallback(pcb positionCallback);
   void setDefaultThreshold(byte value);
   void setThreshold(byte servoId, byte value);
-  void parseStream(Stream *stream, bool considerLineBreaks = true);
+  void parseData(AnimationData *data, bool considerLineBreaks = true);
   void moveAllTowardsNeutral();
 
   bool hasPositionCallback();

@@ -1,5 +1,5 @@
 #include "../test/helper.h"
-#include "internal/ProgmemStream.h"
+#include "internal/AnimationData.h"
 #include "internal/ServoManager.h"
 #include <unity.h>
 
@@ -9,14 +9,14 @@ void setUp(void) {
   resetPositionLog();
 }
 
-void test_parse_stream(void) {
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
+void test_parse_data(void) {
+  AnimationData data(PROGMEM_DATA, DATA_SIZE);
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
 
   TEST_ASSERT_EQUAL(0, logIndex);
 
-  servoManager.parseStream(&stream);
+  servoManager.parseData(&data);
 
   TEST_ASSERT_EQUAL(2, logIndex);
   TEST_ASSERT_EQUAL(0, positions[0].servoId);
@@ -25,20 +25,20 @@ void test_parse_stream(void) {
   TEST_ASSERT_EQUAL(375, positions[1].position);
 }
 
-void test_parse_stream_without_line_breaks(void) {
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
+void test_parse_data_without_line_breaks(void) {
+  AnimationData data(PROGMEM_DATA, DATA_SIZE);
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
 
   TEST_ASSERT_EQUAL(0, logIndex);
 
-  servoManager.parseStream(&stream, false);
+  servoManager.parseData(&data, false);
 
   TEST_ASSERT_EQUAL(10, logIndex);
 }
 
 void test_move_all_towards_neutral(void) {
-  ProgmemStream stream(PROGMEM_DATA, DATA_SIZE);
+  AnimationData data(PROGMEM_DATA, DATA_SIZE);
   ServoManager servoManager;
   servoManager.setPositionCallback(move);
   servoManager.setDefaultThreshold(20);
@@ -46,9 +46,9 @@ void test_move_all_towards_neutral(void) {
 
   TEST_ASSERT_EQUAL(0, logIndex);
 
-  servoManager.parseStream(&stream);
-  servoManager.parseStream(&stream);
-  servoManager.parseStream(&stream);
+  servoManager.parseData(&data);
+  servoManager.parseData(&data);
+  servoManager.parseData(&data);
 
   TEST_ASSERT_EQUAL(6, logIndex);
   TEST_ASSERT_FALSE(servoManager.servosAreAllNeutral());
@@ -66,8 +66,8 @@ void test_move_all_towards_neutral(void) {
 
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  RUN_TEST(test_parse_stream);
-  RUN_TEST(test_parse_stream_without_line_breaks);
+  RUN_TEST(test_parse_data);
+  RUN_TEST(test_parse_data_without_line_breaks);
   RUN_TEST(test_move_all_towards_neutral);
   UNITY_END();
 }

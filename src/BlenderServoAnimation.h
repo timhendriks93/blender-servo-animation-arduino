@@ -1,4 +1,3 @@
 #include "internal/Animation.h"
-#include "internal/LiveStream.h"
-#include "internal/Scene.h"
+#include "internal/AnimationData.h"
 #include <Arduino.h>
