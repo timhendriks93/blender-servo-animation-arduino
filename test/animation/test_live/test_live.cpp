@@ -12,7 +12,7 @@ void setUp(void) {
 void test_prevented(void) {
   Animation animation;
   StreamMock mock;
-  animation.addScene(mock);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(0);
 
@@ -48,7 +48,7 @@ void test_prevented(void) {
 void test_allowed(void) {
   StreamMock mock;
   Animation animation;
-  animation.addScene(mock);
+  animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
   animation.live(mock);

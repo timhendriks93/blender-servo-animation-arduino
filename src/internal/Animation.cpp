@@ -11,7 +11,7 @@ Animation::~Animation() {
     }
   }
 
-  if (this->liveStream) {
+  if (this->liveStream != nullptr && this->isOneTimeLiveStream) {
     delete this->liveStream;
   }
 }
@@ -143,6 +143,16 @@ void Animation::live(Stream &stream) {
   }
 
   this->liveStream = new AnimationData(&stream);
+  this->isOneTimeLiveStream = true;
+  this->changeMode(MODE_LIVE);
+}
+
+void Animation::live(AnimationData &data) {
+  if (this->mode != MODE_DEFAULT) {
+    return;
+  }
+
+  this->liveStream = &data;
   this->changeMode(MODE_LIVE);
 }
 
@@ -252,6 +262,11 @@ void Animation::onSceneChange(scb sceneCallback) {
 void Animation::changeMode(byte mode) {
   byte prevMode = this->mode;
   this->mode = mode;
+
+  if (prevMode == MODE_LIVE && this->isOneTimeLiveStream) {
+    delete this->liveStream;
+    this->liveStream = nullptr;
+  }
 
   if (this->modeCallback) {
     this->modeCallback(prevMode, mode);

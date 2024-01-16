@@ -30,7 +30,7 @@ public:
   int countScenes();
 
   void addScene(const byte *data, int dataLength, byte fps, int frames);
-  void addScene(Stream &data, byte fps = 0, int frames = 0);
+  void addScene(Stream &data, byte fps, int frame);
   void onPositionChange(pcb positionCallback);
   void onModeChange(mcb modeCallback);
   void onSceneChange(scb sceneCallback);
@@ -42,6 +42,7 @@ public:
   void pause();
   void stop();
   void live(Stream &stream);
+  void live(AnimationData &data);
   void setDefaultServoThreshold(byte value);
   void setServoThreshold(byte id, byte value);
 
@@ -60,6 +61,8 @@ private:
   Scene *scene = nullptr;
 
   AnimationData *liveStream = nullptr;
+
+  bool isOneTimeLiveStream = false;
 
   mcb modeCallback = nullptr;
   scb sceneCallback = nullptr;

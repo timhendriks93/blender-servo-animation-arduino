@@ -45,7 +45,7 @@ void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
   }
 
   for (size_t i = 0; i < len; i++) {
-    liveStream.write(data[i]);
+    liveStream.writeByte(data[i]);
   }
 }
 
