@@ -106,9 +106,6 @@ void setup() {
   // Add a scene based on PROGMEM data
   animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
-  // Add a scene based on (live) Serial data
-  animation.addScene(Serial);
-
   // Register the mode change callback function
   animation.onModeChange(modeChanged);
 }

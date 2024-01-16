@@ -77,7 +77,9 @@ private:
   void handlePlayMode(unsigned long currentMicros);
   void handleStopMode(unsigned long currentMicros);
   void handleLiveMode();
+  void setScene(byte index);
   void setRandomScene();
+  void resetScene();
 
   bool modeIsIn(byte modeAmount, ...);
 };

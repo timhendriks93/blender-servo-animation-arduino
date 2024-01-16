@@ -57,6 +57,23 @@ void Animation::setServoThreshold(byte id, byte value) {
   this->servoManager.setThreshold(id, value);
 }
 
+void Animation::setScene(byte index) {
+  Scene *scene = this->scenes[index];
+
+  if (!scene) {
+    return;
+  }
+
+  byte prevIndex = this->playIndex;
+
+  this->playIndex = index;
+  this->scene = scene;
+
+  if (this->sceneCallback) {
+    this->sceneCallback(prevIndex, index);
+  }
+}
+
 void Animation::setRandomScene() {
   byte randomIndex = 0;
 
@@ -64,8 +81,18 @@ void Animation::setRandomScene() {
     randomIndex = random(this->addIndex);
   }
 
-  this->playIndex = randomIndex;
-  this->scene = this->scenes[this->playIndex];
+  this->setScene(randomIndex);
+}
+
+void Animation::resetScene() {
+  byte prevIndex = this->playIndex;
+
+  this->scene = nullptr;
+  this->playIndex = 0;
+
+  if (this->sceneCallback) {
+    this->sceneCallback(prevIndex, 0);
+  }
 }
 
 void Animation::play() {
@@ -74,7 +101,7 @@ void Animation::play() {
   }
 
   if (!this->scene) {
-    this->scene = this->scenes[this->playIndex];
+    this->setScene(this->playIndex);
   }
 
   this->changeMode(MODE_PLAY);
@@ -89,8 +116,7 @@ void Animation::playSingle(byte index) {
   }
 
   if (!this->scene || this->scene->getFrame() == 0) {
-    this->playIndex = index;
-    this->scene = scene;
+    this->setScene(index);
   }
 
   this->changeMode(MODE_PLAY_SINGLE);
@@ -114,7 +140,7 @@ void Animation::loop() {
   }
 
   if (!this->scene) {
-    this->scene = this->scenes[this->playIndex];
+    this->setScene(this->playIndex);
   }
 
   this->changeMode(MODE_LOOP);
@@ -196,14 +222,13 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
   switch (this->mode) {
   case MODE_PLAY:
     if (this->hasFinished()) {
-      this->scene = nullptr;
+      this->resetScene();
     } else {
-      this->playIndex++;
-      this->scene = this->scenes[this->playIndex];
+      this->setScene(this->playIndex + 1);
     }
     break;
   case MODE_PLAY_SINGLE:
-    this->scene = nullptr;
+    this->resetScene();
     break;
   case MODE_PLAY_RANDOM:
     this->setRandomScene();
@@ -211,11 +236,10 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
     break;
   case MODE_LOOP:
     if (this->hasFinished()) {
-      this->playIndex = 0;
+      this->setScene(0);
     } else {
-      this->playIndex++;
+      this->setScene(this->playIndex + 1);
     }
-    this->scene = this->scenes[this->playIndex];
     this->changeMode(MODE_LOOP);
     break;
   }

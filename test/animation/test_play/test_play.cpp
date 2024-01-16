@@ -38,6 +38,7 @@ void test_play(void) {
   }
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  TEST_ASSERT_EQUAL(nullptr, animation.getCurrentScene());
   TEST_ASSERT_EQUAL(10, logIndex);
 }
 
