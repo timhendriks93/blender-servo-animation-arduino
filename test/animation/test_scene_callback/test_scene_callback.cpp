@@ -26,7 +26,7 @@ void test_play(void) {
 
   TEST_ASSERT_EQUAL(-1, prevSceneIndex);
   TEST_ASSERT_EQUAL(-1, nextSceneIndex);
-  
+
   animation.play();
 
   TEST_ASSERT_EQUAL(0, prevSceneIndex);
@@ -48,7 +48,7 @@ void test_play_single(void) {
 
   TEST_ASSERT_EQUAL(-1, prevSceneIndex);
   TEST_ASSERT_EQUAL(-1, nextSceneIndex);
-  
+
   animation.playSingle(1);
 
   TEST_ASSERT_EQUAL(0, prevSceneIndex);

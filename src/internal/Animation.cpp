@@ -38,8 +38,8 @@ void Animation::addScene(const byte *data, int size, byte fps, int frames) {
   this->registerScene(scene);
 }
 
-void Animation::addScene(Stream &data, byte fps, int frames) {
-  AnimationData *animationData = new AnimationData(&data);
+void Animation::addScene(Stream &stream, byte fps, int frames) {
+  AnimationData *animationData = new AnimationData(&stream);
   Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
 }

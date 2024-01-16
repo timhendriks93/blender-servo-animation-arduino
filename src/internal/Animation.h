@@ -29,8 +29,8 @@ public:
 
   int countScenes();
 
-  void addScene(const byte *data, int dataLength, byte fps, int frames);
-  void addScene(Stream &data, byte fps, int frame);
+  void addScene(const byte *data, int size, byte fps, int frames);
+  void addScene(Stream &stream, byte fps, int frame);
   void onPositionChange(pcb positionCallback);
   void onModeChange(mcb modeCallback);
   void onSceneChange(scb sceneCallback);
