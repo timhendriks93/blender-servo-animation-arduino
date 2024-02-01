@@ -15,6 +15,7 @@ public:
 
   void play(unsigned long currentMicros);
   void stop(unsigned long currentMicros);
+  void reset();
 
   bool hasFinished();
 

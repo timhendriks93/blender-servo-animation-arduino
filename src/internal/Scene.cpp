@@ -32,12 +32,7 @@ void Scene::play(unsigned long currentMicros) {
   }
 
   this->lastMicros = currentMicros;
-
-  if (this->frame >= this->frames) {
-    this->frame = 0;
-  } else {
-    this->frame++;
-  }
+  this->frame++;
 
   if (this->frame % this->fps == 0) {
     this->lastMicros += this->diffPerSecond;
@@ -55,8 +50,13 @@ void Scene::stop(unsigned long currentMicros) {
   this->servoManager->moveAllTowardsNeutral();
 
   if (this->servoManager->servosAreAllNeutral()) {
-    this->frame = 0;
+    this->reset();
   }
+}
+
+void Scene::reset() {
+  this->frame = 0;
+  this->data->reset();
 }
 
 unsigned int Scene::getMicrosDiff(unsigned long currentMicros) {
@@ -73,7 +73,7 @@ bool Scene::isNewFrame(unsigned long currentMicros) {
 }
 
 bool Scene::hasFinished() {
-  return this->frame == this->frames;
+  return this->frame + 1 == this->frames;
 }
 
 byte Scene::getFPS() {

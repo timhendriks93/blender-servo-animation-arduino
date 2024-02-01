@@ -43,18 +43,20 @@ const byte servoAmount = sizeof(servoMappings) / sizeof(servoMappings[0]);
 void setPWM(byte servoID, int position) {
   // Iterate through the available servos
   for (int i = 0; i < servoAmount; i++) {
-    // Check if the current servo ID matches the target servo ID
-    if (servoMappings[i].id == servoID) {
-      // Get the PWM driver instance and channel from the mapping
-      Adafruit_PWMServoDriver pwm = servoMappings[i].pwm;
-      byte channel = servoMappings[i].channel;
-
-      // Set the current position as PWM output
-      pwm.setPWM(channel, 0, position);
-
-      // Break the for loop as we already handled the servo movement
-      break;
+    // Continue if the current servo ID doesn't match the target servo ID
+    if (servoMappings[i].id != servoID) {
+      continue;
     }
+
+    // Get the PWM driver instance and channel from the mapping
+    Adafruit_PWMServoDriver pwm = servoMappings[i].pwm;
+    byte channel = servoMappings[i].channel;
+
+    // Set the current position as PWM output
+    pwm.setPWM(channel, 0, position);
+
+    // Break the for loop as we finsihed handling the servo movement
+    break;
   }
 }
 

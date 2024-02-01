@@ -60,3 +60,12 @@ void AnimationData::writeByte(byte value) {
     this->writeIndex = 0;
   }
 }
+
+void AnimationData::reset() {
+  if (this->data) {
+    this->dataPosition = 0;
+  } else {
+    this->readIndex = 0;
+    this->writeIndex = 0;
+  }
+}

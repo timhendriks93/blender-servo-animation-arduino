@@ -1,7 +1,7 @@
-# Show
+# Multiple scenes
 
-Setting up a show consisting of 2 animations.
+Setting up an animation consisting of 2 scenes.
 
-By default, the 2 animations will be played synchronously in a loop.
+By default, the 2 scenes will be played synchronously in a loop.
 
 ![Arduino Nano with servo](../../images/arduino-nano-with-servo.png)

@@ -12,7 +12,7 @@
   based on the current mode.
 
   Starting the animation will only play it once, so another button press is
-  required to play it again. Alternatively, you can also use MODE_LOOP instead
+  required to play it again. Alternatively, you can use MODE_LOOP instead
   of MODE_PLAY and loop() instead of play(). This will keep the animation
   running until the button is short or long pressed again, thus pausing or
   stopping the animation.
@@ -53,6 +53,9 @@ void modeChanged(byte prevMode, byte newMode) {
   case BlenderServoAnimation::Animation::MODE_PAUSE:
     // E.g. pause audio
     break;
+  case BlenderServoAnimation::Animation::MODE_STOP:
+    // E.g. stop audio
+    break;
   }
 }
 
@@ -80,15 +83,8 @@ void onPressed() {
 void onLongPressed() {
   // Get the current mode, act accordingly and trigger another mode
   switch (animation.getMode()) {
-    // On long press in default mode, we want to trigger the live mode
-  case BlenderServoAnimation::Animation::MODE_DEFAULT:
-    animation.live(Serial);
-    break;
-    // On long press in any other mode, we want to stop the animation
+    // On long press in play, pause or live mode, we want to stop the animation
   case BlenderServoAnimation::Animation::MODE_PLAY:
-  case BlenderServoAnimation::Animation::MODE_PLAY_SINGLE:
-  case BlenderServoAnimation::Animation::MODE_PLAY_RANDOM:
-  case BlenderServoAnimation::Animation::MODE_LOOP:
   case BlenderServoAnimation::Animation::MODE_PAUSE:
     animation.stop();
     break;
@@ -102,6 +98,9 @@ void setup() {
   // Attach the callbacks to the mode button
   modeButton.attachClick(onPressed);
   modeButton.attachLongPressStart(onLongPressed);
+
+  // Set the position callback
+  animation.onPositionChange(move);
 
   // Add a scene based on PROGMEM data
   animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);

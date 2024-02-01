@@ -27,6 +27,7 @@ void move(byte servoID, int position) {
 BlenderServoAnimation::Animation animation;
 
 void setup() {
+  // Initialize serial communication
   Serial.begin(115200);
 
   // Attach the servo to pin 12

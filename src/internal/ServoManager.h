@@ -28,13 +28,15 @@ private:
 
   Servo *servos[MAX_SERVO_COUNT] = {nullptr};
 
+  Command command;
+
   pcb positionCallback = nullptr;
 
   byte defaultThreshold = 0;
   byte thresholds[MAX_SERVO_COUNT] = {0};
 
   void addServo(byte id);
-  void handleCommand(Command command);
+  void handleCommand();
 };
 
 } // namespace BlenderServoAnimation

@@ -1,5 +1,5 @@
 /*
-  Setting up a show consisting of 2 animations.
+  Setting up an animation consisting of 2 scenes.
 
   Note the namespaces which are used to distinguish the positions
   of one scene / animation from another. It's even possible to
@@ -41,7 +41,7 @@ void setup() {
   animation.addScene(SceneB::ANIMATION_DATA, SceneB::LENGTH, SceneB::FPS,
                      SceneB::FRAMES);
 
-  // Trigger the show loop mode
+  // Trigger the animation loop mode
   animation.loop();
 
   // There are also other playback options

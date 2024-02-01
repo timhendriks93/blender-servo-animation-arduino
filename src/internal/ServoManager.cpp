@@ -39,8 +39,6 @@ void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
     return;
   }
 
-  Command command;
-
   while (data->isAvailable()) {
     byte value = data->getNextByte();
 
@@ -48,19 +46,19 @@ void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
       break;
     }
 
-    command.write(value);
+    this->command.write(value);
 
-    this->handleCommand(command);
+    this->handleCommand();
   }
 }
 
-void ServoManager::handleCommand(Command command) {
-  if (!command.isValid()) {
+void ServoManager::handleCommand() {
+  if (!this->command.isValid()) {
     return;
   }
 
-  byte id = command.getServoID();
-  int position = command.getServoPosition();
+  byte id = this->command.getServoID();
+  int position = this->command.getServoPosition();
 
   if (!this->servos[id]) {
     this->addServo(id);

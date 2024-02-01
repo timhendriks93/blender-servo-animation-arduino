@@ -68,6 +68,7 @@ void Animation::setScene(byte index) {
 
   this->playIndex = index;
   this->scene = scene;
+  this->scene->reset();
 
   if (this->sceneCallback) {
     this->sceneCallback(prevIndex, index);

@@ -19,6 +19,7 @@ public:
   byte getNextByte();
 
   void writeByte(byte value);
+  void reset();
 
 private:
   static const byte BUFFER_SIZE = 64;
