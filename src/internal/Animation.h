@@ -27,8 +27,6 @@ public:
   byte getMode();
   byte getPlayIndex();
 
-  int countScenes();
-
   void addScene(const byte *data, int size, byte fps, int frames);
   void addScene(Stream &stream, byte fps, int frame);
   void onPositionChange(pcb positionCallback);
@@ -48,16 +46,13 @@ public:
 
   bool hasFinished();
   bool hasScenes();
-  bool hasScene(byte index);
 
   Scene *getCurrentScene();
 
 private:
-  static const int MAX_SCENE_COUNT = 256;
-
   ServoManager servoManager;
 
-  Scene *scenes[MAX_SCENE_COUNT] = {nullptr};
+  Scene **scenes = nullptr;
   Scene *scene = nullptr;
 
   AnimationData *liveStream = nullptr;

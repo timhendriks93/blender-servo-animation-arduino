@@ -5,10 +5,8 @@
 using namespace BlenderServoAnimation;
 
 Animation::~Animation() {
-  for (int i = 0; i < this->addIndex; i++) {
-    if (this->scenes[i]) {
-      delete this->scenes[i];
-    }
+  if (this->scenes) {
+    delete[] this->scenes;
   }
 
   if (this->liveStream != nullptr && this->isOneTimeLiveStream) {
@@ -16,20 +14,12 @@ Animation::~Animation() {
   }
 }
 
-int Animation::countScenes() {
-  return this->addIndex;
-}
-
 bool Animation::hasFinished() {
   return this->playIndex + 1 >= this->addIndex;
 }
 
 bool Animation::hasScenes() {
-  return this->countScenes() > 0;
-}
-
-bool Animation::hasScene(byte index) {
-  return this->scenes[index] != nullptr;
+  return this->addIndex > 0;
 }
 
 void Animation::addScene(const byte *data, int size, byte fps, int frames) {
@@ -45,7 +35,17 @@ void Animation::addScene(Stream &stream, byte fps, int frames) {
 }
 
 void Animation::registerScene(Scene *scene) {
-  this->scenes[this->addIndex] = scene;
+  Scene **newScenes = new Scene *[this->addIndex + 1];
+
+  for (int i = 0; i < this->addIndex; i++) {
+    newScenes[i] = this->scenes[i];
+  }
+
+  newScenes[this->addIndex] = scene;
+
+  delete[] this->scenes;
+
+  this->scenes = newScenes;
   this->addIndex++;
 }
 
@@ -58,16 +58,14 @@ void Animation::setServoThreshold(byte id, byte value) {
 }
 
 void Animation::setScene(byte index) {
-  Scene *scene = this->scenes[index];
-
-  if (!scene) {
+  if (!this->scenes || index >= this->addIndex) {
     return;
   }
 
   byte prevIndex = this->playIndex;
 
   this->playIndex = index;
-  this->scene = scene;
+  this->scene = this->scenes[index];
   this->scene->reset();
 
   if (this->sceneCallback) {
@@ -78,7 +76,7 @@ void Animation::setScene(byte index) {
 void Animation::setRandomScene() {
   byte randomIndex = 0;
 
-  if (this->countScenes() > 1) {
+  if (this->addIndex > 1) {
     randomIndex = random(this->addIndex);
   }
 
@@ -109,10 +107,11 @@ void Animation::play() {
 }
 
 void Animation::playSingle(byte index) {
-  Scene *scene = this->scenes[index];
+  bool indexExists = this->scenes && index < this->addIndex;
+  bool modeIsAllowed = this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE);
+  bool pausedOtherScene = this->mode == MODE_PAUSE && this->playIndex != index;
 
-  if (scene == nullptr || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE) ||
-      (this->mode == MODE_PAUSE && playIndex != index)) {
+  if (!indexExists || !modeIsAllowed || pausedOtherScene) {
     return;
   }
 

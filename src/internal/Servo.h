@@ -18,6 +18,8 @@ public:
 
   bool isNeutral();
 
+  byte getId();
+
 private:
   const byte STEP_DIVIDER = 10;
 

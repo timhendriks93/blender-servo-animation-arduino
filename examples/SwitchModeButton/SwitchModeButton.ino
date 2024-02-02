@@ -28,8 +28,11 @@
 #include <Servo.h>
 #endif
 
+#define BUTTON_PIN 2
+#define SERVO_PIN 3
+
 // The button instance for switching animation modes
-OneButton modeButton(2, true, true);
+OneButton modeButton(BUTTON_PIN, true, true);
 
 // Servo object to send positions
 Servo myServo;
@@ -92,8 +95,8 @@ void onLongPressed() {
 }
 
 void setup() {
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
 
   // Attach the callbacks to the mode button
   modeButton.attachClick(onPressed);

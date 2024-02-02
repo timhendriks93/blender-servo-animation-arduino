@@ -15,8 +15,16 @@
 #include <Servo.h>
 #endif
 
+#define SERVO_PIN 3
+#define CS_PIN 4
+#define FPS 30
+#define FRAMES 100
+
 // Servo object to send positions
 Servo myServo;
+
+// File object to read animation data
+File animationFile;
 
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int position) {
@@ -24,21 +32,42 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
+void resetFile(byte prevSceneIndex, byte nextSceneIndex) {
+  animationFile.seek(0);
+}
+
 // Animation object to represent the original Blender animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {
-  SD.begin(4);
-  File myFile = SD.open("test.txt", FILE_READ);
+  Serial.begin(9600);
+  while (!Serial);
 
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  Serial.println("Initializing SD card...");
 
-  // Set the position callback
+  if (!SD.begin(CS_PIN)) {
+    Serial.println("Initialization failed!");
+    while (true);
+  }
+  Serial.println("Initialization done.");
+
+  animationFile = SD.open("simple.bin");
+
+  if (animationFile) {
+    Serial.println("File opened successfully.");
+  } else {
+    Serial.println("Opening file failed.");
+  }
+
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
+
+  // Set the position and scene change callback
   animation.onPositionChange(move);
+  animation.onSceneChange(resetFile);
 
   // Add a scene with the File stream
-  animation.addScene(myFile, 30, 100);
+  animation.addScene(animationFile, FPS, FRAMES);
 
   // Trigger the animation loop mode
   animation.loop();

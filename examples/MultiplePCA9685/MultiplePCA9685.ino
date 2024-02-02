@@ -27,7 +27,7 @@ struct servoMapping {
   byte channel;
 };
 
-// Define an array of servo mapsf
+// Define an array of servo maps
 servoMapping servoMappings[] = {
     // Servo 0 attached to board A on channel 0
     {0, pwmA, 0},

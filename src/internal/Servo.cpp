@@ -68,3 +68,7 @@ bool Servo::positionExceedsThreshold(int position) {
 
   return this->threshold && positionDiff > this->threshold;
 }
+
+byte Servo::getId() {
+  return this->id;
+}

@@ -15,10 +15,33 @@
 #include <Servo.h>
 #endif
 
+#define SERVO_PIN 3
+#define CS_PIN 4
+
 // Servo object to send positions
 Servo myServo;
 
+// File object to read animation data
 File animationFile;
+
+// We use a struct to map a scene to a filename
+struct sceneMapping {
+  byte fps;
+  int frames;
+  String filename;
+};
+
+// Define an array of scene maps
+sceneMapping sceneMappings[] = {
+    // Scene 0 = Scene A
+    {30, 100, "scene-a.bin"},
+
+    // Scene 1 = Scene B
+    {60, 200, "scene-b.bin"},
+};
+
+// Calculate the amount of scenes so that we can easily extend the array
+const byte sceneAmount = sizeof(sceneMappings) / sizeof(sceneMappings[0]);
 
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int position) {
@@ -26,30 +49,46 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-void changeFile(byte prevSceneIndex, byte nextSceneIndex) {
-  String filename = "test";
+void changeSceneFile(byte prevSceneIndex, byte nextSceneIndex) {
+  String filename = sceneMappings[nextSceneIndex].filename;
+
   animationFile.close();
-  animationFile = SD.open(filename, FILE_READ);
+  animationFile = SD.open(filename);
+
+  if (!animationFile) {
+    Serial.println("Opening file failed.");
+  }
 }
 
 // Animation object to represent the original Blender animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {
-  SD.begin(4);
+  Serial.begin(9600);
+  while (!Serial);
+
+  Serial.println("Initializing SD card...");
+
+  if (!SD.begin(CS_PIN)) {
+    Serial.println("Initialization failed!");
+    while (true);
+  }
+  Serial.println("Initialization done.");
 
   // Attach the servo to pin 12
-  myServo.attach(12);
+  myServo.attach(SERVO_PIN);
 
-  // Set the position callback
+  // Set the position and scene change callback
   animation.onPositionChange(move);
-
-  // Set the scene callback
-  animation.onSceneChange(changeFile);
+  animation.onSceneChange(changeSceneFile);
 
   // Add multiple scenes with the same File stream
-  animation.addScene(animationFile, 30, 100);
-  animation.addScene(animationFile, 60, 200);
+  for (byte i = 0; i < sceneAmount; i++) {
+    byte fps = sceneMappings[i].fps;
+    int frames = sceneMappings[i].frames;
+
+    animation.addScene(animationFile, fps, frames);
+  }
 
   // Trigger the show loop mode
   animation.loop();

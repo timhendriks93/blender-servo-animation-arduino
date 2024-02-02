@@ -20,23 +20,22 @@ public:
   void parseData(AnimationData *data, bool considerLineBreaks = true);
   void moveAllTowardsNeutral();
 
-  bool hasPositionCallback();
   bool servosAreAllNeutral();
 
 private:
-  static const int MAX_SERVO_COUNT = 256;
-
-  Servo *servos[MAX_SERVO_COUNT] = {nullptr};
+  Servo **servos = nullptr;
 
   Command command;
 
   pcb positionCallback = nullptr;
 
+  byte servoAmount = 0;
   byte defaultThreshold = 0;
-  byte thresholds[MAX_SERVO_COUNT] = {0};
 
-  void addServo(byte id);
   void handleCommand();
+
+  Servo* addServo(byte id);
+  Servo* getServo(byte id);
 };
 
 } // namespace BlenderServoAnimation

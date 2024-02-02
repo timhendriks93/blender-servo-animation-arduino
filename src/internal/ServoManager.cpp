@@ -5,20 +5,16 @@
 using namespace BlenderServoAnimation;
 
 ServoManager::~ServoManager() {
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    if (this->servos[i]) {
-      delete this->servos[i];
-    }
+  if (this->servos) {
+    delete[] this->servos;
   }
 }
 
 void ServoManager::setPositionCallback(pcb positionCallback) {
   this->positionCallback = positionCallback;
 
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
-    if (this->servos[i]) {
-      this->servos[i]->setPositionCallback(positionCallback);
-    }
+  for (byte i = 0; i < this->servoAmount; i++) {
+    this->servos[i]->setPositionCallback(positionCallback);
   }
 }
 
@@ -27,15 +23,17 @@ void ServoManager::setDefaultThreshold(byte value) {
 }
 
 void ServoManager::setThreshold(byte servoId, byte value) {
-  this->thresholds[servoId] = value;
+  Servo *servo = this->getServo(servoId);
 
-  if (this->servos[servoId]) {
-    this->servos[servoId]->setThreshold(value);
+  if (!servo) {
+    servo = this->addServo(servoId);
   }
+
+  servo->setThreshold(value);
 }
 
 void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
-  if (!data || !this->hasPositionCallback()) {
+  if (!data || !this->positionCallback) {
     return;
   }
 
@@ -60,32 +58,30 @@ void ServoManager::handleCommand() {
   byte id = this->command.getServoID();
   int position = this->command.getServoPosition();
 
-  if (!this->servos[id]) {
-    this->addServo(id);
+  Servo *servo = this->getServo(id);
+
+  if (!servo) {
+    servo = this->addServo(id);
   }
 
-  this->servos[id]->move(position);
+  servo->move(position);
 }
 
 void ServoManager::moveAllTowardsNeutral() {
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
+  for (byte i = 0; i < this->servoAmount; i++) {
     Servo *servo = this->servos[i];
 
-    if (servo && !servo->isNeutral()) {
+    if (!servo->isNeutral()) {
       servo->moveTowardsNeutral();
     }
   }
 }
 
-bool ServoManager::hasPositionCallback() {
-  return this->positionCallback != nullptr;
-}
-
 bool ServoManager::servosAreAllNeutral() {
-  for (int i = 0; i < MAX_SERVO_COUNT; i++) {
+  for (byte i = 0; i < this->servoAmount; i++) {
     Servo *servo = this->servos[i];
 
-    if (servo && !servo->isNeutral()) {
+    if (!servo->isNeutral()) {
       return false;
     }
   }
@@ -93,12 +89,32 @@ bool ServoManager::servosAreAllNeutral() {
   return true;
 }
 
-void ServoManager::addServo(byte id) {
-  byte threshold = this->defaultThreshold;
+Servo *ServoManager::addServo(byte id) {
+  Servo *servo = new Servo(id, this->positionCallback, this->defaultThreshold);
+  Servo **newServos = new Servo *[this->servoAmount + 1];
 
-  if (this->thresholds[id]) {
-    threshold = this->thresholds[id];
+  for (byte i = 0; i < this->servoAmount; i++) {
+    newServos[i] = this->servos[i];
   }
 
-  this->servos[id] = new Servo(id, this->positionCallback, threshold);
+  newServos[this->servoAmount] = servo;
+
+  delete[] this->servos;
+
+  this->servos = newServos;
+  this->servoAmount++;
+
+  return servo;
+}
+
+Servo *ServoManager::getServo(byte id) {
+  for (byte i = 0; i < this->servoAmount; i++) {
+    Servo *servo = this->servos[i];
+
+    if (servo->getId() == id) {
+      return servo;
+    }
+  }
+
+  return nullptr;
 }
