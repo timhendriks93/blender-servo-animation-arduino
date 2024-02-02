@@ -65,13 +65,15 @@ BlenderServoAnimation::Animation animation;
 
 void setup() {
   Serial.begin(9600);
-  while (!Serial);
+  while (!Serial) {
+  };
 
   Serial.println("Initializing SD card...");
 
   if (!SD.begin(CS_PIN)) {
     Serial.println("Initialization failed!");
-    while (true);
+    while (true) {
+    };
   }
   Serial.println("Initialization done.");
 

@@ -34,8 +34,8 @@ private:
 
   void handleCommand();
 
-  Servo* addServo(byte id);
-  Servo* getServo(byte id);
+  Servo *addServo(byte id);
+  Servo *getServo(byte id);
 };
 
 } // namespace BlenderServoAnimation
