@@ -73,7 +73,7 @@ bool Scene::isNewFrame(unsigned long currentMicros) {
 }
 
 bool Scene::hasFinished() {
-  return this->frame + 1 == this->frames;
+  return this->frame == this->frames;
 }
 
 byte Scene::getFPS() {

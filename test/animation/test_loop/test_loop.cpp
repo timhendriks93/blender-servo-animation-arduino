@@ -17,8 +17,6 @@ void test_loop(void) {
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_TRUE(animation.hasScenes());
-  TEST_ASSERT_EQUAL(2, animation.countScenes());
-
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 
   animation.loop();

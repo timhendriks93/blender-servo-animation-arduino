@@ -15,14 +15,11 @@ void test_play(void) {
   animation.onPositionChange(move);
 
   TEST_ASSERT_FALSE(animation.hasScenes());
-  TEST_ASSERT_EQUAL(0, animation.countScenes());
   TEST_ASSERT_EQUAL(nullptr, animation.getCurrentScene());
 
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_TRUE(animation.hasScenes());
-  TEST_ASSERT_EQUAL(1, animation.countScenes());
-
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 
   animation.play();

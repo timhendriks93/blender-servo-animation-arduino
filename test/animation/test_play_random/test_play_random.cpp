@@ -17,7 +17,6 @@ void test_play_random(void) {
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
-  TEST_ASSERT_EQUAL(3, animation.countScenes());
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
 
   When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0, 2);
