@@ -37,6 +37,10 @@
         "random": "cpp",
         "mutex": "cpp",
         "optional": "cpp",
-        "__tree": "cpp"
+        "__tree": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "numeric": "cpp",
+        "utility": "cpp"
     }
 }

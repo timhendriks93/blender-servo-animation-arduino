@@ -25,11 +25,13 @@ void ServoManager::setDefaultThreshold(byte value) {
 void ServoManager::setThreshold(byte servoId, byte value) {
   Servo *servo = this->getServo(servoId);
 
-  if (!servo) {
-    servo = this->addServo(servoId);
-  }
-
   servo->setThreshold(value);
+}
+
+void ServoManager::setOffset(byte servoId, int offset) {
+  Servo *servo = this->getServo(servoId);
+
+  servo->setOffset(offset);
 }
 
 void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
@@ -57,12 +59,7 @@ void ServoManager::handleCommand() {
 
   byte id = this->command.getServoID();
   int position = this->command.getServoPosition();
-
   Servo *servo = this->getServo(id);
-
-  if (!servo) {
-    servo = this->addServo(id);
-  }
 
   servo->move(position);
 }
@@ -116,5 +113,5 @@ Servo *ServoManager::getServo(byte id) {
     }
   }
 
-  return nullptr;
+  return this->addServo(id);
 }

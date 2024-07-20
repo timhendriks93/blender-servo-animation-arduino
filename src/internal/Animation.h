@@ -43,6 +43,7 @@ public:
   void live(AnimationData &data);
   void setDefaultServoThreshold(byte value);
   void setServoThreshold(byte id, byte value);
+  void setServoOffset(byte id, int offset);
 
   bool hasFinished();
   bool hasScenes();

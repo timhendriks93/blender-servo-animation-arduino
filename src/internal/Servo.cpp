@@ -10,7 +10,11 @@ Servo::Servo(byte id, pcb positionCallback, byte threshold) {
   this->setThreshold(threshold);
 }
 
-void Servo::move(int position) {
+void Servo::move(int position, bool useOffset) {
+  if (useOffset && this->offset != 0) {
+    position += this->offset;
+  }
+
   if (position == this->currentPosition ||
       this->positionExceedsThreshold(position)) {
     return;
@@ -30,7 +34,7 @@ void Servo::moveTowardsNeutral() {
   }
 
   if (this->threshold == 0) {
-    return this->move(this->neutralPosition);
+    return this->move(this->neutralPosition, false);
   }
 
   int newPosition = this->currentPosition;
@@ -43,7 +47,7 @@ void Servo::moveTowardsNeutral() {
     newPosition += this->step;
   }
 
-  this->move(newPosition);
+  this->move(newPosition, false);
 }
 
 bool Servo::isNeutral() {
@@ -57,6 +61,10 @@ void Servo::setPositionCallback(pcb positionCallback) {
 void Servo::setThreshold(byte value) {
   this->threshold = value;
   this->step = round(value / STEP_DIVIDER);
+}
+
+void Servo::setOffset(int offset) {
+  this->offset = offset;
 }
 
 bool Servo::positionExceedsThreshold(int position) {

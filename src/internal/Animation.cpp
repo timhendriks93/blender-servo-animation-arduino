@@ -66,6 +66,10 @@ void Animation::setServoThreshold(byte id, byte value) {
   this->servoManager.setThreshold(id, value);
 }
 
+void Animation::setServoOffset(byte id, int offset) {
+  this->servoManager.setOffset(id, offset);
+}
+
 void Animation::setScene(byte index) {
   if (!this->scenes || index >= this->addIndex) {
     return;

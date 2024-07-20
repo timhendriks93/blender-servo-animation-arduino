@@ -11,9 +11,10 @@ class Servo {
 public:
   Servo(byte id, pcb positionCallback, byte threshold = 0);
 
-  void move(int position);
+  void move(int position, bool useOffset = true);
   void moveTowardsNeutral();
   void setThreshold(byte value);
+  void setOffset(int offset);
   void setPositionCallback(pcb positionCallback);
 
   bool isNeutral();
@@ -29,6 +30,7 @@ private:
 
   int neutralPosition = -1;
   int currentPosition = -1;
+  int offset = 0;
 
   pcb positionCallback = nullptr;
 

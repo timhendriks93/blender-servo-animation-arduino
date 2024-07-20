@@ -17,6 +17,7 @@ public:
   void setPositionCallback(pcb positionCallback);
   void setDefaultThreshold(byte value);
   void setThreshold(byte servoId, byte value);
+  void setOffset(byte servoId, int offset);
   void parseData(AnimationData *data, bool considerLineBreaks = true);
   void moveAllTowardsNeutral();
 
