@@ -12,6 +12,10 @@ Animation::~Animation() {
   if (this->liveStream != nullptr && this->isOneTimeLiveStream) {
     delete this->liveStream;
   }
+
+  if (this->playedIndexes != nullptr) {
+    delete[] this->playedIndexes;
+  }
 }
 
 bool Animation::hasFinished() {
@@ -36,16 +40,21 @@ void Animation::addScene(Stream &stream, byte fps, int frames) {
 
 void Animation::registerScene(Scene *scene) {
   Scene **newScenes = new Scene *[this->addIndex + 1];
+  bool *newPlayedIndexes = new bool[this->addIndex + 1];
 
   for (int i = 0; i < this->addIndex; i++) {
     newScenes[i] = this->scenes[i];
+    newPlayedIndexes[i] = this->playedIndexes[i];
   }
 
   newScenes[this->addIndex] = scene;
+  newPlayedIndexes[this->addIndex] = false;
 
   delete[] this->scenes;
+  delete[] this->playedIndexes;
 
   this->scenes = newScenes;
+  this->playedIndexes = newPlayedIndexes;
   this->addIndex++;
 }
 
@@ -65,8 +74,13 @@ void Animation::setScene(byte index) {
   byte prevIndex = this->playIndex;
 
   this->playIndex = index;
+  this->playedIndexes[index] = true;
   this->scene = this->scenes[index];
   this->scene->reset();
+
+  if (this->allScenesPlayed()) {
+    this->resetPlayedScenes();
+  }
 
   if (this->sceneCallback) {
     this->sceneCallback(prevIndex, index);
@@ -77,7 +91,9 @@ void Animation::setRandomScene() {
   byte randomIndex = 0;
 
   if (this->addIndex > 1) {
-    randomIndex = random(this->addIndex);
+    do {
+      randomIndex = random(this->addIndex);
+    } while (this->playedIndexes[randomIndex]);
   }
 
   this->setScene(randomIndex);
@@ -91,6 +107,12 @@ void Animation::resetScene() {
 
   if (this->sceneCallback) {
     this->sceneCallback(prevIndex, 0);
+  }
+}
+
+void Animation::resetPlayedScenes() {
+  for (int i = 0; i < this->addIndex; i++) {
+    this->playedIndexes[i] = false;
   }
 }
 
@@ -188,6 +210,20 @@ byte Animation::getMode() {
 
 byte Animation::getPlayIndex() {
   return this->playIndex;
+}
+
+bool Animation::scenePlayed(int index) {
+  return this->playedIndexes[index];
+}
+
+bool Animation::allScenesPlayed() {
+  for (int i = 0; i < this->addIndex; i++) {
+    if (!this->playedIndexes[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void Animation::run(unsigned long currentMicros) {

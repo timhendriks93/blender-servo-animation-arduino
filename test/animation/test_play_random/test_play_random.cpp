@@ -18,14 +18,20 @@ void test_play_random(void) {
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  TEST_ASSERT_FALSE(animation.scenePlayed(0));
+  TEST_ASSERT_FALSE(animation.scenePlayed(1));
+  TEST_ASSERT_FALSE(animation.scenePlayed(2));
 
-  When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0, 2);
+  When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0, 0, 2);
 
   animation.playRandom();
 
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
   TEST_ASSERT_NOT_EQUAL(nullptr, animation.getCurrentScene());
   TEST_ASSERT_EQUAL(1, animation.getPlayIndex());
+  TEST_ASSERT_FALSE(animation.scenePlayed(0));
+  TEST_ASSERT_TRUE(animation.scenePlayed(1));
+  TEST_ASSERT_FALSE(animation.scenePlayed(2));
 
   for (int i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
     animation.run(i);
@@ -33,6 +39,9 @@ void test_play_random(void) {
 
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
   TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
+  TEST_ASSERT_TRUE(animation.scenePlayed(0));
+  TEST_ASSERT_TRUE(animation.scenePlayed(1));
+  TEST_ASSERT_FALSE(animation.scenePlayed(2));
 
   for (long i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
     animation.run(i);
@@ -41,6 +50,9 @@ void test_play_random(void) {
   TEST_ASSERT_EQUAL(Animation::MODE_PLAY_RANDOM, animation.getMode());
   TEST_ASSERT_EQUAL(2, animation.getPlayIndex());
   TEST_ASSERT_EQUAL(20, logIndex);
+  TEST_ASSERT_FALSE(animation.scenePlayed(0));
+  TEST_ASSERT_FALSE(animation.scenePlayed(1));
+  TEST_ASSERT_FALSE(animation.scenePlayed(2));
 }
 
 void test_without_scenes(void) {

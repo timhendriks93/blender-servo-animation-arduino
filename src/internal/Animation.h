@@ -46,6 +46,8 @@ public:
 
   bool hasFinished();
   bool hasScenes();
+  bool scenePlayed(int index);
+  bool allScenesPlayed();
 
   Scene *getCurrentScene();
 
@@ -58,6 +60,7 @@ private:
   AnimationData *liveStream = nullptr;
 
   bool isOneTimeLiveStream = false;
+  bool *playedIndexes = nullptr;
 
   mcb modeCallback = nullptr;
   scb sceneCallback = nullptr;
@@ -75,6 +78,7 @@ private:
   void setScene(byte index);
   void setRandomScene();
   void resetScene();
+  void resetPlayedScenes();
 
   bool modeIsIn(byte modeAmount, ...);
 };
