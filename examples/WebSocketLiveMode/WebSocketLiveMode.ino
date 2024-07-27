@@ -13,6 +13,8 @@
 #include <ESP32Servo.h>
 #include <WiFi.h>
 
+#define SERVO_PIN 12
+
 // Change to your SSID and password
 const char *ssid = "SSID";
 const char *password = "PASSWORD";
@@ -30,14 +32,10 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
-// AnimationData instance acting as a middleware between web socket and
-// animation instance
-BlenderServoAnimation::AnimationData liveStream;
-
-// Handler function writing data to the live stream instance when receiving data
+// Callback function writing live stream data to the animation
 void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
                       AwsEventType type, void *arg, uint8_t *data, size_t len) {
   if (type != WS_EVT_DATA) {
@@ -45,12 +43,14 @@ void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
   }
 
   for (size_t i = 0; i < len; i++) {
-    liveStream.writeByte(data[i]);
+    animation.writeLiveStream(data[i]);
   }
 }
 
 void setup() {
   Serial.begin(9600);
+  while (!Serial) {
+  };
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -65,14 +65,14 @@ void setup() {
   server.addHandler(&ws);
   server.begin();
 
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
 
   // Set the position callback
   animation.onPositionChange(move);
 
   // Trigger the animation live mode
-  animation.live(liveStream);
+  animation.live();
 }
 
 void loop() {

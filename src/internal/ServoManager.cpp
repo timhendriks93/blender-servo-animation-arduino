@@ -2,7 +2,8 @@
 #include "Servo.h"
 #include <Arduino.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimation::ServoManager;
+using BlenderServoAnimation::Servo;
 
 ServoManager::~ServoManager() {
   if (this->servos) {

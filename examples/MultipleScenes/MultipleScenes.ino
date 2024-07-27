@@ -27,7 +27,7 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {

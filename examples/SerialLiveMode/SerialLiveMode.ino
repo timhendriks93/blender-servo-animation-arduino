@@ -14,6 +14,8 @@
 #include <Servo.h>
 #endif
 
+#define SERVO_PIN 12
+
 // Servo object to send positions
 Servo myServo;
 
@@ -23,15 +25,15 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {
   // Initialize serial communication
   Serial.begin(115200);
 
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
 
   // Set the position callback
   animation.onPositionChange(move);

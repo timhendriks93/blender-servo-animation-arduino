@@ -62,7 +62,7 @@ void modeChanged(byte prevMode, byte newMode) {
   }
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
 // Callback to be triggered on a short button press

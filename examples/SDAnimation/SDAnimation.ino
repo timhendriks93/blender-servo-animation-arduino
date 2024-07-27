@@ -36,7 +36,7 @@ void resetFile(byte prevSceneIndex, byte nextSceneIndex) {
   animationFile.seek(0);
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {

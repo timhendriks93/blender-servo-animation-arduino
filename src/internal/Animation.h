@@ -39,8 +39,9 @@ public:
   void loop();
   void pause();
   void stop();
+  void live();
   void live(Stream &stream);
-  void live(AnimationData &data);
+  void writeLiveStream(byte value);
   void setDefaultServoThreshold(byte value);
   void setServoThreshold(byte id, byte value);
   void setServoOffset(byte id, int offset);
@@ -60,7 +61,6 @@ private:
 
   AnimationData *liveStream = nullptr;
 
-  bool isOneTimeLiveStream = false;
   bool *playedIndexes = nullptr;
 
   mcb modeCallback = nullptr;

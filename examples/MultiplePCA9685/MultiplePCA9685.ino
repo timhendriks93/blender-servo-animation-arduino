@@ -10,15 +10,12 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <BlenderServoAnimation.h>
 
-// Using the namespace to have short class references (Animation and Servo)
-using namespace BlenderServoAnimation;
-
 // PWM driver instances to set PWM output
 Adafruit_PWMServoDriver pwmA(0x40);
 Adafruit_PWMServoDriver pwmB(0x41);
 
-// Animation object to represent the original Blender animation
-Animation animation;
+// Animation object to control the animation
+BlenderServoAnimation::Animation animation;
 
 // We use a struct to map a servo to a PCA9685 board and channel
 struct servoMapping {

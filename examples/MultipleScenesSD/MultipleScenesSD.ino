@@ -60,7 +60,7 @@ void changeSceneFile(byte prevSceneIndex, byte nextSceneIndex) {
   }
 }
 
-// Animation object to represent the original Blender animation
+// Animation object to control the animation
 BlenderServoAnimation::Animation animation;
 
 void setup() {

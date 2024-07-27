@@ -3,7 +3,7 @@
 #include "Servo.h"
 #include <Arduino.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimation::Scene;
 
 Scene::Scene(ServoManager *servoManager, AnimationData *data, byte fps,
              int frames) {

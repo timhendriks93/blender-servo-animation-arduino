@@ -10,9 +10,6 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <BlenderServoAnimation.h>
 
-// Using the namespace to have short class references (Animation and Servo)
-using namespace BlenderServoAnimation;
-
 // PWM driver instance to set PWM output
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
@@ -22,10 +19,16 @@ void move(byte servoID, int position) {
   pwm.setPWM(servoID, 0, position);
 }
 
-// Animation object to represent the original Blender animation
-Animation animation;
+// Animation object to control the animation
+BlenderServoAnimation::Animation animation;
+
+#define POWER_PIN 19
 
 void setup() {
+  // Set power pin
+  pinMode(POWER_PIN, OUTPUT);
+  digitalWrite(POWER_PIN, HIGH);
+
   // Set the position callback
   animation.onPositionChange(move);
 

@@ -2,14 +2,15 @@
 #include "AnimationData.h"
 #include <Arduino.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimation::Animation;
+using BlenderServoAnimation::Scene;
 
 Animation::~Animation() {
   if (this->scenes) {
     delete[] this->scenes;
   }
 
-  if (this->liveStream != nullptr && this->isOneTimeLiveStream) {
+  if (this->liveStream != nullptr) {
     delete this->liveStream;
   }
 
@@ -189,23 +190,36 @@ void Animation::stop() {
   this->changeMode(MODE_STOP);
 }
 
+void Animation::live() {
+  if (this->mode != MODE_DEFAULT) {
+    return;
+  }
+
+  if (this->liveStream != nullptr) {
+    delete this->liveStream;
+  }
+
+  this->liveStream = new AnimationData();
+  this->changeMode(MODE_LIVE);
+}
+
 void Animation::live(Stream &stream) {
   if (this->mode != MODE_DEFAULT) {
     return;
   }
 
+  if (this->liveStream != nullptr) {
+    delete this->liveStream;
+  }
+
   this->liveStream = new AnimationData(&stream);
-  this->isOneTimeLiveStream = true;
   this->changeMode(MODE_LIVE);
 }
 
-void Animation::live(AnimationData &data) {
-  if (this->mode != MODE_DEFAULT) {
-    return;
+void Animation::writeLiveStream(byte value) {
+  if (this->liveStream != nullptr) {
+    this->liveStream->writeByte(value);
   }
-
-  this->liveStream = &data;
-  this->changeMode(MODE_LIVE);
 }
 
 byte Animation::getMode() {
@@ -286,7 +300,6 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
 
   if (!this->scene) {
     this->changeMode(MODE_DEFAULT);
-    return;
   }
 }
 
@@ -327,7 +340,7 @@ void Animation::changeMode(byte mode) {
   byte prevMode = this->mode;
   this->mode = mode;
 
-  if (prevMode == MODE_LIVE && this->isOneTimeLiveStream) {
+  if (prevMode == MODE_LIVE) {
     delete this->liveStream;
     this->liveStream = nullptr;
   }

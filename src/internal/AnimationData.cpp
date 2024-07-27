@@ -1,7 +1,7 @@
 #include "AnimationData.h"
 #include <Arduino.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimation::AnimationData;
 
 AnimationData::AnimationData() {
 }
