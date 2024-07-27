@@ -1,6 +1,8 @@
 /*
   Using the standard Arduino servo library to send servo positions.
-  The animation is played in a loop.
+
+  The setup requires nothing but a micro controller and a single servo. The animation is played in a
+  loop.
 */
 
 #include "simple.h"

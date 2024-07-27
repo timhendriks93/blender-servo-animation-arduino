@@ -1,7 +1,8 @@
 /*
   Setting up an animation consisting of 2 scenes.
-  It's even possible to have different playback rates (fps)
-  and frames per animation.
+
+  The 2 scenes will be played synchronously in a loop. It's even possible to have different playback
+  rates (fps) and frames per animation.
 */
 
 #include "scene-a.h"
@@ -16,6 +17,9 @@
 
 #define SERVO_PIN 3
 
+// Animation object to control the animation
+BlenderServoAnimation animation;
+
 // Servo object to send positions
 Servo myServo;
 
@@ -24,9 +28,6 @@ void move(byte servoID, int position) {
   // Ignore the servoID (there is only one servo) and write the current position
   myServo.writeMicroseconds(position);
 }
-
-// Animation object to control the animation
-BlenderServoAnimation animation;
 
 void setup() {
   // Attach the servo to the defined servo pin

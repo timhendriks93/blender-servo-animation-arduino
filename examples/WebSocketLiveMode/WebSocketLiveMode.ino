@@ -1,11 +1,9 @@
 /*
   Sending live servo positions via web socket commands.
 
-  This example requires an ESP32 and a running Blender instance with the Blender
-  Servo Animation Add-on. However, this example could be slightly adjusted to
-  work with other WiFi-capable micro controllers as well. We create a web socket
-  server to receive live position values via Blender and move a single servo
-  which is controlled via the ESP32Servo library.
+  This example requires an ESP32 and a running Blender instance with the Blender Servo Animation
+  Add-on. We create a web socket server to receive live position values via Blender and move a
+  single servo.
 */
 
 #include <AsyncWebSocket.h>
@@ -14,14 +12,16 @@
 #include <WiFi.h>
 
 #define SERVO_PIN 12
+#define PORT 80
+#define PATH "/"
 
 // Change to your SSID and password
 const char *ssid = "SSID";
 const char *password = "PASSWORD";
 
 // Create an asynchronous web socket server
-AsyncWebServer server(80);
-AsyncWebSocket ws("/");
+AsyncWebServer server(PORT);
+AsyncWebSocket ws(PATH);
 
 // Servo object to send positions
 Servo myServo;
@@ -60,8 +60,10 @@ void setup() {
   Serial.println("Connected to WiFi");
   Serial.println(WiFi.localIP());
 
+  // Register the web socket callback function
   ws.onEvent(onWebSocketEvent);
 
+  // Add the web socket handler and start the server
   server.addHandler(&ws);
   server.begin();
 

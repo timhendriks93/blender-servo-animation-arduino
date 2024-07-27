@@ -1,21 +1,26 @@
 /*
-  Using a struct to map Servos to a PWM driver and channel.
+  Using two PCA9685 PWM servo drivers to animate 2 servos.
 
-  This approach can be useful if you don't want to equate the servo ID with the
-  PWM board channel or use multiple PCA9685 boards. The Adafruit PCA9685 PWM
-  Servo Driver Library is used to send the servo positions.
+  Note that the A0 address jumper has to be soldered on the second driver board. This setup can
+  easily be extended to animate up to 32 servos. If even more servos are needed, you can also add
+  more driver boards to the chain.
+
+  We assume the servo ID and the used board channel are equal. Therefore, the servo with the ID 0
+  has to be connected to channel 0 etc.
 */
 
 #include "ik.h"
 #include <Adafruit_PWMServoDriver.h>
 #include <BlenderServoAnimation.h>
 
-// PWM driver instances to set PWM output
-Adafruit_PWMServoDriver pwmA(0x40);
-Adafruit_PWMServoDriver pwmB(0x41);
+#define SERVO_AMOUNT 2
 
 // Animation object to control the animation
 BlenderServoAnimation animation;
+
+// PWM driver instances to set PWM output
+Adafruit_PWMServoDriver pwmA(0x40);
+Adafruit_PWMServoDriver pwmB(0x41);
 
 // We use a struct to map a servo to a PCA9685 board and channel
 struct servoMapping {
@@ -25,7 +30,7 @@ struct servoMapping {
 };
 
 // Define an array of servo maps
-servoMapping servoMappings[] = {
+servoMapping servoMappings[SERVO_AMOUNT] = {
     // Servo 0 attached to board A on channel 0
     {0, pwmA, 0},
 
@@ -33,13 +38,10 @@ servoMapping servoMappings[] = {
     {1, pwmB, 0},
 };
 
-// Calculate the amount of servos so that we can easily extend the array
-const byte servoAmount = sizeof(servoMappings) / sizeof(servoMappings[0]);
-
 // Callback function which is called whenever a servo needs to be moved
 void setPWM(byte servoID, int position) {
   // Iterate through the available servos
-  for (int i = 0; i < servoAmount; i++) {
+  for (int i = 0; i < SERVO_AMOUNT; i++) {
     // Continue if the current servo ID doesn't match the target servo ID
     if (servoMappings[i].id != servoID) {
       continue;

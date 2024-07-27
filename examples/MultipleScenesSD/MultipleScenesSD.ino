@@ -1,7 +1,8 @@
 /*
-  Setting up a show consisting of 2 animations.
-  It's even possible to have different playback rates (fps)
-  and frames per animation.
+  Setting up an animation consisting of 2 scenes with their animation data stored on an SD card.
+
+  The 2 scenes will be played synchronously in a loop. It's even possible to have different playback
+  rates (fps) and frames per animation.
 */
 
 #include <BlenderServoAnimation.h>
@@ -15,6 +16,7 @@
 
 #define SERVO_PIN 3
 #define CS_PIN 4
+#define SCENE_AMOUNT = 2
 
 // Servo object to send positions
 Servo myServo;
@@ -30,7 +32,7 @@ struct sceneMapping {
 };
 
 // Define an array of scene maps
-sceneMapping sceneMappings[] = {
+sceneMapping sceneMappings[SCENE_AMOUNT] = {
     // Scene 0 = Scene A
     {30, 100, "scene-a.bin"},
 
@@ -38,19 +40,21 @@ sceneMapping sceneMappings[] = {
     {60, 200, "scene-b.bin"},
 };
 
-// Calculate the amount of scenes so that we can easily extend the array
-const byte sceneAmount = sizeof(sceneMappings) / sizeof(sceneMappings[0]);
-
 // Callback function which is called whenever a servo needs to be moved
 void move(byte servoID, int position) {
   // Ignore the servoID (there is only one servo) and write the current position
   myServo.writeMicroseconds(position);
 }
 
+// Callback function which is called whenever a scene is being changed
 void changeSceneFile(byte prevSceneIndex, byte nextSceneIndex) {
+  // Get the filename of the next scene
   String filename = sceneMappings[nextSceneIndex].filename;
 
+  // Close the current animation file which points to the SD
   animationFile.close();
+
+  // Open the new file on the SD and set it as the new animation file
   animationFile = SD.open(filename);
 
   if (!animationFile) {
@@ -83,7 +87,7 @@ void setup() {
   animation.onSceneChange(changeSceneFile);
 
   // Add multiple scenes with the same File stream
-  for (byte i = 0; i < sceneAmount; i++) {
+  for (byte i = 0; i < SCENE_AMOUNT; i++) {
     byte fps = sceneMappings[i].fps;
     int frames = sceneMappings[i].frames;
 

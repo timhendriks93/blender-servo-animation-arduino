@@ -1,9 +1,8 @@
 /*
-  Using the standard Arduino servo library to send servo positions.
+  Reading animation data from an SD card.
 
-  Note the namespace BlenderServoAnimation which helps to distinguish
-  between the standard library servo class (Servo) and the servo
-  class of this library (BlenderServoAnimation::Servo).
+  The setup requires nothing but a micro controller and a single servo. It uses the standard Arduino
+  servo library to send servo positions.
 */
 
 #include <BlenderServoAnimation.h>
@@ -32,7 +31,9 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
+// Callback function which is called whenever a scene is being changed
 void resetFile(byte prevSceneIndex, byte nextSceneIndex) {
+  // Seek back to the first position in the file
   animationFile.seek(0);
 }
 
