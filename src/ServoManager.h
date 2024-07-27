@@ -1,7 +1,7 @@
 #include "AnimationData.h"
 #include "Command.h"
 #include "Servo.h"
-#include "CommonTypes.h"
+#include "typedefs.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimationLibrary_ServoManager_H
@@ -14,7 +14,7 @@ class ServoManager {
 public:
   ~ServoManager();
 
-  void setPositionCallback(PositionCallback callback);
+  void setPositionCallback(pcb positionCallback);
   void setDefaultThreshold(byte value);
   void setThreshold(byte servoId, byte value);
   void setOffset(byte servoId, int offset);
@@ -28,7 +28,7 @@ private:
 
   Command command;
 
-  PositionCallback positionCallback = nullptr;
+  pcb positionCallback = nullptr;
 
   byte servoAmount = 0;
   byte defaultThreshold = 0;

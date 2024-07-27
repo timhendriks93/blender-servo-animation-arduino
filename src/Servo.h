@@ -1,4 +1,4 @@
-#include "CommonTypes.h"
+#include "typedefs.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimationLibrary_Servo_H
@@ -9,13 +9,13 @@ namespace BlenderServoAnimationLibrary {
 class Servo {
 
 public:
-  Servo(byte id, PositionCallback callback, byte threshold = 0);
+  Servo(byte id, pcb positionCallback, byte threshold = 0);
 
   void move(int position, bool useOffset = true);
   void moveTowardsNeutral();
   void setThreshold(byte value);
   void setOffset(int offset);
-  void setPositionCallback(PositionCallback callback);
+  void setPositionCallback(pcb positionCallback);
 
   bool isNeutral();
 
@@ -32,7 +32,7 @@ private:
   int currentPosition = -1;
   int offset = 0;
 
-  PositionCallback positionCallback = nullptr;
+  pcb positionCallback = nullptr;
 
   bool positionExceedsThreshold(int position);
 };

@@ -1,10 +1,10 @@
 #include "Servo.h"
-#include "CommonTypes.h"
+#include "typedefs.h"
 #include <Arduino.h>
 
 using BlenderServoAnimationLibrary::Servo;
 
-Servo::Servo(byte id, PositionCallback callback, byte threshold) {
+Servo::Servo(byte id, pcb positionCallback, byte threshold) {
   this->id = id;
   this->positionCallback = positionCallback;
   this->setThreshold(threshold);
@@ -53,8 +53,8 @@ bool Servo::isNeutral() {
   return this->currentPosition == this->neutralPosition;
 }
 
-void Servo::setPositionCallback(PositionCallback callback) {
-  this->positionCallback = callback;
+void Servo::setPositionCallback(pcb positionCallback) {
+  this->positionCallback = positionCallback;
 }
 
 void Servo::setThreshold(byte value) {

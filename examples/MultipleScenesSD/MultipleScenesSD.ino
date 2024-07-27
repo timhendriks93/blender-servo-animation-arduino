@@ -16,7 +16,7 @@
 
 #define SERVO_PIN 3
 #define CS_PIN 4
-#define SCENE_AMOUNT 2
+#define SCENE_AMOUNT = 2
 
 // Servo object to send positions
 Servo myServo;

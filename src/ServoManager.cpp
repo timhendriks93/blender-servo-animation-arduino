@@ -11,11 +11,11 @@ ServoManager::~ServoManager() {
   }
 }
 
-void ServoManager::setPositionCallback(PositionCallback callback) {
-  this->positionCallback = callback;
+void ServoManager::setPositionCallback(pcb positionCallback) {
+  this->positionCallback = positionCallback;
 
   for (byte i = 0; i < this->servoAmount; i++) {
-    this->servos[i]->setPositionCallback(callback);
+    this->servos[i]->setPositionCallback(positionCallback);
   }
 }
 
