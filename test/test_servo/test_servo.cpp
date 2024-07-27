@@ -139,10 +139,10 @@ void test_move_towards_neutral_with_offset(void) {
 
 int main(int argc, char **argv) {
   UNITY_BEGIN();
-  // RUN_TEST(test_move);
-  // RUN_TEST(test_move_towards_neutral);
-  // RUN_TEST(test_threshold);
-  // RUN_TEST(test_offset);
+  RUN_TEST(test_move);
+  RUN_TEST(test_move_towards_neutral);
+  RUN_TEST(test_threshold);
+  RUN_TEST(test_offset);
   RUN_TEST(test_move_towards_neutral_with_offset);
   UNITY_END();
 }

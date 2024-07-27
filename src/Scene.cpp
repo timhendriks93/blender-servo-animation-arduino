@@ -1,6 +1,4 @@
 #include "Scene.h"
-#include "Command.h"
-#include "Servo.h"
 #include <Arduino.h>
 
 using BlenderServoAnimationLibrary::Scene;
