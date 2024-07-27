@@ -1,7 +1,7 @@
-#include "internal/Command.h"
+#include "Command.h"
 #include <unity.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimationLibrary::Command;
 
 void test_valid(void) {
   byte values[5] = {60, 3, 1, 119, 62};

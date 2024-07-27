@@ -1,9 +1,7 @@
 /*
   Setting up an animation consisting of 2 scenes.
-
-  Note the namespaces which are used to distinguish the positions
-  of one scene / animation from another. It's even possible to
-  have different playback rates (fps) and frames per animation.
+  It's even possible to have different playback rates (fps)
+  and frames per animation.
 */
 
 #include "scene-a.h"
@@ -28,7 +26,7 @@ void move(byte servoID, int position) {
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 void setup() {
   // Attach the servo to the defined servo pin

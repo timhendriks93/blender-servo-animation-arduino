@@ -2,7 +2,7 @@
 #include "typedefs.h"
 #include <Arduino.h>
 
-using BlenderServoAnimation::Servo;
+using BlenderServoAnimationLibrary::Servo;
 
 Servo::Servo(byte id, pcb positionCallback, byte threshold) {
   this->id = id;

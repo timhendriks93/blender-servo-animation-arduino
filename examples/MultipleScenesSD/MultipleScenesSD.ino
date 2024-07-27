@@ -1,9 +1,7 @@
 /*
   Setting up a show consisting of 2 animations.
-
-  Note the namespaces which are used to distinguish the positions
-  of one scene / animation from another. It's even possible to
-  have different playback rates (fps) and frames per animation.
+  It's even possible to have different playback rates (fps)
+  and frames per animation.
 */
 
 #include <BlenderServoAnimation.h>
@@ -61,7 +59,7 @@ void changeSceneFile(byte prevSceneIndex, byte nextSceneIndex) {
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 void setup() {
   Serial.begin(9600);

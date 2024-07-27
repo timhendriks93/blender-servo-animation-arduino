@@ -1,9 +1,7 @@
 #include "../test/helper.h"
-#include "internal/Animation.h"
+#include "BlenderServoAnimation.h"
 
 #include <unity.h>
-
-using namespace BlenderServoAnimation;
 
 int prevSceneIndex = -1;
 int nextSceneIndex = -1;
@@ -19,7 +17,7 @@ void onSceneChange(byte prevArg, byte newArg) {
 }
 
 void test_play(void) {
-  Animation animation;
+  BlenderServoAnimation animation;
   animation.onSceneChange(onSceneChange);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
@@ -41,7 +39,7 @@ void test_play(void) {
 }
 
 void test_play_single(void) {
-  Animation animation;
+  BlenderServoAnimation animation;
   animation.onSceneChange(onSceneChange);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);

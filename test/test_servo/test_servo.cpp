@@ -1,8 +1,8 @@
 #include "../test/helper.h"
-#include "internal/Servo.h"
+#include "Servo.h"
 #include <unity.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimationLibrary::Servo;
 
 void setUp(void) {
   resetPositionLog();

@@ -1,8 +1,8 @@
 #include "../test/helper.h"
-#include "internal/AnimationData.h"
+#include "AnimationData.h"
 #include <unity.h>
 
-using namespace BlenderServoAnimation;
+using BlenderServoAnimationLibrary::AnimationData;
 
 const byte PROGMEM values[5] = {60, 3, 1, 119, 62};
 

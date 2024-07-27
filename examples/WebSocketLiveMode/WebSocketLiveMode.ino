@@ -33,7 +33,7 @@ void move(byte servoID, int position) {
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 // Callback function writing live stream data to the animation
 void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,

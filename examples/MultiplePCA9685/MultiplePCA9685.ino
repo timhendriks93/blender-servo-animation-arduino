@@ -15,7 +15,7 @@ Adafruit_PWMServoDriver pwmA(0x40);
 Adafruit_PWMServoDriver pwmB(0x41);
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 // We use a struct to map a servo to a PCA9685 board and channel
 struct servoMapping {

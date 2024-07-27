@@ -1,8 +1,7 @@
 #include "../test/helper.h"
-#include "internal/Animation.h"
+#include "BlenderServoAnimation.h"
 #include <unity.h>
 
-using namespace BlenderServoAnimation;
 using namespace fakeit;
 
 void setUp(void) {
@@ -11,23 +10,23 @@ void setUp(void) {
 }
 
 void test_pause(byte mode) {
-  Animation animation;
+  BlenderServoAnimation animation;
   animation.onPositionChange(move);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_DEFAULT, animation.getMode());
 
   switch (mode) {
-  case Animation::MODE_PLAY:
+  case BlenderServoAnimation::MODE_PLAY:
     animation.play();
     break;
-  case Animation::MODE_PLAY_SINGLE:
+  case BlenderServoAnimation::MODE_PLAY_SINGLE:
     animation.playSingle(0);
     break;
-  case Animation::MODE_PLAY_RANDOM:
+  case BlenderServoAnimation::MODE_PLAY_RANDOM:
     animation.playRandom();
     break;
-  case Animation::MODE_LOOP:
+  case BlenderServoAnimation::MODE_LOOP:
     animation.loop();
     break;
   }
@@ -47,20 +46,20 @@ void test_pause(byte mode) {
     animation.run(i);
   }
 
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
   TEST_ASSERT_EQUAL(3, animation.getCurrentScene()->getFrame());
 
   switch (mode) {
-  case Animation::MODE_PLAY:
+  case BlenderServoAnimation::MODE_PLAY:
     animation.play();
     break;
-  case Animation::MODE_PLAY_SINGLE:
+  case BlenderServoAnimation::MODE_PLAY_SINGLE:
     animation.playSingle(0);
     break;
-  case Animation::MODE_PLAY_RANDOM:
+  case BlenderServoAnimation::MODE_PLAY_RANDOM:
     animation.playRandom();
     break;
-  case Animation::MODE_LOOP:
+  case BlenderServoAnimation::MODE_LOOP:
     animation.loop();
     break;
   }
@@ -73,56 +72,56 @@ void test_pause(byte mode) {
 }
 
 void test_pause_play(void) {
-  test_pause(Animation::MODE_PLAY);
+  test_pause(BlenderServoAnimation::MODE_PLAY);
 }
 
 void test_pause_loop(void) {
-  test_pause(Animation::MODE_LOOP);
+  test_pause(BlenderServoAnimation::MODE_LOOP);
 }
 
 void test_pause_play_single(void) {
-  test_pause(Animation::MODE_PLAY_SINGLE);
+  test_pause(BlenderServoAnimation::MODE_PLAY_SINGLE);
 }
 
 void test_pause_play_random(void) {
   When(OverloadedMethod(ArduinoFake(), random, long(long))).Return(1, 0);
-  test_pause(Animation::MODE_PLAY_RANDOM);
+  test_pause(BlenderServoAnimation::MODE_PLAY_RANDOM);
 }
 
 void test_prevented(void) {
   StreamMock mock;
-  Animation animation;
+  BlenderServoAnimation animation;
   animation.onPositionChange(move);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_DEFAULT, animation.getMode());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_DEFAULT, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_DEFAULT, animation.getMode());
   animation.play();
   animation.stop();
-  TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_STOP, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.run(10000);
   animation.live(mock);
-  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_LIVE, animation.getMode());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_LIVE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_LIVE, animation.getMode());
 }
 
 void test_allowed(void) {
-  Animation animation;
+  BlenderServoAnimation animation;
   animation.onPositionChange(move);
   animation.addScene(PROGMEM_DATA, DATA_SIZE, FPS, FRAMES);
 
   animation.play();
-  TEST_ASSERT_EQUAL(Animation::MODE_PLAY, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY, animation.getMode());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
   animation.loop();
-  TEST_ASSERT_EQUAL(Animation::MODE_LOOP, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_LOOP, animation.getMode());
   animation.pause();
-  TEST_ASSERT_EQUAL(Animation::MODE_PAUSE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
 }
 
 int main(int argc, char **argv) {

@@ -1,7 +1,7 @@
 #include "Command.h"
 #include <Arduino.h>
 
-using BlenderServoAnimation::Command;
+using BlenderServoAnimationLibrary::Command;
 
 void Command::write(byte value) {
   if (value == START_MARKER) {

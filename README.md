@@ -8,6 +8,10 @@ This library helps to control servos based on an exported Blender animation. It 
 
 Please refer to the official [Arduino documentation](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries) to see how you can install this library.
 
+## Quick Start
+
+Take a look at the [StandardServoLib](examples/StandardServoLib) example to get started quickly. It represents the most simple setup and is based on the standard Servo Arduino library with which you might already be familiar.
+
 ## Usage
 
 To start using this library, add the following include statement to your script or sketch:
@@ -16,100 +20,39 @@ To start using this library, add the following include statement to your script 
 #include <BlenderServoAnimation.h>
 ```
 
-## Namespace
-
-To avoid naming conflicts, the library uses the `BlenderServoAnimation` namespace. For example, this allows to use the standard Arduino Servo library to control the servos while using the `Servo` class of this library to represent the servo within the Blender animation:
-
-```ino
-// Standard library servo object
-Servo(...);
-
-// Blender servo object
-BlenderServoAnimation::Servo(...);
-
-// Blender animation object
-BlenderServoAnimation::Animation(...);
-
-// Blender show object
-BlenderServoAnimation::Show();
-```
-
-When not using the standard servo library, you can use the namespace and therefore skip the namespace prefix:
-
-```ino
-using namespace BlenderServoAnimation;
-
-// Blender servo object
-Servo(...);
-
-// Blender animation object
-Animation(...);
-
-// Blender show object
-Show();
-```
-
-## Defining Servos
-
-Before we can play back and control an animation, we first have to create and attach representations of the animated servos. There are 4 possible syntaxes to create a new servo object:
-
-```ino
-Servo(id, positions, callback);
-Servo(id, positions, callback, threshold);
-Servo(id, callback);
-Servo(id, callback, threshold);
-```
-
-> Note: servos without positions will only be considered when in live mode.
-
-### Servo Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| id | byte | Unique servo ID as specified via the Add-on |
-| positions | const&#160;int[] | Exported positions per frame |
-| callback | void&#160;(byte,&#160;int) | Function to trigger when a servo is moved |
-| threshold | byte | Max allowed position diff (default=0 / no threshold handling) |
-
-> Note: the threshold is also used to define the speed for moving a servo to its neutral position when stopping an animation.
-
-### Callback Function
-
-The callback function is used to specify what should happen when a servo needs to be moved to a new position. It will be automatically triggered by the animation instance and receives 2 arguments - the servo ID as `byte` and the new position as `int`:
-
-```ino
-void myServoCallback(byte servoID, int position) {
-  // Do something
-}
-```
-
-This allows to implement any kind of logic to handle the actual servo control. When using this library outside of the Arduino IDE, it is recommended to define the callback function first before passing it as an argument when creating a servo object:
-
-```ino
-#include "simple.h"
-#include <BlenderServoAnimation.h>
-
-using namespace BlenderServoAnimation;
-
-void move(byte servoID, int position) {
-  // Do something
-}
-
-Servo myBlenderServo(0, Bone, move);
-```
-
 ## Defining an Animation
 
-The animation object serves as a control instance to play back the servo movement. Just like in Blender, an animation can be played, paused and stopped. To do so, we need to provide information about the speed and length of the animation. To just use control servos via the live mode (serial connection), we can omit this information. Therefore, an animation can be created via the following 2 syntaxes:
+The animation object serves as a control instance to play back the servo movement. Just like in Blender, an animation can consist of multiple scenes and can be triggered to play, pause and stop.
+
+Start simply by creating a new animation instance at the outer scope of your sketch (outside of `setup` and `loop`):
 
 ```ino
-Animation();
-Animation(fps, frames);
+BlenderServoAnimation animation;
 ```
 
-> Note: animations without fps and frames will only be able to handle the live mode.
+### Define the Position Change Callback
 
-### Animation Parameters
+To specify what should happen when a servo needs to be moved to a new position, we have to define a callback function. It receives 2 arguments - the servo ID as `byte` and the new position as `int`:
+
+```ino
+void move(byte servoID, int position) {
+  // Custom logic to move the servo
+}
+```
+
+This allows the implementation of any logic to handle the actual servo control. For example, you can make use of the standard Servo library for simple setups or add logic to control servos via PWM control boards such as the PCA9685.
+
+After defining the callback function, we need to register it via the `onPositionChange` method of the animation instance:
+
+```ino
+animation.onPositionChange(move);
+```
+
+### Adding Scenes and Animation Data
+
+Before we can play back and control an animation, we first have to add at least one scene to our animation. There are 2 ways to do this depending on the type of animation data you want to provide:
+
+1. test
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -121,34 +64,6 @@ In general, the provided values should align with the Blender animation you woul
 ```ino
 Animation myBlenderAnimation(30, 1000);
 ```
-
-### Registering Servos
-
-To actually trigger servo movement, the animation needs to know about the individual servos. After defining the servos as mentioned above, we therefore have to register them to the animation by calling the `addServo` method:
-
-```ino
-myBlenderAnimation.addServo(myBlenderServo);
-```
-
-This is usually done inside the `setup` function after the servo objects have been defined globally (outside of any function like `setup` or `loop`).
-
-Alternatively, we can also create an array of servos and call the `addServos` method instead:
-
-```ino
-Animation myBlenderAnimation(30, 1000);
-
-Servo myBlenderServos[] = {
-  Servo(0, BoneA, move),
-  Servo(1, BoneB, move),
-  Servo(2, BoneC, move),
-}
-
-void setup() {
-  myBlenderAnimation.addServos(myBlenderServos, 3);
-}
-```
-
-> Note: the `addServos` function expects the amount of servos in the array to be passed via the second argument.
 
 ### Updating the Animation State
 

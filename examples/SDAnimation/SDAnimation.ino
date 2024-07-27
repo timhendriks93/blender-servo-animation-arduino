@@ -37,7 +37,7 @@ void resetFile(byte prevSceneIndex, byte nextSceneIndex) {
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 void setup() {
   Serial.begin(9600);

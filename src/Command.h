@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_Command_H
-#define BlenderServoAnimation_Command_H
+#ifndef BlenderServoAnimationLibrary_Command_H
+#define BlenderServoAnimationLibrary_Command_H
 
-namespace BlenderServoAnimation {
+namespace BlenderServoAnimationLibrary {
 
 class Command {
 
@@ -37,6 +37,6 @@ private:
   void reset();
 };
 
-} // namespace BlenderServoAnimation
+} // namespace BlenderServoAnimationLibrary
 
 #endif

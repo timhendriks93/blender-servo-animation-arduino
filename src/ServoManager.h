@@ -4,10 +4,10 @@
 #include "typedefs.h"
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_ServoManager_H
-#define BlenderServoAnimation_ServoManager_H
+#ifndef BlenderServoAnimationLibrary_ServoManager_H
+#define BlenderServoAnimationLibrary_ServoManager_H
 
-namespace BlenderServoAnimation {
+namespace BlenderServoAnimationLibrary {
 
 class ServoManager {
 
@@ -39,6 +39,6 @@ private:
   Servo *getServo(byte id);
 };
 
-} // namespace BlenderServoAnimation
+} // namespace BlenderServoAnimationLibrary
 
 #endif

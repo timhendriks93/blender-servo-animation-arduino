@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_AnimationData_H
-#define BlenderServoAnimation_AnimationData_H
+#ifndef BlenderServoAnimationLibrary_AnimationData_H
+#define BlenderServoAnimationLibrary_AnimationData_H
 
-namespace BlenderServoAnimation {
+namespace BlenderServoAnimationLibrary {
 
 class AnimationData {
 
@@ -39,6 +39,6 @@ private:
   byte readBuffer();
 };
 
-} // namespace BlenderServoAnimation
+} // namespace BlenderServoAnimationLibrary
 
 #endif

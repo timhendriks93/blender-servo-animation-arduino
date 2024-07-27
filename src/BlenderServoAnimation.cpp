@@ -1,11 +1,10 @@
-#include "Animation.h"
+#include "BlenderServoAnimation.h"
 #include "AnimationData.h"
 #include <Arduino.h>
 
-using BlenderServoAnimation::Animation;
-using BlenderServoAnimation::Scene;
+using BlenderServoAnimationLibrary::Scene;
 
-Animation::~Animation() {
+BlenderServoAnimation::~BlenderServoAnimation() {
   if (this->scenes) {
     delete[] this->scenes;
   }
@@ -19,27 +18,27 @@ Animation::~Animation() {
   }
 }
 
-bool Animation::hasFinished() {
+bool BlenderServoAnimation::hasFinished() {
   return this->playIndex + 1 >= this->addIndex;
 }
 
-bool Animation::hasScenes() {
+bool BlenderServoAnimation::hasScenes() {
   return this->addIndex > 0;
 }
 
-void Animation::addScene(const byte *data, int size, byte fps, int frames) {
+void BlenderServoAnimation::addScene(const byte *data, int size, byte fps, int frames) {
   AnimationData *animationData = new AnimationData(data, size);
   Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
 }
 
-void Animation::addScene(Stream &stream, byte fps, int frames) {
+void BlenderServoAnimation::addScene(Stream &stream, byte fps, int frames) {
   AnimationData *animationData = new AnimationData(&stream);
   Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
 }
 
-void Animation::registerScene(Scene *scene) {
+void BlenderServoAnimation::registerScene(Scene *scene) {
   Scene **newScenes = new Scene *[this->addIndex + 1];
   bool *newPlayedIndexes = new bool[this->addIndex + 1];
 
@@ -59,19 +58,19 @@ void Animation::registerScene(Scene *scene) {
   this->addIndex++;
 }
 
-void Animation::setDefaultServoThreshold(byte value) {
+void BlenderServoAnimation::setDefaultServoThreshold(byte value) {
   this->servoManager.setDefaultThreshold(value);
 }
 
-void Animation::setServoThreshold(byte id, byte value) {
+void BlenderServoAnimation::setServoThreshold(byte id, byte value) {
   this->servoManager.setThreshold(id, value);
 }
 
-void Animation::setServoOffset(byte id, int offset) {
+void BlenderServoAnimation::setServoOffset(byte id, int offset) {
   this->servoManager.setOffset(id, offset);
 }
 
-void Animation::setScene(byte index) {
+void BlenderServoAnimation::setScene(byte index) {
   if (!this->scenes || index >= this->addIndex) {
     return;
   }
@@ -92,7 +91,7 @@ void Animation::setScene(byte index) {
   }
 }
 
-void Animation::setRandomScene() {
+void BlenderServoAnimation::setRandomScene() {
   byte randomIndex = 0;
 
   if (this->addIndex > 1) {
@@ -104,7 +103,7 @@ void Animation::setRandomScene() {
   this->setScene(randomIndex);
 }
 
-void Animation::resetScene() {
+void BlenderServoAnimation::resetScene() {
   byte prevIndex = this->playIndex;
 
   this->scene = nullptr;
@@ -115,13 +114,13 @@ void Animation::resetScene() {
   }
 }
 
-void Animation::resetPlayedScenes() {
+void BlenderServoAnimation::resetPlayedScenes() {
   for (int i = 0; i < this->addIndex; i++) {
     this->playedIndexes[i] = false;
   }
 }
 
-void Animation::play() {
+void BlenderServoAnimation::play() {
   if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
@@ -133,7 +132,7 @@ void Animation::play() {
   this->changeMode(MODE_PLAY);
 }
 
-void Animation::playSingle(byte index) {
+void BlenderServoAnimation::playSingle(byte index) {
   bool indexExists = this->scenes && index < this->addIndex;
   bool modeIsAllowed = this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE);
   bool pausedOtherScene = this->mode == MODE_PAUSE && this->playIndex != index;
@@ -149,7 +148,7 @@ void Animation::playSingle(byte index) {
   this->changeMode(MODE_PLAY_SINGLE);
 }
 
-void Animation::playRandom() {
+void BlenderServoAnimation::playRandom() {
   if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
@@ -161,7 +160,7 @@ void Animation::playRandom() {
   this->changeMode(MODE_PLAY_RANDOM);
 }
 
-void Animation::loop() {
+void BlenderServoAnimation::loop() {
   if (!this->hasScenes() || !this->modeIsIn(2, MODE_DEFAULT, MODE_PAUSE)) {
     return;
   }
@@ -173,7 +172,7 @@ void Animation::loop() {
   this->changeMode(MODE_LOOP);
 }
 
-void Animation::pause() {
+void BlenderServoAnimation::pause() {
   if (!this->scene ||
       this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP, MODE_LIVE)) {
     return;
@@ -182,7 +181,7 @@ void Animation::pause() {
   this->changeMode(MODE_PAUSE);
 }
 
-void Animation::stop() {
+void BlenderServoAnimation::stop() {
   if (this->modeIsIn(2, MODE_DEFAULT, MODE_STOP)) {
     return;
   }
@@ -190,7 +189,7 @@ void Animation::stop() {
   this->changeMode(MODE_STOP);
 }
 
-void Animation::live() {
+void BlenderServoAnimation::live() {
   if (this->mode != MODE_DEFAULT) {
     return;
   }
@@ -203,7 +202,7 @@ void Animation::live() {
   this->changeMode(MODE_LIVE);
 }
 
-void Animation::live(Stream &stream) {
+void BlenderServoAnimation::live(Stream &stream) {
   if (this->mode != MODE_DEFAULT) {
     return;
   }
@@ -216,25 +215,25 @@ void Animation::live(Stream &stream) {
   this->changeMode(MODE_LIVE);
 }
 
-void Animation::writeLiveStream(byte value) {
+void BlenderServoAnimation::writeLiveStream(byte value) {
   if (this->liveStream != nullptr) {
     this->liveStream->writeByte(value);
   }
 }
 
-byte Animation::getMode() {
+byte BlenderServoAnimation::getMode() {
   return this->mode;
 }
 
-byte Animation::getPlayIndex() {
+byte BlenderServoAnimation::getPlayIndex() {
   return this->playIndex;
 }
 
-bool Animation::scenePlayed(int index) {
+bool BlenderServoAnimation::scenePlayed(int index) {
   return this->playedIndexes[index];
 }
 
-bool Animation::allScenesPlayed() {
+bool BlenderServoAnimation::allScenesPlayed() {
   for (int i = 0; i < this->addIndex; i++) {
     if (!this->playedIndexes[i]) {
       return false;
@@ -244,7 +243,7 @@ bool Animation::allScenesPlayed() {
   return true;
 }
 
-void Animation::run(unsigned long currentMicros) {
+void BlenderServoAnimation::run(unsigned long currentMicros) {
   switch (this->mode) {
   case MODE_PLAY:
   case MODE_PLAY_SINGLE:
@@ -261,7 +260,7 @@ void Animation::run(unsigned long currentMicros) {
   }
 }
 
-void Animation::handlePlayMode(unsigned long currentMicros) {
+void BlenderServoAnimation::handlePlayMode(unsigned long currentMicros) {
   if (!this->scene) {
     this->changeMode(MODE_DEFAULT);
     return;
@@ -303,7 +302,7 @@ void Animation::handlePlayMode(unsigned long currentMicros) {
   }
 }
 
-void Animation::handleStopMode(unsigned long currentMicros) {
+void BlenderServoAnimation::handleStopMode(unsigned long currentMicros) {
   if (!this->scene) {
     this->changeMode(MODE_DEFAULT);
     return;
@@ -316,27 +315,27 @@ void Animation::handleStopMode(unsigned long currentMicros) {
   }
 }
 
-void Animation::handleLiveMode() {
+void BlenderServoAnimation::handleLiveMode() {
   this->servoManager.parseData(this->liveStream, false);
 }
 
-Scene *Animation::getCurrentScene() {
+Scene *BlenderServoAnimation::getCurrentScene() {
   return this->scene;
 }
 
-void Animation::onPositionChange(pcb positionCallback) {
+void BlenderServoAnimation::onPositionChange(pcb positionCallback) {
   this->servoManager.setPositionCallback(positionCallback);
 }
 
-void Animation::onModeChange(mcb modeCallback) {
+void BlenderServoAnimation::onModeChange(mcb modeCallback) {
   this->modeCallback = modeCallback;
 }
 
-void Animation::onSceneChange(scb sceneCallback) {
+void BlenderServoAnimation::onSceneChange(scb sceneCallback) {
   this->sceneCallback = sceneCallback;
 }
 
-void Animation::changeMode(byte mode) {
+void BlenderServoAnimation::changeMode(byte mode) {
   byte prevMode = this->mode;
   this->mode = mode;
 
@@ -350,7 +349,7 @@ void Animation::changeMode(byte mode) {
   }
 }
 
-bool Animation::modeIsIn(byte modeAmount, ...) {
+bool BlenderServoAnimation::modeIsIn(byte modeAmount, ...) {
   bool match = false;
 
   va_list modes;

@@ -26,7 +26,7 @@ void move(byte servoID, int position) {
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 void setup() {
   // Initialize serial communication

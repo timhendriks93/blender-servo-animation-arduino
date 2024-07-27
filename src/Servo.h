@@ -1,10 +1,10 @@
 #include "typedefs.h"
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_Servo_H
-#define BlenderServoAnimation_Servo_H
+#ifndef BlenderServoAnimationLibrary_Servo_H
+#define BlenderServoAnimationLibrary_Servo_H
 
-namespace BlenderServoAnimation {
+namespace BlenderServoAnimationLibrary {
 
 class Servo {
 
@@ -37,6 +37,6 @@ private:
   bool positionExceedsThreshold(int position);
 };
 
-} // namespace BlenderServoAnimation
+} // namespace BlenderServoAnimationLibrary
 
 #endif

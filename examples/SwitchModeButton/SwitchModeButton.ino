@@ -46,24 +46,24 @@ void move(byte servoID, int position) {
 // Callback function which is called whenever the animation mode changes
 void modeChanged(byte prevMode, byte newMode) {
   switch (newMode) {
-  case BlenderServoAnimation::Animation::MODE_PLAY:
-    if (prevMode == BlenderServoAnimation::Animation::MODE_PAUSE) {
+  case BlenderServoAnimation::MODE_PLAY:
+    if (prevMode == BlenderServoAnimation::MODE_PAUSE) {
       // E.g. resume audio
     } else {
       // E.g. start audio
     }
     break;
-  case BlenderServoAnimation::Animation::MODE_PAUSE:
+  case BlenderServoAnimation::MODE_PAUSE:
     // E.g. pause audio
     break;
-  case BlenderServoAnimation::Animation::MODE_STOP:
+  case BlenderServoAnimation::MODE_STOP:
     // E.g. stop audio
     break;
   }
 }
 
 // Animation object to control the animation
-BlenderServoAnimation::Animation animation;
+BlenderServoAnimation animation;
 
 // Callback to be triggered on a short button press
 void onPressed() {
@@ -71,12 +71,12 @@ void onPressed() {
   switch (animation.getMode()) {
     // On short press in default or pause mode, we want to start or resume the
     // animation
-  case BlenderServoAnimation::Animation::MODE_DEFAULT:
-  case BlenderServoAnimation::Animation::MODE_PAUSE:
+  case BlenderServoAnimation::MODE_DEFAULT:
+  case BlenderServoAnimation::MODE_PAUSE:
     animation.play();
     break;
     // On short press in play mode, we want to pause the animation
-  case BlenderServoAnimation::Animation::MODE_PLAY:
+  case BlenderServoAnimation::MODE_PLAY:
     animation.pause();
     break;
   }
@@ -87,8 +87,8 @@ void onLongPressed() {
   // Get the current mode, act accordingly and trigger another mode
   switch (animation.getMode()) {
     // On long press in play, pause or live mode, we want to stop the animation
-  case BlenderServoAnimation::Animation::MODE_PLAY:
-  case BlenderServoAnimation::Animation::MODE_PAUSE:
+  case BlenderServoAnimation::MODE_PLAY:
+  case BlenderServoAnimation::MODE_PAUSE:
     animation.stop();
     break;
   }

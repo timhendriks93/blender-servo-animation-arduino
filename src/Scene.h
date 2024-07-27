@@ -2,10 +2,10 @@
 #include "ServoManager.h"
 #include <Arduino.h>
 
-#ifndef BlenderServoAnimation_Scene_H
-#define BlenderServoAnimation_Scene_H
+#ifndef BlenderServoAnimationLibrary_Scene_H
+#define BlenderServoAnimationLibrary_Scene_H
 
-namespace BlenderServoAnimation {
+namespace BlenderServoAnimationLibrary {
 
 class Scene {
 
@@ -48,6 +48,6 @@ private:
   unsigned int getMicrosDiff(unsigned long currentMicros);
 };
 
-} // namespace BlenderServoAnimation
+} // namespace BlenderServoAnimationLibrary
 
 #endif
