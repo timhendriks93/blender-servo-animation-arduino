@@ -20,8 +20,7 @@ void test_play_single(void) {
 
   animation.playSingle(2);
 
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
   TEST_ASSERT_EQUAL(2, animation.getPlayIndex());
 
   for (long i = 0; i < ANIMATION_MICROS; i += FRAME_MICROS) {
@@ -58,11 +57,9 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY, animation.getMode());
   animation.pause();
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
   animation.stop();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.playSingle(0);
@@ -81,13 +78,11 @@ void test_allowed(void) {
 
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_DEFAULT, animation.getMode());
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
 }
 
 void test_prevent_sudden_index_change(void) {

@@ -26,8 +26,7 @@ bool BlenderServoAnimation::hasScenes() {
   return this->addIndex > 0;
 }
 
-void BlenderServoAnimation::addScene(const byte *data, int size, byte fps,
-                                     int frames) {
+void BlenderServoAnimation::addScene(const byte *data, int size, byte fps, int frames) {
   AnimationData *animationData = new AnimationData(data, size);
   Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);
@@ -174,8 +173,7 @@ void BlenderServoAnimation::loop() {
 }
 
 void BlenderServoAnimation::pause() {
-  if (!this->scene ||
-      this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP, MODE_LIVE)) {
+  if (!this->scene || this->modeIsIn(4, MODE_DEFAULT, MODE_PAUSE, MODE_STOP, MODE_LIVE)) {
     return;
   }
 

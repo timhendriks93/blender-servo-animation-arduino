@@ -15,8 +15,7 @@ void Servo::move(int position, bool useOffset) {
     position += this->offset;
   }
 
-  if (position == this->currentPosition ||
-      this->positionExceedsThreshold(position)) {
+  if (position == this->currentPosition || this->positionExceedsThreshold(position)) {
     return;
   }
 

@@ -5,8 +5,7 @@
 
 using BlenderServoAnimationLibrary::Scene;
 
-Scene::Scene(ServoManager *servoManager, AnimationData *data, byte fps,
-             int frames) {
+Scene::Scene(ServoManager *servoManager, AnimationData *data, byte fps, int frames) {
   this->servoManager = servoManager;
   this->data = data;
   this->fps = fps;
@@ -68,8 +67,7 @@ unsigned int Scene::getMicrosDiff(unsigned long currentMicros) {
 }
 
 bool Scene::isNewFrame(unsigned long currentMicros) {
-  return this->lastMicros == 0 ||
-         this->getMicrosDiff(currentMicros) >= this->frameMicros;
+  return this->lastMicros == 0 || this->getMicrosDiff(currentMicros) >= this->frameMicros;
 }
 
 bool Scene::hasFinished() {

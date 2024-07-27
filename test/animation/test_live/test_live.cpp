@@ -26,18 +26,14 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY, animation.getMode());
   animation.pause();
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
   animation.live(mock);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
   animation.pause();
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
   animation.live(mock);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
-                    animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
   animation.live(mock);

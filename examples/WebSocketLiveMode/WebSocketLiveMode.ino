@@ -36,8 +36,8 @@ void move(byte servoID, int position) {
 BlenderServoAnimation animation;
 
 // Callback function writing live stream data to the animation
-void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
-                      AwsEventType type, void *arg, uint8_t *data, size_t len) {
+void onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
+                      void *arg, uint8_t *data, size_t len) {
   if (type != WS_EVT_DATA) {
     return;
   }

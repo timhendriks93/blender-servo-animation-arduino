@@ -26,8 +26,7 @@ byte Command::getServoID() {
 }
 
 int Command::getServoPosition() {
-  return this->values[INDEX_POSITION_BYTE] |
-         this->values[INDEX_POSITION_SIG_BYTE] << BITS;
+  return this->values[INDEX_POSITION_BYTE] | this->values[INDEX_POSITION_SIG_BYTE] << BITS;
 }
 
 void Command::reset() {
