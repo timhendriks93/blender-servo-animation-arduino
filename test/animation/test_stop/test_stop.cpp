@@ -101,12 +101,14 @@ void test_allowed(void) {
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.run(10000);
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
+                    animation.getMode());
   animation.stop();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.run(10000);
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
   animation.stop();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.run(10000);

@@ -3,9 +3,9 @@
 #include "Scene.h"
 #include <unity.h>
 
-using BlenderServoAnimationLibrary::ServoManager;
 using BlenderServoAnimationLibrary::AnimationData;
 using BlenderServoAnimationLibrary::Scene;
+using BlenderServoAnimationLibrary::ServoManager;
 
 void setUp(void) {
   resetPositionLog();

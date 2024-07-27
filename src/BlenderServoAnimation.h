@@ -8,9 +8,9 @@
 #ifndef BlenderServoAnimation_H
 #define BlenderServoAnimation_H
 
+using BlenderServoAnimationLibrary::AnimationData;
 using BlenderServoAnimationLibrary::Scene;
 using BlenderServoAnimationLibrary::ServoManager;
-using BlenderServoAnimationLibrary::AnimationData;
 
 class BlenderServoAnimation {
 

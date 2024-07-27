@@ -26,7 +26,8 @@ bool BlenderServoAnimation::hasScenes() {
   return this->addIndex > 0;
 }
 
-void BlenderServoAnimation::addScene(const byte *data, int size, byte fps, int frames) {
+void BlenderServoAnimation::addScene(const byte *data, int size, byte fps,
+                                     int frames) {
   AnimationData *animationData = new AnimationData(data, size);
   Scene *scene = new Scene(&this->servoManager, animationData, fps, frames);
   this->registerScene(scene);

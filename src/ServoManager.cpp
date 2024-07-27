@@ -2,8 +2,8 @@
 #include "Servo.h"
 #include <Arduino.h>
 
-using BlenderServoAnimationLibrary::ServoManager;
 using BlenderServoAnimationLibrary::Servo;
+using BlenderServoAnimationLibrary::ServoManager;
 
 ServoManager::~ServoManager() {
   if (this->servos) {

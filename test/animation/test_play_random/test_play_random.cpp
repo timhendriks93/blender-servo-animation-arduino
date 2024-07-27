@@ -25,7 +25,8 @@ void test_play_random(void) {
 
   animation.playRandom();
 
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
   TEST_ASSERT_NOT_EQUAL(nullptr, animation.getCurrentScene());
   TEST_ASSERT_EQUAL(1, animation.getPlayIndex());
   TEST_ASSERT_FALSE(animation.scenePlayed(0));
@@ -36,7 +37,8 @@ void test_play_random(void) {
     animation.run(i);
   }
 
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
   TEST_ASSERT_EQUAL(0, animation.getPlayIndex());
   TEST_ASSERT_TRUE(animation.scenePlayed(0));
   TEST_ASSERT_TRUE(animation.scenePlayed(1));
@@ -46,7 +48,8 @@ void test_play_random(void) {
     animation.run(i);
   }
 
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
   TEST_ASSERT_EQUAL(2, animation.getPlayIndex());
   TEST_ASSERT_EQUAL(20, logIndex);
   TEST_ASSERT_FALSE(animation.scenePlayed(0));
@@ -78,9 +81,11 @@ void test_prevented(void) {
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY, animation.getMode());
   animation.pause();
   animation.playSingle(0);
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
+                    animation.getMode());
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_SINGLE,
+                    animation.getMode());
   animation.stop();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_STOP, animation.getMode());
   animation.playRandom();
@@ -99,11 +104,13 @@ void test_allowed(void) {
 
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_DEFAULT, animation.getMode());
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
   animation.pause();
   TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PAUSE, animation.getMode());
   animation.playRandom();
-  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM, animation.getMode());
+  TEST_ASSERT_EQUAL(BlenderServoAnimation::MODE_PLAY_RANDOM,
+                    animation.getMode());
 }
 
 int main(int argc, char **argv) {
