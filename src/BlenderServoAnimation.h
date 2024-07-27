@@ -1,7 +1,7 @@
 #include "AnimationData.h"
 #include "Scene.h"
 #include "ServoManager.h"
-#include "typedefs.h"
+#include "CommonTypes.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -31,9 +31,9 @@ public:
 
   void addScene(const byte *data, int size, byte fps, int frames);
   void addScene(Stream &stream, byte fps, int frame);
-  void onPositionChange(pcb positionCallback);
-  void onModeChange(mcb modeCallback);
-  void onSceneChange(scb sceneCallback);
+  void onPositionChange(PositionCallback callback);
+  void onModeChange(ModeCallback callback);
+  void onSceneChange(SceneCallback callback);
   void run(unsigned long currentMicros = micros());
   void play();
   void playSingle(byte index);
@@ -65,8 +65,8 @@ private:
 
   bool *playedIndexes = nullptr;
 
-  mcb modeCallback = nullptr;
-  scb sceneCallback = nullptr;
+  ModeCallback modeCallback = nullptr;
+  SceneCallback sceneCallback = nullptr;
 
   byte mode = MODE_DEFAULT;
 

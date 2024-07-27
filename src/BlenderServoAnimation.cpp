@@ -322,16 +322,16 @@ Scene *BlenderServoAnimation::getCurrentScene() {
   return this->scene;
 }
 
-void BlenderServoAnimation::onPositionChange(pcb positionCallback) {
-  this->servoManager.setPositionCallback(positionCallback);
+void BlenderServoAnimation::onPositionChange(PositionCallback callback) {
+  this->servoManager.setPositionCallback(callback);
 }
 
-void BlenderServoAnimation::onModeChange(mcb modeCallback) {
-  this->modeCallback = modeCallback;
+void BlenderServoAnimation::onModeChange(ModeCallback callback) {
+  this->modeCallback = callback;
 }
 
-void BlenderServoAnimation::onSceneChange(scb sceneCallback) {
-  this->sceneCallback = sceneCallback;
+void BlenderServoAnimation::onSceneChange(SceneCallback callback) {
+  this->sceneCallback = callback;
 }
 
 void BlenderServoAnimation::changeMode(byte mode) {
