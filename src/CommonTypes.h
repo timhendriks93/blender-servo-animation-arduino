@@ -5,10 +5,10 @@
 
 namespace BlenderServoAnimationLibrary {
 
-typedef void (*ModeCallback)(byte, byte); // Mode callback
-typedef void (*PositionCallback)(byte, int);  // Position callback
-typedef void (*SceneCallback)(byte, byte); // Scene callback
+typedef void (*ModeCallback)(byte, byte);
+typedef void (*PositionCallback)(byte, int);
+typedef void (*SceneCallback)(byte, byte);
 
-} // BlenderServoAnimationLibrary
+} // namespace BlenderServoAnimationLibrary
 
 #endif

@@ -1,7 +1,7 @@
 #include "AnimationData.h"
 #include "Command.h"
-#include "Servo.h"
 #include "CommonTypes.h"
+#include "Servo.h"
 #include <Arduino.h>
 
 #ifndef BlenderServoAnimationLibrary_ServoManager_H

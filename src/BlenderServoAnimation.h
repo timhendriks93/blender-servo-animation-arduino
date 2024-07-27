@@ -1,7 +1,7 @@
 #include "AnimationData.h"
+#include "CommonTypes.h"
 #include "Scene.h"
 #include "ServoManager.h"
-#include "CommonTypes.h"
 #include <Arduino.h>
 #include <stdarg.h>
 
@@ -9,11 +9,11 @@
 #define BlenderServoAnimation_H
 
 using BlenderServoAnimationLibrary::AnimationData;
-using BlenderServoAnimationLibrary::Scene;
-using BlenderServoAnimationLibrary::ServoManager;
 using BlenderServoAnimationLibrary::ModeCallback;
 using BlenderServoAnimationLibrary::PositionCallback;
+using BlenderServoAnimationLibrary::Scene;
 using BlenderServoAnimationLibrary::SceneCallback;
+using BlenderServoAnimationLibrary::ServoManager;
 
 class BlenderServoAnimation {
 
