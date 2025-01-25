@@ -1,9 +1,9 @@
 /*
   Sending live servo positions via serial commands.
 
-  This example requires a USB connection to your PC and a running Blender
-  instance with the Blender Servo Animation Add-on. We use a single servo which
-  is controlled via the standard Arduino servo library.
+  This example requires a USB connection to your PC and a running Blender instance with the Blender
+  Servo Animation Add-on. After starting the live mode by connecting to the micro controller via
+  serial, you can move the servo in real time via Blender.
 */
 
 #include <BlenderServoAnimation.h>
@@ -14,6 +14,12 @@
 #include <Servo.h>
 #endif
 
+#define SERVO_PIN 12
+#define BAUD_RATE 115200
+
+// Animation object to control the animation
+BlenderServoAnimation animation;
+
 // Servo object to send positions
 Servo myServo;
 
@@ -23,23 +29,17 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to manage the servos
-// We skip providing fps or frames as we just want to use the live mode
-BlenderServoAnimation::Animation animation;
-
-// Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, move);
-
 void setup() {
-  Serial.begin(115200);
+  // Initialize serial communication
+  Serial.begin(BAUD_RATE);
 
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
 
-  // Add the Blender servo object to the animation
-  animation.addServo(myBlenderServo);
+  // Set the position callback
+  animation.onPositionChange(move);
 
-  // Trigger the animation live mode
+  // Trigger the animation live mode by passing the Serial instance
   animation.live(Serial);
 }
 
