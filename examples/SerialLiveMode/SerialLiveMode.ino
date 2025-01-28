@@ -14,7 +14,7 @@
 #include <Servo.h>
 #endif
 
-#define SERVO_PIN 12
+#define SERVO_PIN 3
 #define BAUD_RATE 115200
 
 // Animation object to control the animation

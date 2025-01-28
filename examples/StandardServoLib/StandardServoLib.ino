@@ -14,7 +14,7 @@
 #include <Servo.h>
 #endif
 
-#define SERVO_PIN 12
+#define SERVO_PIN 3
 
 // Servo object to send positions
 Servo myServo;

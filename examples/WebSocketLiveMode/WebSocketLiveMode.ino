@@ -11,7 +11,7 @@
 #include <ESP32Servo.h>
 #include <WiFi.h>
 
-#define SERVO_PIN 12
+#define SERVO_PIN 3
 #define PORT 80
 #define PATH "/"
 
