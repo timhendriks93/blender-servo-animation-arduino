@@ -7,14 +7,14 @@ jobs:
     name: "Build"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create library ZIP
         run: |
           mkdir BlenderServoAnimation
           cp -R src examples library.properties README.md LICENSE BlenderServoAnimation
           zip -r blender_servo_animation_arduino_library BlenderServoAnimation
       - name: Archive library ZIP
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: blender_servo_animation_arduino_library.zip
           path: |
@@ -28,22 +28,24 @@ jobs:
         example:
           [
             AdafruitPCA9685,
-            SerialLiveMode,
-            WebSocketLiveMode,
             MultiplePCA9685,
-            Show,
+            MultipleScenes,
+            MultipleScenesSD,
+            SDAnimation,
+            SerialLiveMode,
             StandardServoLib,
             SwitchModeButton,
+            WebSocketLiveMode,
           ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
           key: ${{ runner.os }}-pio
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - name: Install PlatformIO Core
@@ -56,7 +58,7 @@ jobs:
     name: "Lint"
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lint with clang-format
         uses: jidicula/clang-format-action@v4.10.2
         with:
@@ -69,14 +71,14 @@ jobs:
     name: "Test"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache PlatformIO directory
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /home/runner/.platformio
           key: platformio-dir
       - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: "pip"

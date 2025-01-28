@@ -1,9 +1,8 @@
 /*
   Using the standard Arduino servo library to send servo positions.
 
-  Note the namespace BlenderServoAnimation which helps to distinguish
-  between the standard library servo class (Servo) and the servo
-  class of this library (BlenderServoAnimation::Servo).
+  The setup requires nothing but a micro controller and a single servo. The animation is played in a
+  loop.
 */
 
 #include "simple.h"
@@ -15,6 +14,8 @@
 #include <Servo.h>
 #endif
 
+#define SERVO_PIN 3
+
 // Servo object to send positions
 Servo myServo;
 
@@ -24,18 +25,18 @@ void move(byte servoID, int position) {
   myServo.writeMicroseconds(position);
 }
 
-// Animation object to represent the original Blender animation
-BlenderServoAnimation::Animation animation(FPS, FRAMES);
-
-// Servo object to manage the positions
-BlenderServoAnimation::Servo myBlenderServo(0, Bone, move);
+// Animation object to control the animation
+BlenderServoAnimation animation;
 
 void setup() {
-  // Attach the servo to pin 12
-  myServo.attach(12);
+  // Attach the servo to the defined servo pin
+  myServo.attach(SERVO_PIN);
 
-  // Add the Blender servo object to the animation
-  animation.addServo(myBlenderServo);
+  // Set the position callback
+  animation.onPositionChange(move);
+
+  // Add a scene based on PROGMEM data
+  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
   // Trigger the animation loop mode
   animation.loop();

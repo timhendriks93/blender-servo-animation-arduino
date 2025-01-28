@@ -1,71 +1,70 @@
 /*
-  Using a struct to map Servos to a PWM driver and channel.
+  Using two PCA9685 PWM servo drivers to animate 2 servos.
 
-  This approach can be useful if you don't want to equate the servo ID with the
-  PWM board channel or use multiple PCA9685 boards. The Adafruit PCA9685 PWM
-  Servo Driver Library is used to send the servo positions.
+  Note that the A0 address jumper has to be soldered on the second driver board. This setup can
+  easily be extended to animate up to 32 servos. If even more servos are needed, you can also add
+  more driver boards to the chain.
+
+  We assume the servo ID and the used board channel are equal. Therefore, the servo with the ID 0
+  has to be connected to channel 0 etc.
 */
 
 #include "ik.h"
 #include <Adafruit_PWMServoDriver.h>
 #include <BlenderServoAnimation.h>
 
-// Using the namespace to have short class references (Animation and Servo)
-using namespace BlenderServoAnimation;
+#define SERVO_AMOUNT 2
+
+// Animation object to control the animation
+BlenderServoAnimation animation;
 
 // PWM driver instances to set PWM output
 Adafruit_PWMServoDriver pwmA(0x40);
 Adafruit_PWMServoDriver pwmB(0x41);
 
-// Animation object to represent the original Blender animation
-Animation animation(FPS, FRAMES);
-
 // We use a struct to map a servo to a PCA9685 board and channel
-struct servoMap {
-  Servo servo;
+struct servoMapping {
+  byte id;
   Adafruit_PWMServoDriver pwm;
   byte channel;
 };
 
-// Forward declare the callback as it will be referenced in the following array
-void setPWM(byte servoID, int position);
+// Define an array of servo maps
+servoMapping servoMappings[SERVO_AMOUNT] = {
+    // Servo 0 attached to board A on channel 0
+    {0, pwmA, 0},
 
-// Define an array of servo mapsf
-servoMap servoMaps[] = {
-    // Servo attached to board A on channel 0
-    {Servo(0, NeckLeft, setPWM), pwmA, 0},
-
-    // Servo attached to board B on channel 0
-    {Servo(1, NeckRight, setPWM), pwmB, 0},
+    // Servo 1 attached to board B on channel 0
+    {1, pwmB, 0},
 };
-
-// Calculate the amount of servos so that we can easily extend the array
-const byte servoAmount = sizeof(servoMaps) / sizeof(servoMaps[0]);
 
 // Callback function which is called whenever a servo needs to be moved
 void setPWM(byte servoID, int position) {
   // Iterate through the available servos
-  for (int i = 0; i < servoAmount; i++) {
-    // Check if the current servo ID matches the target servo ID
-    if (servoMaps[i].servo.getID() == servoID) {
-      // Get the PWM driver instance and channel from the mapping
-      Adafruit_PWMServoDriver pwm = servoMaps[i].pwm;
-      byte channel = servoMaps[i].channel;
-
-      // Set the current position as PWM output
-      pwm.setPWM(channel, 0, position);
-
-      // Break the loop as we already handled the servo movement
-      break;
+  for (int i = 0; i < SERVO_AMOUNT; i++) {
+    // Continue if the current servo ID doesn't match the target servo ID
+    if (servoMappings[i].id != servoID) {
+      continue;
     }
+
+    // Get the PWM driver instance and channel from the mapping
+    Adafruit_PWMServoDriver pwm = servoMappings[i].pwm;
+    byte channel = servoMappings[i].channel;
+
+    // Set the current position as PWM output
+    pwm.setPWM(channel, 0, position);
+
+    // Break the for loop as we finsihed handling the servo movement
+    break;
   }
 }
 
 void setup() {
-  // Dynamically add the Blender servo objects to the animation
-  for (int i = 0; i < servoAmount; i++) {
-    animation.addServo(servoMaps[i].servo);
-  }
+  // Set the position callback
+  animation.onPositionChange(setPWM);
+
+  // Add a scene based on PROGMEM data
+  animation.addScene(ANIMATION_DATA, LENGTH, FPS, FRAMES);
 
   // Trigger the animation loop mode
   animation.loop();
