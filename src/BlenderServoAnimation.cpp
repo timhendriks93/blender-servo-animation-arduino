@@ -307,6 +307,8 @@ void BlenderServoAnimation::handleStopMode(unsigned long currentMicros) {
   this->scene->stop(currentMicros);
 
   if (this->servoManager.servosAreAllNeutral()) {
+    this->resetScene();
+
     this->changeMode(MODE_DEFAULT);
   }
 }
