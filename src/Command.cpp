@@ -21,6 +21,10 @@ bool Command::isValid() {
          this->values[INDEX_END_MARKER] == END_MARKER;
 }
 
+bool Command::isReading() {
+  return this->index > 0 && this->index < LENGTH;
+}
+
 byte Command::getServoID() {
   return this->values[INDEX_SERVO_ID];
 }

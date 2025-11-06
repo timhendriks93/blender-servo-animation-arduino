@@ -42,7 +42,7 @@ void ServoManager::parseData(AnimationData *data, bool considerLineBreaks) {
   while (data->isAvailable()) {
     byte value = data->getNextByte();
 
-    if (considerLineBreaks && value == Command::LINE_BREAK) {
+    if (considerLineBreaks && value == Command::LINE_BREAK && !this->command.isReading()) {
       break;
     }
 
