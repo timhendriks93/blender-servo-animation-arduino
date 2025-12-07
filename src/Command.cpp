@@ -4,11 +4,11 @@
 using BlenderServoAnimationLibrary::Command;
 
 void Command::write(byte value) {
-  if (value == START_MARKER) {
+  if (this->index >= LENGTH) {
     this->reset();
   }
-
-  if (this->index >= LENGTH) {
+  
+  if (this->index == 0 && value != START_MARKER) {
     return;
   }
 
