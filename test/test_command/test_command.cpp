@@ -38,7 +38,7 @@ void test_incomplete(void) {
   for (int i = 0; i < 13; i++) {
     command.write(values[i]);
 
-    if (i == 7 || i == 12) {
+    if (i == 12) {
       TEST_ASSERT_TRUE(command.isValid());
     } else {
       TEST_ASSERT_FALSE(command.isValid());

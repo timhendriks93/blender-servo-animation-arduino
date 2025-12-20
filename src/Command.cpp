@@ -4,11 +4,11 @@
 using BlenderServoAnimationLibrary::Command;
 
 void Command::write(byte value) {
-  if (value == START_MARKER) {
+  if (this->index >= LENGTH) {
     this->reset();
   }
 
-  if (this->index >= LENGTH) {
+  if (this->index == 0 && value != START_MARKER) {
     return;
   }
 
@@ -19,6 +19,10 @@ void Command::write(byte value) {
 bool Command::isValid() {
   return this->values[INDEX_START_MARKER] == START_MARKER &&
          this->values[INDEX_END_MARKER] == END_MARKER;
+}
+
+bool Command::isReading() {
+  return this->index > 0 && this->index < LENGTH;
 }
 
 byte Command::getServoID() {
