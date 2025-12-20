@@ -7,7 +7,7 @@ void Command::write(byte value) {
   if (this->index >= LENGTH) {
     this->reset();
   }
-  
+
   if (this->index == 0 && value != START_MARKER) {
     return;
   }
