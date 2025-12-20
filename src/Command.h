@@ -14,6 +14,8 @@ public:
 
   bool isValid();
 
+  bool isReading();
+
   byte getServoID();
 
   int getServoPosition();
